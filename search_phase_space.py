@@ -1,5 +1,5 @@
 """ 
-Filename: search6d.py
+Filename: search_phase_space.py
 Author: Mathew Bub
 Last Revision Date: 2018-05-22
 
