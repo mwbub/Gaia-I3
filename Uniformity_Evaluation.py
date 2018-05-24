@@ -12,9 +12,13 @@
 
         gradient: This function takes a differentiable function and returns the gradient of that function
 
-        partial_derivative: This function takes a function and the order of the input variable with respect to which
+        partial_derivative: This function takes a function and the position of the input variable with respect to which
                             the partial derivative is to be taken. Then it returns the partial derivative with respect
                             to that variable.
+
+    WARNINGS:
+        This module assumes the given function takes a numpy array, which can contain an arbitrary number of values.
+        In particular, this code cannot handle a function that takes multiple input directly.
 
     HISTORY:
         2018-05-24 - Written - Samuel Wong
@@ -33,15 +37,15 @@ def partial_derivative(f, i):
 
     INPUT:
         f = a differentiable function that takes a numpy array of n numbers to 1 number
-        n = number of variables that f takes
+        i = the position of the variable in the input array with respect to which we want to take the partial derivative
 
     OUTPUT:
-        partial = the ith partial derivative function of f. This function is also an n-dimensional real-valued function
+        evaluate_partial_derivative = the ith partial derivative function of f.
+                                      This function is also an n-dimensional real-valued function
 
     HISTORY:
-        2018-05-23 - Written - Samuel Wong
+        2018-05-24 - Written - Samuel Wong
     """
-
     # define a function capable of evaluating the partial derivative at a n-dimensional point
     def evaluate_partial_derivative(point):
 
@@ -67,13 +71,13 @@ def evaluate_uniformity(f, x, W):
         evaluate_uniformity
 
     PURPOSE:
-        Given a differentiable function, f, a n-dimensional vector, x, and a m dimensional subscpace of R^n
+        Given a differentiable function, f, an n-dimensional vector, x, and a m dimensional subscpace of R^n
         (m <= n) that is spanned by the vectors contained in W, return the directional derivative of f along
         each of the vector. If all of them are close to zero, then f is said to be uniform in the subspace.
 
     INPUT:
         f = a differentiable function that takes a numpy array of n numbers to 1 number
-        n = number of variables that f takes
+        x = a numpy array containing n component, represents a generic point in R^n
         W = a numpy array that contains m number of n-dimensional linearly independent vectors (warning: requries m<n);
             Each vector is also a numpy array
 
