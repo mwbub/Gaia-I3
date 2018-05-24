@@ -32,7 +32,7 @@ def partial_derivative(f, i):
         Given an n-dimensional real-valued function, f, return the ith partial derivative function of f.
 
     INPUT:
-        f = a differentiable function that takes n number to 1 number
+        f = a differentiable function that takes a numpy array of n numbers to 1 number
         n = number of variables that f takes
 
     OUTPUT:
@@ -48,7 +48,7 @@ def partial_derivative(f, i):
         # define a function that treats all variables as constant except for the ith input
         def fixed_value_except_ith(x_i):
             point[i] = x_i
-            return f(*point)
+            return f(point)
 
         # now that we have the function treating all other variables as constants except for the ith one, we have a
         # normal 1 dimensional derivative; evaluate it at the ith coordinate of the point
@@ -72,7 +72,7 @@ def evaluate_uniformity(f, x, W):
         each of the vector. If all of them are close to zero, then f is said to be uniform in the subspace.
 
     INPUT:
-        f = a differentiable function that takes n number to 1 number
+        f = a differentiable function that takes a numpy array of n numbers to 1 number
         n = number of variables that f takes
         W = a numpy array that contains m number of n-dimensional linearly independent vectors (warning: requries m<n);
             Each vector is also a numpy array
