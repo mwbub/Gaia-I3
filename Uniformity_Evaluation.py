@@ -23,6 +23,44 @@ import numpy as np
 from scipy.misc import derivative
 
 
+def partial_derivative(f, i):
+    """
+    NAME:
+        partial_derivative
+
+    PURPOSE:
+        Given an n-dimensional real-valued function, f, return the ith partial derivative function of f.
+
+    INPUT:
+        f = a differentiable function that takes n number to 1 number
+        n = number of variables that f takes
+
+    OUTPUT:
+        partial = the ith partial derivative function of f. This function is also an n-dimensional real-valued function
+
+    HISTORY:
+        2018-05-23 - Written - Samuel Wong
+    """
+
+    # define a function capable of evaluating the partial derivative at a n-dimensional point
+    def evaluate_partial_derivative(point):
+
+        # define a function that treats all variables as constant except for the ith input
+        def fixed_value_except_ith(x_i):
+            point[i] = x_i
+            return f(*point)
+
+        # now that we have the function treating all other variables as constants except for the ith one, we have a
+        # normal 1 dimensional derivative; evaluate it at the ith coordinate of the point
+        # set dx to be a sufficiently small value
+        normal_derivative = derivative(fixed_value_except_ith, point[i], dx=1e-6)
+        return normal_derivative
+
+    # return the function that can evaluate partial derivative at a point, without giving it any input.
+    # so this is the partial derivative function
+    return evaluate_partial_derivative
+
+
 def evaluate_uniformity(f, x, W):
     """
     NAME:
