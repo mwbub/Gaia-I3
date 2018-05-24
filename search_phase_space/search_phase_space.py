@@ -20,7 +20,7 @@ ra_ngp, dec_ngp = lb_to_radec(0, pi/2, epoch=None)
 # conversion factor from kpc*mas/yr to km/s
 k = (u.kpc*u.mas/u.yr).to(u.km*u.rad/u.s)
 
-def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=1.0):
+def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=10.0):
     """
     NAME:
         search_phase_space
@@ -53,7 +53,7 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=1.0):
         distances (optional; default = 1.0)
         
         cone_r - cone search radius used to limit the initial size of the query 
-        (optional; given in degrees; default = 1.0)
+        (optional; given in degrees; default = 10.0)
         
     OUTPUT:
         astropy Table, containing stars from the Gaia DR2 RV catalogue that are
