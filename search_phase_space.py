@@ -5,7 +5,7 @@ Last Revision Date: 2018-05-24
 
 This module contains the search_phase_space function, which queries the 
 Gaia archive for stars close to a given point in phase space, using a galactic 
-coordiante frame.
+coordinate frame.
 """
 import astropy.units as u
 from astropy.coordinates import SkyCoord
