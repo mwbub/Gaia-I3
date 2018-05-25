@@ -53,13 +53,17 @@ def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
 
 
 def Energy(x, y, z, vx, vy, vz):
-    R = np.sqrt(x**2 + y**2)
-    phi = evaluatePotentials(MWPotential2014, R, z)
+    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    potential = evaluatePotentials(MWPotential2014, R, z)
     kinetic = (vx**2 + vy**2 + vz**2)/2.
-    energy = kinetic + phi
+    energy = kinetic + potential
     return energy
 
-#def L_z(x,y,z,vx,vy,vz):
-    #R = np.sqrt(x ** 2 + y ** 2)
+def L_z(x,y,z,vx,vy,vz):
+    # convert to cylindrical coordinate
+    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    # evaluate the angular momentum
+    result = R*vT
+    return result
 
 
