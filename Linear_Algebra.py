@@ -7,20 +7,19 @@ PURPOSE:
     space.
 
 FUNCTIONS:
-    orthonormal: the function takes a collection of linearly independent vectors and return an orthonormal basis
     orthogonal_complement: this function returns the orthogonal complement space of a given set of vectors
 
 HISTORY:
     2018-05-24 - Written - Samuel Wong
 """
 import numpy as np
-from sympy import *
+from sympy import Matrix
 
 
 def orthogonal_complement(n, V):
     """
     NAME:
-        dimensional_elimination
+        orthogonal_complement
 
     PURPOSE:
         Given the general n dimensional real number space, R^n, and V, a set of m vectors (m < n) in the space,
