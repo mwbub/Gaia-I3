@@ -8,8 +8,8 @@ def testing_function(array):
     z = array[2]
     return 2*x*y + 3*y*z + z**2
 
-point = np.array([1, 1, 2])
-gradient = np.array([2, 8, 7])
+point = np.array([1., 1., 2.])
+gradient = np.array([2., 8., 7.])
 W = orthogonal_complement(np.array([gradient]))
 print(evaluate_uniformity(testing_function, point, W))
 

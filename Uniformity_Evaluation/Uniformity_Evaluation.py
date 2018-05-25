@@ -20,6 +20,9 @@ WARNINGS:
     This module assumes the given function takes a numpy array, which can contain an arbitrary number of values.
     In particular, this code cannot handle a function that takes multiple input directly.
 
+    Also, the derviative function divides given point by a small number: 1e-6
+    So when testing this function, do not use integrers. Everything has to be float for this to work.
+
 HISTORY:
     2018-05-24 - Written - Samuel Wong
 """
@@ -56,7 +59,8 @@ def partial_derivative(f, i):
 
         # now that we have the function treating all other variables as constants except for the ith one, we have a
         # normal 1 dimensional derivative; evaluate it at the ith coordinate of the point
-        normal_derivative = derivative(fixed_value_except_ith, point[i])
+        # set dx to sufficiently small number
+        normal_derivative = derivative(fixed_value_except_ith, point[i], dx=1e-6)
         return normal_derivative
 
     # return the function that can evaluate partial derivative at a point, without giving it any input.
