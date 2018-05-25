@@ -127,8 +127,9 @@ def evaluate_uniformity(f, x, W):
     HISTORY:
         2018-05-24 - Written - Samuel Wong
     """
-    # get the size of the subspace
-    m = np.size(W)
+    # get the size of the subspace; the first coordinate of the shape of W is the number of vectors; the second one
+    # is the dimension of each vector
+    m = np.shape(W)[0]
     # get the size of the domain spae
     n = np.size(x)
     # get the gradient of f
