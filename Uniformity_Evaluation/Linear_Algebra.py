@@ -56,9 +56,3 @@ def orthogonal_complement(V):
     # convert W back into numpy array
     W = np.array(W)
     return W
-
-v1 = np.array([1,2,3,4,5,6])
-v2 = np.array([2,3,4,5,6,7])
-V = np.array([v1,v2])
-W = orthogonal_complement(V)
-print(W)
