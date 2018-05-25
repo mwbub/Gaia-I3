@@ -112,8 +112,8 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=10.0):
     FROM gaiadr2.gaia_source
         WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', {3}, {4}, {5})) 
         AND radial_velocity IS NOT NULL) tab0) tab1) tab2) tab3
-    WHERE {13} > SQRT(POWER({6}-x,2) + POWER({7}-y,2) + POWER({8}-z,2) +
-    (POWER({9}-vx,2) + POWER({10}-vy,2) + POWER({11}-vz,2))*POWER({12},2))
+    WHERE POWER({13},2) > POWER({6}-x,2) + POWER({7}-y,2) + POWER({8}-z,2) +
+    (POWER({9}-vx,2) + POWER({10}-vy,2) + POWER({11}-vz,2))*POWER({12},2)
     """.format(*params)
     
     job = Gaia.launch_job_async(query)
