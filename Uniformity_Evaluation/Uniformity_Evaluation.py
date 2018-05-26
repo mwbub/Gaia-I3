@@ -1,28 +1,31 @@
 """
-    NAME:
-        Uniformity_Evaluation
+NAME:
+    Uniformity_Evaluation
 
-    PURPOSE:
-        This module contains a function that evaluates whether a given function is uniform along a given subspace.
-        In addition, it contains functions that return gradient and partial derivative of a given function.
+PURPOSE:
+    This module contains a function that evaluates whether a given function is uniform along a given subspace.
+    In addition, it contains functions that return gradient and partial derivative of a given function.
 
-    FUNCTIONS:
-        evaluate_uniformity: This function takes a differeniable function, a point, and the vectors generating
-                             a subspace, and return whether the function is uniform along the subspace at that point.
+FUNCTIONS:
+    evaluate_uniformity: This function takes a differeniable function, a point, and the vectors generating
+                         a subspace, and return whether the function is uniform along the subspace at that point.
 
-        gradient: This function takes a differentiable function and returns the gradient of that function
+    gradient: This function takes a differentiable function and returns the gradient of that function
 
-        partial_derivative: This function takes a function and the position of the input variable with respect to which
-                            the partial derivative is to be taken. Then it returns the partial derivative with respect
-                            to that variable.
+    partial_derivative: This function takes a function and the position of the input variable with respect to which
+                        the partial derivative is to be taken. Then it returns the partial derivative with respect
+                        to that variable.
 
-    WARNINGS:
-        This module assumes the given function takes a numpy array, which can contain an arbitrary number of values.
-        In particular, this code cannot handle a function that takes multiple input directly.
+WARNINGS:
+    This module assumes the given function takes a numpy array, which can contain an arbitrary number of values.
+    In particular, this code cannot handle a function that takes multiple input directly.
 
-    HISTORY:
-        2018-05-24 - Written - Samuel Wong
-    """
+    Also, the derviative function divides given point by a small number: 1e-6
+    So when testing this function, do not use integrers. Everything has to be float for this to work.
+
+HISTORY:
+    2018-05-24 - Written - Samuel Wong
+"""
 import numpy as np
 from scipy.misc import derivative
 
@@ -56,7 +59,8 @@ def partial_derivative(f, i):
 
         # now that we have the function treating all other variables as constants except for the ith one, we have a
         # normal 1 dimensional derivative; evaluate it at the ith coordinate of the point
-        normal_derivative = derivative(fixed_value_except_ith, point[i])
+        # set dx to sufficiently small number
+        normal_derivative = derivative(fixed_value_except_ith, point[i], dx=1e-6)
         return normal_derivative
 
     # return the function that can evaluate partial derivative at a point, without giving it any input.
@@ -127,8 +131,9 @@ def evaluate_uniformity(f, x, W):
     HISTORY:
         2018-05-24 - Written - Samuel Wong
     """
-    # get the size of the subspace
-    m = np.size(W)
+    # get the size of the subspace; the first coordinate of the shape of W is the number of vectors; the second one
+    # is the dimension of each vector
+    m = np.shape(W)[0]
     # get the size of the domain spae
     n = np.size(x)
     # get the gradient of f
