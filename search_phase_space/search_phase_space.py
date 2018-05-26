@@ -52,8 +52,10 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
         v_scale - scale factor for velocities used when calculating phase space
         distances (optional; default = 1.0)
         
-        cone_r - cone search radius used to limit the initial size of the query 
-        (optional; given in degrees)
+        cone_r - cone search radius used to limit the initial size of the 
+        query; if None, will use the minimal cone that completely encompasses
+        the search sphere in physical space (optional; given in degrees;
+        default = None)
         
     OUTPUT:
         astropy Table, containing stars from the Gaia DR2 RV catalogue that are
