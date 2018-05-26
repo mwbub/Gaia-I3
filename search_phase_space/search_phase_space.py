@@ -60,7 +60,7 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
         within a distance of epsilon from the point (x, y, z, vx, vy, vz)
         
     HISTORY:
-        2018-05-24 - Written - Mathew Bub (UofT)
+        2018-05-24 - Written - Mathew Bub
     """
     import warnings
     warnings.filterwarnings("ignore")
@@ -80,46 +80,52 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     icrs_coord = gal_coord.transform_to('icrs')
     cone_ra, cone_dec = icrs_coord.ra.value, icrs_coord.dec.value
     
-    if cone_r is None:
-        d = np.sqrt(x.value**2 + y.value**2 + z.value**2)
-        h = d - epsilon**2 / d
-        r = (epsilon / d)*np.sqrt(d**2 - epsilon**2)
-        cone_r = np.degrees(np.arctan(r / h))
+    d = np.sqrt(x.value**2 + y.value**2 + z.value**2)
+    limiting_condition = ""
+    if d > epsilon or cone_r is not None:
+        if cone_r is None:
+            h = d - epsilon**2 / d
+            r = (epsilon / d)*np.sqrt(d**2 - epsilon**2)
+            cone_r = np.degrees(np.arctan(r / h))
+        limiting_condition += ("AND 1=CONTAINS(POINT('ICRS', ra, dec), "
+                               "CIRCLE('ICRS', {}, {}, {}))\n\t"
+                               ).format(cone_ra, cone_dec, cone_r)
+    limiting_condition += "AND ABS({}-1/parallax) < {}".format(d, epsilon)
     
     # query parameters
-    params = (k, dec_ngp, ra_ngp, cone_ra, cone_dec, cone_r, x.value, 
-              y.value, z.value, vx.value, vy.value, vz.value, v_scale, epsilon)
+    params = (k, dec_ngp, ra_ngp, limiting_condition, x.value, y.value,
+              z.value, vx.value, vy.value, vz.value, v_scale, epsilon)
     
     # convert icrs coordinates to galactic rectangular coordinates, then query
     # for stars within a distance of epsilon from point (x, y, z, vx, vy, vz)
     query = """
     SELECT *
     FROM (SELECT *,
-          d*cosb*cosl as x,
-          d*cosb*sinl as y,
-          d*sinb as z,
-          radial_velocity*cosb*cosl - ({0})*d*(pmb*sinb*cosl + pml*sinl) as vx,
-          radial_velocity*cosb*sinl - ({0})*d*(pmb*sinb*sinl - pml*cosl) as vy,
-          radial_velocity*sinb + ({0})*d*pmb*cosb as vz
+          d*cosb*cosl AS x,
+          d*cosb*sinl AS y,
+          d*sinb AS z,
+          radial_velocity*cosb*cosl - ({0})*d*(pmb*sinb*cosl + pml*sinl) AS vx,
+          radial_velocity*cosb*sinl - ({0})*d*(pmb*sinb*sinl - pml*cosl) AS vy,
+          radial_velocity*sinb + ({0})*d*pmb*cosb AS vz
     FROM (SELECT *,
-          pmra*cosphi + pmdec*sinphi as pml,
-          pmdec*cosphi - pmra*sinphi as pmb
+          pmra*cosphi + pmdec*sinphi AS pml,
+          pmdec*cosphi - pmra*sinphi AS pmb
     FROM (SELECT *,
-          COS({1})*SIN(RADIANS(ra)-({2})) / cosb as sinphi,
-          (SIN({1}) - sindec*sinb) / (cosdec*cosb) as cosphi
+          COS({1})*SIN(RADIANS(ra)-({2})) / cosb AS sinphi,
+          (SIN({1}) - sindec*sinb) / (cosdec*cosb) AS cosphi
     FROM (SELECT *,
-          SIN(RADIANS(dec)) as sindec,
-          COS(RADIANS(dec)) as cosdec,
-          SIN(RADIANS(b)) as sinb,
-          COS(RADIANS(b)) as cosb,
-          SIN(RADIANS(l)) as sinl,
-          COS(RADIANS(l)) as cosl,
-          1/parallax as d
+          SIN(RADIANS(dec)) AS sindec,
+          COS(RADIANS(dec)) AS cosdec,
+          SIN(RADIANS(b)) AS sinb,
+          COS(RADIANS(b)) AS cosb,
+          SIN(RADIANS(l)) AS sinl,
+          COS(RADIANS(l)) AS cosl,
+          1/parallax AS d
     FROM gaiadr2.gaia_source
-        WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', {3}, {4}, {5})) 
-        AND radial_velocity IS NOT NULL) tab0) tab1) tab2) tab3
-    WHERE POWER({13},2) > POWER({6}-x,2) + POWER({7}-y,2) + POWER({8}-z,2) +
-    (POWER({9}-vx,2) + POWER({10}-vy,2) + POWER({11}-vz,2))*POWER({12},2)
+        WHERE radial_velocity IS NOT NULL
+        {3}) tab0) tab1) tab2) tab3
+    WHERE POWER({11},2) > POWER({4}-x,2) + POWER({5}-y,2) + POWER({6}-z,2) +
+    (POWER({7}-vx,2) + POWER({8}-vy,2) + POWER({9}-vz,2))*POWER({10},2)
     """.format(*params)
     
     job = Gaia.launch_job_async(query)
