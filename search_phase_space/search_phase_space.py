@@ -12,15 +12,15 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 from astroquery.gaia import Gaia
 from galpy.util.bovy_coords import lb_to_radec
-from numpy import pi
+import numpy as np
 
 # ra and dec of the north galactic pole
-ra_ngp, dec_ngp = lb_to_radec(0, pi/2, epoch=None)
+ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 
 # conversion factor from kpc*mas/yr to km/s
 k = (u.kpc*u.mas/u.yr).to(u.km*u.rad/u.s)
 
-def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=10.0):
+def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     """
     NAME:
         search_phase_space
@@ -53,7 +53,7 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=10.0):
         distances (optional; default = 1.0)
         
         cone_r - cone search radius used to limit the initial size of the query 
-        (optional; given in degrees; default = 10.0)
+        (optional; given in degrees)
         
     OUTPUT:
         astropy Table, containing stars from the Gaia DR2 RV catalogue that are
@@ -79,6 +79,12 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=10.0):
                          u=x, v=y, w=z)
     icrs_coord = gal_coord.transform_to('icrs')
     cone_ra, cone_dec = icrs_coord.ra.value, icrs_coord.dec.value
+    
+    if cone_r is None:
+        d = np.sqrt(x.value**2 + y.value**2 + z.value**2)
+        h = d - epsilon**2 / d
+        r = (epsilon / d)*np.sqrt(d**2 - epsilon**2)
+        cone_r = np.degrees(np.arctan(r / h))
     
     # query parameters
     params = (k, dec_ngp, ra_ngp, cone_ra, cone_dec, cone_r, x.value, 
