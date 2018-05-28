@@ -50,7 +50,7 @@ def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
     R = np.sqrt(x**2 + y**2)
     phi = np.arctan(y/x)
     vR = (x * vx + y * vy) / np.sqrt(x ** 2 + y ** 2)
-    vT = (x * vy - y * vx)/(x**2 + y**2)
+    vT = R*(x * vy - y * vx)/(x**2 + y**2)
     return R, phi, z, vR, vT, vz
 
 
