@@ -24,14 +24,19 @@ def test_cartesian_to_cylindrical(x, y, z, vx, vy, vz):
     print('net velocity = ', v)
     
 def test_energy_and_momentum(x,y,z,vx,vy,vz):
+    # test whether energy and momentum changed during an orbit
+    # know that they are conserved
     e_initial = Energy(x,y,z,vx,vy,vz)
+    momentum_initial = L_z(x, y, z, vx, vy, vz)
     R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
     o =  Orbit(vxvv = [R, vR, vT, z, vz, phi])
     ts = np.linspace(0,1000,100000)
     o.integrate(ts,MWPotential2014)
-    t = 100
+    t = 304
     e_final = Energy(o.x(t), o.y(t), o.z(t), o.vx(t), o.vy(t), o.vz(t))
+    momentum_final = L_z(o.x(t), o.y(t), o.z(t), o.vx(t), o.vy(t), o.vz(t))
     print('initial energy = {}, final energy = {}'.format(e_initial, e_final))
+    print('initial momentum = {}, final momentum = {}'.format(momentum_initial, momentum_final))
     
 test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
 print()
