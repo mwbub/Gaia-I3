@@ -135,3 +135,18 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     
     job = Gaia.launch_job_async(query)
     return job.get_results()
+
+def table_to_sample(table):
+    icrs_coord = SkyCoord(ra=table['ra']*u.deg, 
+                     dec=table['dec']*u.deg, 
+                     distance=table['d']*u.kpc, 
+                     pm_ra_cosdec=table['pmra']*u.mas/u.yr, 
+                     pm_dec=table['pmdec']*u.mas/u.yr,
+                     radial_velocity=table['radial_velocity']*u.km/u.s)
+    coord = icrs_coord.transform_to('galactocentric')
+    coord.representation_type = 'cartesian'
+    samples = np.stack([coord.x.value, coord.y.value, coord.z.value,
+                        coord.v_x.value, coord.v_y.value, coord.v_z.value],
+                        axis=1)
+    return samples
+    
