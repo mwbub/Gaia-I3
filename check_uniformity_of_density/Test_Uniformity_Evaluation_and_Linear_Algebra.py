@@ -2,7 +2,7 @@ from Linear_Algebra import *
 from Uniformity_Evaluation import *
 import numpy as np
 
-def testing_function(array):
+def f(array):
     x = array[0]
     y = array[1]
     z = array[2]
@@ -11,7 +11,5 @@ def testing_function(array):
 point = np.array([1., 1., 2.])
 gradient = np.array([2., 8., 7.])
 W = orthogonal_complement(np.array([gradient]))
-print(evaluate_uniformity(testing_function, point, W))
-
-
+print(evaluate_uniformity(f, point, W))
 
