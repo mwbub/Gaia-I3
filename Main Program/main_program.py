@@ -62,6 +62,6 @@ V = np.array([del_E_a, del_Lz_a])
 # get the 4 dimensional orthogonal complement of del E and del Lz
 W = orthogonal_complement(V)
 # evaluate and see if they are all 0
-directional_derivatives = evaluate_uniformity(density, a, W)
-print(directional_derivatives)
-
+#directional_derivatives = evaluate_uniformity(density, a, W)
+#print(directional_derivatives)
+del_density = grad(density, 6)
