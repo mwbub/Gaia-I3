@@ -136,7 +136,7 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     job = Gaia.launch_job_async(query)
     return job.get_results()
 
-def table_to_sample(table):
+def table_to_samples(table):
     icrs_coord = SkyCoord(ra=table['ra']*u.deg, 
                      dec=table['dec']*u.deg, 
                      distance=table['d']*u.kpc, 

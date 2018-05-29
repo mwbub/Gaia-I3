@@ -27,7 +27,7 @@ u = 1*unit.kpc
 v = 1*unit.kpc
 w = 0*unit.kpc
 U = 15*unit.km/unit.s
-V = -2*unit.km/unit.s.
+V = -2*unit.km/unit.s
 W = -6*unit.km/unit.s
 epsilon = 0.5
 v_scale = 0.1
@@ -35,19 +35,19 @@ table = search_phase_space(u,v,w,U,V,W,epsilon, v_scale)
 samples = table_to_samples(table)
 
 # use the samples and a KDE learning method to generatea density function
-density = generate_KDE(samples)
+density = generate_KDE(samples, 'gaussian', 1)
 
 # convert the central star to galactocentric coordinate
 coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
                  differential_type = CartesianDifferential,
                  u = u, v = v, w = w, U = U, V = V, W = W)
 coord = coord.transform_to('galactocentric')
-x = coord.x
-y = coord.y
-z = coord.z
-vx = coord.v_x
-vy = coord.v_y
-vz = coord.v_z
+x = coord.x.value
+y = coord.y.value
+z = coord.z.value
+vx = coord.v_x.value
+vy = coord.v_y.value
+vz = coord.v_z.value
 # define phase space point
 a = np.array([x,y,z,vx,vy,vz])
 
@@ -62,5 +62,6 @@ V = np.array([del_E_a, del_Lz_a])
 # get the 4 dimensional orthogonal complement of del E and del Lz
 W = orthogonal_complement(V)
 # evaluate and see if they are all 0
-evaluate_uniformity(density, a, W)
+directional_derivatives = evaluate_uniformity(density, a, W)
+print(directional_derivatives)
 

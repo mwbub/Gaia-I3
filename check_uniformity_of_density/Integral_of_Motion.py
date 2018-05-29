@@ -54,7 +54,7 @@ def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
     return R, phi, z, vR, vT, vz
 
 
-def Energy(x, y, z, vx, vy, vz):
+def Energy(coord):
     """
     NAME:
         Energy
@@ -63,6 +63,7 @@ def Energy(x, y, z, vx, vy, vz):
         Given 6 coordinates for the position and velocity of a star in Cartesian coordinate, return energy per mass
 
     INPUT:
+        coord = (x, y, z, vx, vy, vz) = a numpy array of coordinate where:
         x =  x coordinate
         y = y coordinate
         z = z coordinate
@@ -76,6 +77,7 @@ def Energy(x, y, z, vx, vy, vz):
     HISTORY:
         2018-05-25 - Written - Samuel Wong
     """
+    x, y, z, vx, vy, vz = coord
     R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
     potential = evaluatePotentials(MWPotential2014, R, z)
     kinetic = (vx**2 + vy**2 + vz**2)/2.
@@ -83,7 +85,7 @@ def Energy(x, y, z, vx, vy, vz):
     return energy
 
 
-def L_z(x, y, z, vx, vy, vz):
+def L_z(coord):
     """
     NAME:
         L_z
@@ -93,6 +95,7 @@ def L_z(x, y, z, vx, vy, vz):
          momentum around z-axis per mass
 
     INPUT:
+        coord = (x, y, z, vx, vy, vz) = a numpy array of coordinate where:
         x =  x coordinate
         y = y coordinate
         z = z coordinate
@@ -106,6 +109,7 @@ def L_z(x, y, z, vx, vy, vz):
     HISTORY:
         2018-05-25 - Written - Samuel Wong
     """
+    x, y, z, vx, vy, vz = coord
     # convert to cylindrical coordinate
     R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
     # evaluate the angular momentum
