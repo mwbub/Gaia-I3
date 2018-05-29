@@ -18,7 +18,7 @@ from galpy.util.bovy_coords import lb_to_radec
 ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 
 # conversion factor from kpc*mas/yr to km/s
-k = (u.kpc*u.mas/u.yr).to(u.km*u.rad/u.s)
+k = (units.kpc*units.mas/units.yr).to(units.km*units.rad/units.s)
 
 def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
     """
@@ -134,7 +134,11 @@ def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
     """.format(*params)
     
     job = Gaia.launch_job_async(query)
-    return job.get_results()
+    table = job.get_results()
+    if table:
+        return table
+    else:
+        raise Exception("query returned no results")
 
 def table_to_samples(table):
     icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
