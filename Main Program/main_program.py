@@ -22,49 +22,84 @@ from kde_function.kde_function import *
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
 import astropy.units as unit
 
+
+def galactic_to_galactocentric(point):
+    u, v, w, U, V, W = point
+    coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
+                 differential_type = CartesianDifferential,
+                 u = u*unit.kpc, v = v*unit.kpc, w = w*unit.kpc,
+                 U = U*unit.km/unit.s, V = V*unit.km/unit.s, W = W*unit.km/unit.s)
+    coord = coord.transform_to('galactocentric')
+    coord.representation_type = CartesianRepresentation
+    x = coord.x.value
+    y = coord.y.value
+    z = coord.z.value
+    vx = coord.v_x.value
+    vy = coord.v_y.value
+    vz = coord.v_z.value
+    return np.array([x, y, z, vx, vy, vz])
+
+
+def galactocentric_to_galactic(point):
+    x, y, z, vx, vy, vz = point
+    coord = SkyCoord(frame = 'galactocentric', representation_type = CartesianRepresentation,
+                 differential_type = CartesianDifferential,
+                 x = x*unit.kpc, y = y*unit.kpc, z = z*unit.kpc,
+                 v_x = vx*unit.km/unit.s, v_y = vy*unit.km/unit.s,
+                 v_z = vz*unit.km/unit.s)
+    coord = coord.transform_to('galactic')
+    coord.representation_type = CartesianRepresentation
+    u = coord.u.value
+    v = coord.v.value
+    w = coord.w.value
+    U = coord.U.value
+    V = coord.V.value
+    W = coord.W.value
+    return np.array([u, v, w, U, V, W])
+    
 # define parameters for the search and KDE
 epsilon = 0.5
-v_scale = 0
+v_scale = 0.1
 width = 1
 
-# get stars within an epsilon ball of a star in phase space from Gaia
-# start with galactic coordinate
-u = -7.7e+00*unit.kpc
-v = 1.1e+00*unit.kpc
-w = 1.2e-01*unit.kpc
-U = 2.5e+01*unit.km/unit.s
-V = 2.3e+02*unit.km/unit.s
-W = -5.8e-01*unit.km/unit.s
-# get the nearby star data
-table = search_phase_space(u,v,w,U,V,W,epsilon, v_scale)
+# ask the user for input coordinate frame
+frame = input("Do you want to search star in galactic or galactocentric coordinate? ")
+if frame == "galactic":
+    u  = float(input('u = '))
+    v  = float(input('v = '))
+    w  = float(input('w = '))
+    U  = float(input('U = '))
+    V  = float(input('V = '))
+    W  = float(input('W = '))
+    point_galactic = np.array([u, v, w, U, V, W])
+    point_galactocentric = galactic_to_galactocentric(point_galactic)
+elif frame == "galactocentric":
+    x  = float(input('x = '))
+    y  = float(input('y = '))
+    z  = float(input('z = '))
+    vx  = float(input('vx = '))
+    vy = float(input('vy = '))
+    vz  = float(input('vz = '))
+    point_galactocentric = np.array([x, y, z, vx, vy, vz])
+    point_galactic = galactocentric_to_galactic(point_galactocentric)
+    
+# get stars within an epsilon ball of the point in phase space from Gaia
+# input the galactic coordinate into search function
+table = search_phase_space(*point_galactic, epsilon, v_scale)
 samples = table_to_samples(table)
 print(samples)
 
 # use the samples and a KDE learning method to generatea density function
 density = generate_KDE(samples, 'gaussian', width)
 
-# convert the central star to galactocentric coordinate
-coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
-                 differential_type = CartesianDifferential,
-                 u = u, v = v, w = w, U = U, V = V, W = W)
-coord = coord.transform_to('galactocentric')
-x = coord.x.value
-y = coord.y.value
-z = coord.z.value
-vx = coord.v_x.value
-vy = coord.v_y.value
-vz = coord.v_z.value
-# define phase space point
-a = np.array([x,y,z,vx,vy,vz])
-
 # get the gradient of energy and momentum at the point
+a = point_galactocentric # rename the galactocentric point to 'a'
 del_E = grad(Energy, 6)
 del_Lz = grad(L_z, 6)
 del_E_a = del_E(a)
 del_Lz_a = del_Lz(a)
 # create matrix of the space spanned by direction of changing energy and momentum
 V = np.array([del_E_a, del_Lz_a])
-
 # get the 4 dimensional orthogonal complement of del E and del Lz
 W = orthogonal_complement(V)
 # evaluate if density is changing along the subspace 
