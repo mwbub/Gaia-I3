@@ -7,8 +7,6 @@ PURPOSE:
     locally in the four dimensional plane where energy and angular momentum
     are conserved. If it is not, I_3 does not exist.
     
-
-
 HISTORY:
     2018-05-28 - Written - Samuel Wong, Mathew Bub
 """
@@ -30,7 +28,7 @@ u = 1*unit.kpc
 v = 1*unit.kpc
 w = 0*unit.kpc
 U = 15*unit.km/unit.s
-V = -2*unit.km/unit.s
+V = -1*unit.km/unit.s
 W = -6*unit.km/unit.s
 epsilon = 0.5
 v_scale = 0.1
@@ -66,4 +64,6 @@ V = np.array([del_E_a, del_Lz_a])
 W = orthogonal_complement(V)
 # evaluate and see if they are all 0
 directional_derivatives = evaluate_uniformity(density, a, W)
-print(directional_derivatives)
+print('from a sample of {} of stars,'.format(np.shape(samples)))
+for i in range(len(directional_derivatives)):
+    print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
