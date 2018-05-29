@@ -60,5 +60,5 @@ def orthogonal_complement(V):
 def normalize_vector(v):
     v = Matrix(v)
     v = v.normalized()
-    v = np.array(v)
+    v = np.array(v.T)
     return v

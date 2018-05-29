@@ -28,6 +28,7 @@ HISTORY:
 """
 import numpy as np
 from scipy.misc import derivative
+from Linear_Algebra import normalize_vector
 
 
 def partial_derivative(f, i):
@@ -147,7 +148,7 @@ def evaluate_uniformity(f, x, W):
     # evaluate the gradient at the given point
     del_f_x = del_f(x)
     # normalize the gradient
-    de_f_x = normalize_vector(del_f_x)
+    del_f_x = normalize_vector(del_f_x)
     # initialize directional_derivatives, where each component is gradient dotted with one of the vectors
     directional_derivatives = np.empty(m)
     for i in range(m):

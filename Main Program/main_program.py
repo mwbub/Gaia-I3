@@ -12,7 +12,10 @@ HISTORY:
 """
 import os, sys
 # get the outer folder as the path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+outer_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+check_uniformity_path =  os.path.abspath(os.path.join(outer_path, 'check_uniformity_of_density'))
+sys.path.append(outer_path)
+sys.path.append(check_uniformity_path)
 # import relevant functions from different folders
 from search_phase_space.search_phase_space import *
 from check_uniformity_of_density.Integral_of_Motion import *
