@@ -1,3 +1,5 @@
+#Ayush Pandhi, last updated 05/28/2018
+
 # Importing the required modules
 import numpy as np
 from sklearn.neighbors import KernelDensity
