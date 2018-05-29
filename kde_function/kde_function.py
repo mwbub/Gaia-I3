@@ -21,8 +21,7 @@ def generate_KDE(inputs, ker, bw):
 
     def input_KDE(samples):
         """
-        Takes an NxM matrix for inputs and a QxM matrix for samples, a string for ker and a float for bw to output
-        a 1xQ array of density values.
+        Takes a QxM matrix for samples to output a 1xQ array of density values.
 
         Args:
             samples (ndarray): QxM matrix, Q = # of points being evaluated, M = # of parameters.
@@ -30,6 +29,8 @@ def generate_KDE(inputs, ker, bw):
             dens (ndarray): 1xQ array of density values for Q data points.
 
         """
+        # Samuel added the following line, but is not sure whether it is correct
+        samples = [samples] # it seems the actual sample is a more layer of an array
         log_dens = kde.score_samples(samples)  # Get the log density for the selected samples
         dens = np.exp(log_dens)  # Apply exponential to get normal density from log
         return dens  # Return a 1xQ array of probabilities
