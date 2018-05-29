@@ -44,9 +44,6 @@ def test_orthonormality(W):
             if j != i:
                 print('w[{}] dot w[{}] = {}'.format(i, j, np.dot(W[i],W[j])))
                 
-def test_partial_of_energy():
-    #del_E = gradient(Energy, np.size(a))
-    print(type(grad))
                 
 def test_compatibility_with_integral_of_motion():
     # get the gradient of energy and momentum at the point
@@ -62,4 +59,3 @@ print()
 test_evaluate_uniformity_and_orthogonal_complement(f, point, W)
 print()
 test_compatibility_with_integral_of_motion()
-test_partial_of_energy()

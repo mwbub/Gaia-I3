@@ -71,7 +71,7 @@ def partial_derivative(f, i):
 def grad(f, n):
     """
     NAME:
-        gradient
+        grad
 
     PURPOSE:
         Given an n-dimensional real-valued function, f, return the gradient function of f.
