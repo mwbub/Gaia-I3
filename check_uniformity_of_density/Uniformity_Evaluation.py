@@ -114,9 +114,14 @@ def evaluate_uniformity(f, x, W):
         evaluate_uniformity
 
     PURPOSE:
-        Given a differentiable function, f, an n-dimensional vector, x, and a m dimensional subscpace of R^n
-        (m <= n) that is spanned by the vectors contained in W, return the directional derivative of f along
-        each of the vector. If all of them are close to zero, then f is said to be uniform in the subspace.
+        Given a differentiable function, f, an n-dimensional vector, x, 
+        and a m dimensional subscpace of R^n (m <= n) that is spanned by the
+        orthonormal vectors contained in W, we first find the gradient of f 
+        at x, then normalize the gradient. Next, we take the dot product
+        between normalized gradient of f and the vecotrs in w. 
+        We return these normalized directional derivatives of f along
+        each of the vector. If all of them are close to zero, then f is said to
+        be uniform in the subspace.
 
     INPUT:
         f = a differentiable function that takes a numpy array of n numbers to 1 number
@@ -130,6 +135,7 @@ def evaluate_uniformity(f, x, W):
 
     HISTORY:
         2018-05-24 - Written - Samuel Wong
+        2018-05-29 - Edited so that it normalize the gradient - Samuel Wong
     """
     # get the size of the subspace; the first coordinate of the shape of W is the number of vectors; the second one
     # is the dimension of each vector
@@ -140,6 +146,8 @@ def evaluate_uniformity(f, x, W):
     del_f = grad(f, n)
     # evaluate the gradient at the given point
     del_f_x = del_f(x)
+    # normalize the gradient
+    de_f_x = normalize_vector(del_f_x)
     # initialize directional_derivatives, where each component is gradient dotted with one of the vectors
     directional_derivatives = np.empty(m)
     for i in range(m):

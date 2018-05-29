@@ -56,3 +56,9 @@ def orthogonal_complement(V):
     # convert W back into numpy array
     W = np.array(W)
     return W
+
+def normalize_vector(v):
+    v = Matrix(v)
+    v = v.normalized()
+    v = np.array(v)
+    return v
