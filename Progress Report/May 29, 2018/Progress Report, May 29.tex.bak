@@ -1,0 +1,63 @@
+\documentclass[12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+\title{Progress Report: (Week of May 29)}
+\author{Samuel Wong}
+\date{May 29, 2018}
+\maketitle
+
+
+\section{Accomplished Tasks}
+\subsection{Updated the Research Plan}
+We updated the research plan by carefully sorting through the logical steps behind the "uniformity by perpendicular to gradient" argument.
+\subsection{Cone Search Function}
+We have written a cone search function that searches for star within a radius of a star. We have yet to find values for $v_{scale}$ and $\epsilon$.
+\subsection*{Question}
+How do we tune the proper value for $v_{scale}$? Currently, since the position are measured in kpc, position values are on the scale of 0 to 20.
+Since the unit of velocity is km/s, those values are on the scale of 0 to 300. So we set $v_{scale} = 0.1$ to reduce one order of magnitude.
+
+To determine $\epsilon$, we need to know how many stars do we want in each ball. Do we want an $\epsilon$ that works for all stars?
+\subsection{Kernel Density Estimates}
+We have written a function that takes samples and output density function through KDE.
+\subsection*{Question}
+It seems the value of density is very small ($10^{-5}$) at each point, even at the point of a star. Is this desirable?
+
+How do we adjust the value of width?
+
+We still do not have an exact understanding of the step between Cone Search and feeding samples into KDE. Do we choose a main star first and then only use the stars within epsilon of the main stars to put into KDE, as we have done in our experimental main program?
+\subsection{Evaluate Uniformity of Density along Orthogonal Complement}
+We wrote three modules for this task. 
+\subsubsection{Orthogonal Subspace}
+First, the module, 'Linear Algebra' has a function that takes vectors that span a subspace of $\mathbb{R}^n$, and return an orthonormal basis of the orthogonal complement of that space. This relies on the use of a theorem from linear algebra about orthogonal complement of the range of a matrix being equivalent to null space of the transpose matrix.
+\subsubsection{Integral of Motion}
+This module contains two differentiable functions, Energy and angular momentum, for any star. Energy uses the MWPotential2014.
+\subsection*{Question}
+Why is using MWPotential2014 not circular again?
+\subsubsection{Evaluate Uniformity}
+This module contains a function that takes a differentiable function, find its gradient, evaluate it at a given point. Originally, we took this gradient and found its dot product with the orthonormal basis of a subspace. However, when we applied this to density function, it seems the density is so small that its gradient is also really small in length. So we modified this function such that it normalized the gradient first.
+\subsection*{Question}
+Is normalizing the gradient a justified move? What about calculating the angle instead?
+\subsection{Putting Everything Together: Main Program}
+We wrote a main program that calls on all the modules and search through Gaia catalogue for the epsilon ball of one specific star. We have made the modules compatible with each other.
+
+We chose a random star in Gaia, gave some reasonable trial values for epsilon, width, v scale, and evaluated the uniformity of density. It seems to not be uniform.
+
+\subsection*{Question}
+Should we multiply the density by a large scaling value so that it is easier to understand? But what values to use?
+
+Do we repeat what we did for one star to multiple stars, each with the same epsilon?
+ 
+\end{document}
