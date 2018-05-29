@@ -22,21 +22,26 @@ from kde_function.kde_function import *
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
 import astropy.units as unit
 
+# define parameters for the search and KDE
+epsilon = 0.5
+v_scale = 0
+width = 1
+
 # get stars within an epsilon ball of a star in phase space from Gaia
 # start with galactic coordinate
-u = 1*unit.kpc
-v = 1*unit.kpc
-w = 0*unit.kpc
-U = 15*unit.km/unit.s
-V = -1*unit.km/unit.s
-W = -6*unit.km/unit.s
-epsilon = 0.5
-v_scale = 0.1
+u = -7.7e+00*unit.kpc
+v = 1.1e+00*unit.kpc
+w = 1.2e-01*unit.kpc
+U = 2.5e+01*unit.km/unit.s
+V = 2.3e+02*unit.km/unit.s
+W = -5.8e-01*unit.km/unit.s
+# get the nearby star data
 table = search_phase_space(u,v,w,U,V,W,epsilon, v_scale)
 samples = table_to_samples(table)
+print(samples)
 
 # use the samples and a KDE learning method to generatea density function
-density = generate_KDE(samples, 'gaussian', 1)
+density = generate_KDE(samples, 'gaussian', width)
 
 # convert the central star to galactocentric coordinate
 coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
@@ -57,13 +62,14 @@ del_E = grad(Energy, 6)
 del_Lz = grad(L_z, 6)
 del_E_a = del_E(a)
 del_Lz_a = del_Lz(a)
-# create array
+# create matrix of the space spanned by direction of changing energy and momentum
 V = np.array([del_E_a, del_Lz_a])
 
 # get the 4 dimensional orthogonal complement of del E and del Lz
 W = orthogonal_complement(V)
-# evaluate and see if they are all 0
+# evaluate if density is changing along the subspace 
+# check to see if they are all 0; if so, it is not changing
 directional_derivatives = evaluate_uniformity(density, a, W)
-print('from a sample of {} of stars,'.format(np.shape(samples)))
+print('from a sample of {} of stars,'.format(np.shape(samples)[0]))
 for i in range(len(directional_derivatives)):
     print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
