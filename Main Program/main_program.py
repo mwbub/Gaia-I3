@@ -3,11 +3,14 @@ NAME:
     main_program
 
 PURPOSE:
+    choose a point in phase space and check whether the density is changing
+    locally in the four dimensional plane where energy and angular momentum
+    are conserved. If it is not, I_3 does not exist.
     
 
 
 HISTORY:
-    2018-05-28 - Written - Samuel Wong
+    2018-05-28 - Written - Samuel Wong, Mathew Bub
 """
 import os, sys
 # get the outer folder as the path
