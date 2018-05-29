@@ -59,7 +59,7 @@ def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
         
     OUTPUT:
         astropy Table, containing stars from the Gaia DR2 RV catalogue that are
-        within a distance of epsilon from the point (x, y, z, vx, vy, vz)
+        within a distance of epsilon from the point (u, v, w, U, V, W)
     """
     import warnings
     warnings.filterwarnings("ignore")
@@ -80,7 +80,7 @@ def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
     # cone_r is set manually
     if d > epsilon or cone_r is not None:
         
-        # get the ra and dec of the point (x, y, z) for use in the cone search
+        # get the ra and dec of the point (u, v, w) for use in the cone search
         galactic_coord = SkyCoord(frame='galactic', u=u, v=v, w=w,
                                   representation_type='cartesian')
         icrs_coord = galactic_coord.transform_to('icrs')
@@ -102,7 +102,7 @@ def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
               w.value, U.value, V.value, W.value, v_scale, epsilon)
     
     # convert icrs coordinates to galactic rectangular coordinates, then query
-    # for stars within a distance of epsilon from point (x, y, z, vx, vy, vz)
+    # for stars within a distance of epsilon from point (u, v, w, U, V, W)
     query = """
     SELECT *
     FROM (SELECT *,
@@ -137,20 +137,35 @@ def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
     table = job.get_results()
     if table:
         return table
-    else:
-        raise Exception("query returned no results")
+    raise Exception("query returned no results")
 
 def table_to_samples(table):
+    """
+    NAME:
+        table_to_samples
+        
+    PURPOSE:
+        convert the table returned by search_phase_space into an Nx6 array
+        of samples in galactocentric rectangular coordinates
+        
+    INPUT:
+        table - astropy Table returned by search_phase_space
+        
+    OUTPUT:
+        Nx6 array of galactocentric coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
+    """
     icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
                      dec=table['dec']*units.deg, 
                      distance=table['d']*units.kpc, 
                      pm_ra_cosdec=table['pmra']*units.mas/units.yr, 
                      pm_dec=table['pmdec']*units.mas/units.yr,
                      radial_velocity=table['radial_velocity']*units.km/units.s)
-    coord = icrs_coord.transform_to('galactocentric')
-    coord.representation_type = 'cartesian'
-    samples = np.stack([coord.x.value, coord.y.value, coord.z.value,
-                        coord.v_x.value, coord.v_y.value, coord.v_z.value],
+    galcen_coord = icrs_coord.transform_to('galactocentric')
+    galcen_coord.representation_type = 'cartesian'
+    samples = np.stack([galcen_coord.x.value, galcen_coord.y.value, 
+                        galcen_coord.z.value, galcen_coord.v_x.value, 
+                        galcen_coord.v_y.value, galcen_coord.v_z.value],
                         axis=1)
     return samples
     
