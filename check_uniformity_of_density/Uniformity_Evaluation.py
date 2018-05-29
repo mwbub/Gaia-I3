@@ -10,7 +10,7 @@ FUNCTIONS:
     evaluate_uniformity: This function takes a differeniable function, a point, and the vectors generating
                          a subspace, and return whether the function is uniform along the subspace at that point.
 
-    gradient: This function takes a differentiable function and returns the gradient of that function
+    grad: This function takes a differentiable function and returns the gradient of that function
 
     partial_derivative: This function takes a function and the position of the input variable with respect to which
                         the partial derivative is to be taken. Then it returns the partial derivative with respect
@@ -68,7 +68,7 @@ def partial_derivative(f, i):
     return evaluate_partial_derivative
 
 
-def gradient(f, n):
+def grad(f, n):
     """
     NAME:
         gradient
@@ -137,7 +137,7 @@ def evaluate_uniformity(f, x, W):
     # get the size of the domain spae
     n = np.size(x)
     # get the gradient of f
-    del_f = gradient(f, n)
+    del_f = grad(f, n)
     # evaluate the gradient at the given point
     del_f_x = del_f(x)
     # initialize directional_derivatives, where each component is gradient dotted with one of the vectors
