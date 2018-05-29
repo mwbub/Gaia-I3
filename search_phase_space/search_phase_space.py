@@ -137,8 +137,7 @@ def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
     table = job.get_results()
     if table:
         return table
-    else:
-        raise Exception("query returned no results")
+    raise Exception("query returned no results")
 
 def table_to_samples(table):
     icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
