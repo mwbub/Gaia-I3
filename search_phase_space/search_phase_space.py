@@ -9,7 +9,7 @@ coordinate frame. Coordinate transformations are dervied from Bovy (2011).
 [https://github.com/jobovy/stellarkinematics/blob/master/stellarkinematics.pdf]
 """
 import numpy as np
-import astropy.units as u
+from astropy import units
 from astroquery.gaia import Gaia
 from astropy.coordinates import SkyCoord
 from galpy.util.bovy_coords import lb_to_radec
@@ -20,7 +20,7 @@ ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 # conversion factor from kpc*mas/yr to km/s
 k = (u.kpc*u.mas/u.yr).to(u.km*u.rad/u.s)
 
-def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
+def search_phase_space(u, v, w, U, V, W, epsilon, v_scale=1.0, cone_r=None):
     """
     NAME:
         search_phase_space
@@ -29,22 +29,22 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
         query the Gaia DR2 RV catalogue for stars near a point in phase space
         
     INPUT:
-        x - rectangular x coordinate in the galactic frame (can be Quantity,
+        u - rectangular x coordinate in the galactic frame (can be Quantity,
         otherwise given in kpc)
         
-        y - rectangular y coordinate in the galactic frame (can be Quantity,
+        v - rectangular y coordinate in the galactic frame (can be Quantity,
         otherwise given in kpc)
         
-        z - rectangular z coordinate in the galactic frame (can be Quantity,
+        w - rectangular z coordinate in the galactic frame (can be Quantity,
         otherwise given in kpc)
         
-        vx - x velocity in the galactic frame (can be Quantity, otherwise given
+        U - x velocity in the galactic frame (can be Quantity, otherwise given
         in km/s)
         
-        vy - y velocity in the galactic frame (can be Quantity, otherwise given
+        V - y velocity in the galactic frame (can be Quantity, otherwise given
         in km/s)
         
-        vz - z velocity in the galactic frame (can be Quantity, otherwise given
+        W - z velocity in the galactic frame (can be Quantity, otherwise given
         in km/s)
         
         epsilon - radius in phase space in which to search for stars
@@ -65,15 +65,15 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     warnings.filterwarnings("ignore")
     
     # convert coordinates into consistent units
-    x = u.Quantity(x, u.kpc)
-    y = u.Quantity(y, u.kpc)
-    z = u.Quantity(z, u.kpc)
-    vx = u.Quantity(vx, u.km/u.s)
-    vy = u.Quantity(vy, u.km/u.s)
-    vz = u.Quantity(vz, u.km/u.s)
+    u = units.Quantity(u, units.kpc)
+    v = units.Quantity(v, units.kpc)
+    w = units.Quantity(w, units.kpc)
+    U = units.Quantity(U, units.km/units.s)
+    V = units.Quantity(V, units.km/units.s)
+    W = units.Quantity(W, units.km/units.s)
     
     # distance check to limit the size of the initial query
-    d = np.sqrt(x.value**2 + y.value**2 + z.value**2)
+    d = np.sqrt(u.value**2 + v.value**2 + w.value**2)
     limiting_condition = "AND ABS({} - 1/parallax) < {}".format(d, epsilon)
     
     # add a cone search if the search sphere does not contain the Sun, or if 
@@ -81,7 +81,7 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     if d > epsilon or cone_r is not None:
         
         # get the ra and dec of the point (x, y, z) for use in the cone search
-        galactic_coord = SkyCoord(frame='galactic', u=x, v=y, w=z,
+        galactic_coord = SkyCoord(frame='galactic', u=u, v=v, w=w,
                                   representation_type='cartesian')
         icrs_coord = galactic_coord.transform_to('icrs')
         cone_ra, cone_dec = icrs_coord.ra.value, icrs_coord.dec.value
@@ -98,8 +98,8 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
                                ).format(cone_ra, cone_dec, cone_r)
     
     # query parameters
-    params = (k, dec_ngp, ra_ngp, limiting_condition, x.value, y.value,
-              z.value, vx.value, vy.value, vz.value, v_scale, epsilon)
+    params = (k, dec_ngp, ra_ngp, limiting_condition, u.value, v.value,
+              w.value, U.value, V.value, W.value, v_scale, epsilon)
     
     # convert icrs coordinates to galactic rectangular coordinates, then query
     # for stars within a distance of epsilon from point (x, y, z, vx, vy, vz)
@@ -137,12 +137,12 @@ def search_phase_space(x, y, z, vx, vy, vz, epsilon, v_scale=1.0, cone_r=None):
     return job.get_results()
 
 def table_to_samples(table):
-    icrs_coord = SkyCoord(ra=table['ra']*u.deg, 
-                     dec=table['dec']*u.deg, 
-                     distance=table['d']*u.kpc, 
-                     pm_ra_cosdec=table['pmra']*u.mas/u.yr, 
-                     pm_dec=table['pmdec']*u.mas/u.yr,
-                     radial_velocity=table['radial_velocity']*u.km/u.s)
+    icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
+                     dec=table['dec']*units.deg, 
+                     distance=table['d']*units.kpc, 
+                     pm_ra_cosdec=table['pmra']*units.mas/units.yr, 
+                     pm_dec=table['pmdec']*units.mas/units.yr,
+                     radial_velocity=table['radial_velocity']*units.km/units.s)
     coord = icrs_coord.transform_to('galactocentric')
     coord.representation_type = 'cartesian'
     samples = np.stack([coord.x.value, coord.y.value, coord.z.value,
