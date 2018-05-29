@@ -52,8 +52,8 @@ vz = coord.v_z.value
 a = np.array([x,y,z,vx,vy,vz])
 
 # get the gradient of energy and momentum at the point
-del_E = gradient(Energy, 6)
-del_Lz = gradient(L_z, 6)
+del_E = grad(Energy, 6)
+del_Lz = grad(L_z, 6)
 del_E_a = del_E(a)
 del_Lz_a = del_Lz(a)
 # create array
