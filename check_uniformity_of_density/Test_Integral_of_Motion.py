@@ -49,6 +49,9 @@ def test_energy_momentum_of_sun():
     coord = np.array([o.x(),o.y(),o.z(),o.vx(),o.vy(),o.vz()])
     print('my energy = ', Energy(coord))
     print(o.E() == Energy(coord))
+    print('galpy momentum = ', o.L()[0][2])
+    print('my momentum = ', L_z(coord))
+    print(o.L()[0][2] == L_z(coord))
     
 test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
 print()
