@@ -63,7 +63,7 @@ def galactocentric_to_galactic(point):
 # define parameters for the search and KDE
 epsilon = 0.5
 v_scale = 0.1
-width = 1
+width = 10
 
 # ask the user for input coordinate frame
 frame = input("Do you want to search star in galactic or galactocentric coordinate? ")
