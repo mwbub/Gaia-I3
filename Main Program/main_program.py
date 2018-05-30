@@ -22,43 +22,8 @@ from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from kde_function.kde_function import *
-from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
+from tools.Frame_Conversion import *
 import astropy.units as unit
-
-
-def galactic_to_galactocentric(point):
-    u, v, w, U, V, W = point
-    coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
-                 differential_type = CartesianDifferential,
-                 u = u*unit.kpc, v = v*unit.kpc, w = w*unit.kpc,
-                 U = U*unit.km/unit.s, V = V*unit.km/unit.s, W = W*unit.km/unit.s)
-    coord = coord.transform_to('galactocentric')
-    coord.representation_type = CartesianRepresentation
-    x = coord.x.value
-    y = coord.y.value
-    z = coord.z.value
-    vx = coord.v_x.value
-    vy = coord.v_y.value
-    vz = coord.v_z.value
-    return np.array([x, y, z, vx, vy, vz])
-
-
-def galactocentric_to_galactic(point):
-    x, y, z, vx, vy, vz = point
-    coord = SkyCoord(frame = 'galactocentric', representation_type = CartesianRepresentation,
-                 differential_type = CartesianDifferential,
-                 x = x*unit.kpc, y = y*unit.kpc, z = z*unit.kpc,
-                 v_x = vx*unit.km/unit.s, v_y = vy*unit.km/unit.s,
-                 v_z = vz*unit.km/unit.s)
-    coord = coord.transform_to('galactic')
-    coord.representation_type = CartesianRepresentation
-    u = coord.u.value
-    v = coord.v.value
-    w = coord.w.value
-    U = coord.U.value
-    V = coord.V.value
-    W = coord.W.value
-    return np.array([u, v, w, U, V, W])
     
 # define parameters for the search and KDE
 epsilon = 0.5
