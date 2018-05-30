@@ -40,15 +40,19 @@ def test_energy_and_momentum(x,y,z,vx,vy,vz):
     print('initial energy = {}, final energy = {}'.format(e_initial, e_final))
     print('initial momentum = {}, final momentum = {}'.format(momentum_initial, momentum_final))
     
+def test_energy_momentum_of_sun():
+    o = Orbit() # create sun's orbit
+    o.turn_physical_off()
+    ts = np.linspace(0,1000,100000)
+    o.integrate(ts,MWPotential2014)
+    print('galpy energy = ', o.E())
+    coord = np.array([o.x(),o.y(),o.z(),o.vx(),o.vy(),o.vz()])
+    print('my energy = ', Energy(coord))
+    print(o.E() == Energy(coord))
+    
 test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
 print()
 test_energy_and_momentum(x, y, z, vx, vy, vz)
+print()
+test_energy_momentum_of_sun()
 
-
-
-"""
-coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
-                 differential_type = CartesianDifferential,
-                 u = x*u.kpc, v = y*u.kpc, w = z*u.kpc, U = vx*u.km/u.s, 
-                 V = vy*u.km/u.s, W = vz*u.km/u.s)
-"""
