@@ -61,7 +61,8 @@ def Energy(coord):
 
     PURPOSE:
         Given 6 coordinates for the position and velocity of a star in Cartesian coordinate, return energy per mass
-
+        Assumes input and out put are in natrual unit.
+        
     INPUT:
         coord = (x, y, z, vx, vy, vz) = a numpy array of coordinate where:
         x =  x coordinate
@@ -92,7 +93,8 @@ def L_z(coord):
 
     PURPOSE:
         Given 6 coordinates for the position and velocity of a star in Cartesian coordinate, return angular
-         momentum around z-axis per mass
+         momentum around z-axis per mass.
+         Assumes input and out put are in natrual unit.
 
     INPUT:
         coord = (x, y, z, vx, vy, vz) = a numpy array of coordinate where:
