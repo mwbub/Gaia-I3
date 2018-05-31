@@ -8,7 +8,8 @@ PURPOSE:
     are conserved. If it is not, I_3 does not exist.
     
 HISTORY:
-    2018-05-28 - Written - Samuel Wong, Mathew Bub
+    2018-05-28 - Written - Samuel Wong
+    2018-05-31 - Changed to natural units - Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -22,81 +23,32 @@ from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from kde_function.kde_function import *
-from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
-import astropy.units as unit
-
-
-def galactic_to_galactocentric(point):
-    u, v, w, U, V, W = point
-    coord = SkyCoord(frame = 'galactic', representation_type = CartesianRepresentation,
-                 differential_type = CartesianDifferential,
-                 u = u*unit.kpc, v = v*unit.kpc, w = w*unit.kpc,
-                 U = U*unit.km/unit.s, V = V*unit.km/unit.s, W = W*unit.km/unit.s)
-    coord = coord.transform_to('galactocentric')
-    coord.representation_type = CartesianRepresentation
-    x = coord.x.value
-    y = coord.y.value
-    z = coord.z.value
-    vx = coord.v_x.value
-    vy = coord.v_y.value
-    vz = coord.v_z.value
-    return np.array([x, y, z, vx, vy, vz])
-
-
-def galactocentric_to_galactic(point):
-    x, y, z, vx, vy, vz = point
-    coord = SkyCoord(frame = 'galactocentric', representation_type = CartesianRepresentation,
-                 differential_type = CartesianDifferential,
-                 x = x*unit.kpc, y = y*unit.kpc, z = z*unit.kpc,
-                 v_x = vx*unit.km/unit.s, v_y = vy*unit.km/unit.s,
-                 v_z = vz*unit.km/unit.s)
-    coord = coord.transform_to('galactic')
-    coord.representation_type = CartesianRepresentation
-    u = coord.u.value
-    v = coord.v.value
-    w = coord.w.value
-    U = coord.U.value
-    V = coord.V.value
-    W = coord.W.value
-    return np.array([u, v, w, U, V, W])
+from tools.tools import *
     
 # define parameters for the search and KDE
 epsilon = 0.5
 v_scale = 0.1
 width = 10
 
-# ask the user for input coordinate frame
-frame = input("Do you want to search star in galactic or galactocentric coordinate? ")
-if frame == "galactic":
-    u  = float(input('u = '))
-    v  = float(input('v = '))
-    w  = float(input('w = '))
-    U  = float(input('U = '))
-    V  = float(input('V = '))
-    W  = float(input('W = '))
-    point_galactic = np.array([u, v, w, U, V, W])
-    point_galactocentric = galactic_to_galactocentric(point_galactic)
-elif frame == "galactocentric":
-    x  = float(input('x = '))
-    y  = float(input('y = '))
-    z  = float(input('z = '))
-    vx  = float(input('vx = '))
-    vy = float(input('vy = '))
-    vz  = float(input('vz = '))
-    point_galactocentric = np.array([x, y, z, vx, vy, vz])
-    point_galactic = galactocentric_to_galactic(point_galactocentric)
-    
+# at this point, every thing should have physical units
+# get coordinate of the star to be searched from user
+point_galactocentric, point_galactic = get_star_coord_from_user()
 # get stars within an epsilon ball of the point in phase space from Gaia
 # input the galactic coordinate into search function
 table = search_phase_space(*point_galactic, epsilon, v_scale)
+ # convert from Gaia table to numpy array; output in galactocentric, with units
 samples = table_to_samples(table)
-print(samples)
+# Turn all data to natrual units; working with natural unit, galactocentric,
+# cartesian from this point on
+samples = to_natural_units(samples)
 
-# use the samples and a KDE learning method to generatea density function
-density = generate_KDE(samples, 'gaussian', width)
+# use the samples and a KDE learning method to generate a density function
+density = generate_KDE(samples, 'epanechnikov', width)
 
-# get the gradient of energy and momentum at the point
-a = point_galactocentric # rename the galactocentric point to 'a'
+# turn the galactocentric representation of the search star to be unit less
+# rename the search star to a
+a = to_natural_units(np.array([point_galactocentric]))[0]
+# get the gradient of energy and momentum of the search star
 del_E = grad(Energy, 6)
 del_Lz = grad(L_z, 6)
 del_E_a = del_E(a)

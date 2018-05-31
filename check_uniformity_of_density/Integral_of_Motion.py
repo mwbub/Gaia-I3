@@ -25,7 +25,8 @@ def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
         cartesian_to_cylindrical
 
     PURPOSE:
-        Given 6 coordinates for the position and velocity of a star in Cartesian coordinate, convert to cylindrical
+        Given 6 coordinates for the position and velocity of a star in
+        Cartesian coordinate, convert to cylindrical
 
     INPUT:
         x =  x coordinate
