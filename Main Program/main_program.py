@@ -9,6 +9,7 @@ PURPOSE:
     
 HISTORY:
     2018-05-28 - Written - Samuel Wong
+    2018-05-31 - Changed to natural units - Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -22,8 +23,7 @@ from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from kde_function.kde_function import *
-from tools.User_Interaction import *
-import astropy.units as unit
+from tools.tools import *
     
 # define parameters for the search and KDE
 epsilon = 0.5
@@ -31,20 +31,24 @@ v_scale = 0.1
 width = 10
 
 # at this point, every thing should have physical units
-
 # get coordinate of the star to be searched from user
 point_galactocentric, point_galactic = get_star_coord_from_user()
 # get stars within an epsilon ball of the point in phase space from Gaia
 # input the galactic coordinate into search function
 table = search_phase_space(*point_galactic, epsilon, v_scale)
-samples = table_to_samples(table) # convert from Gaia table to numpy array
-print(samples)
+ # convert from Gaia table to numpy array; output in galactocentric, with units
+samples = table_to_samples(table)
+# Turn all data to natrual units; working with natural unit, galactocentric,
+# cartesian from this point on
+samples = to_natural_units(samples)
 
 # use the samples and a KDE learning method to generate a density function
-density = generate_KDE(samples, 'gaussian', width)
+density = generate_KDE(samples, 'epanechnikov', width)
 
-# get the gradient of energy and momentum at the point
-a = point_galactocentric # rename the galactocentric point to 'a'
+# turn the galactocentric representation of the search star to be unit less
+# rename the search star to a
+a = to_natural_units(np.array([point_galactocentric]))[0]
+# get the gradient of energy and momentum of the search star
 del_E = grad(Energy, 6)
 del_Lz = grad(L_z, 6)
 del_E_a = del_E(a)
