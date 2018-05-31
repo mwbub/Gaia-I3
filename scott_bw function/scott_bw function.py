@@ -2,7 +2,6 @@
 
 #Importing the required modules
 import numpy as np
-import random
 from scipy.stats import iqr
 
 #Defining a function to optimize bandwidth based on Scott's rule of thumb
