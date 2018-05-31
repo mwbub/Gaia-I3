@@ -8,7 +8,7 @@ PURPOSE:
     are conserved. If it is not, I_3 does not exist.
     
 HISTORY:
-    2018-05-28 - Written - Samuel Wong, Mathew Bub
+    2018-05-28 - Written - Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -22,7 +22,7 @@ from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from kde_function.kde_function import *
-from tools.Frame_Conversion import *
+from tools.User_Interaction import *
 import astropy.units as unit
     
 # define parameters for the search and KDE
@@ -30,34 +30,17 @@ epsilon = 0.5
 v_scale = 0.1
 width = 10
 
-# ask the user for input coordinate frame
-frame = input("Do you want to search star in galactic or galactocentric coordinate? ")
-if frame == "galactic":
-    u  = float(input('u = '))
-    v  = float(input('v = '))
-    w  = float(input('w = '))
-    U  = float(input('U = '))
-    V  = float(input('V = '))
-    W  = float(input('W = '))
-    point_galactic = np.array([u, v, w, U, V, W])
-    point_galactocentric = galactic_to_galactocentric(point_galactic)
-elif frame == "galactocentric":
-    x  = float(input('x = '))
-    y  = float(input('y = '))
-    z  = float(input('z = '))
-    vx  = float(input('vx = '))
-    vy = float(input('vy = '))
-    vz  = float(input('vz = '))
-    point_galactocentric = np.array([x, y, z, vx, vy, vz])
-    point_galactic = galactocentric_to_galactic(point_galactocentric)
-    
+# at this point, every thing should have physical units
+
+# get coordinate of the star to be searched from user
+point_galactocentric, point_galactic = get_star_coord_from_user()
 # get stars within an epsilon ball of the point in phase space from Gaia
 # input the galactic coordinate into search function
 table = search_phase_space(*point_galactic, epsilon, v_scale)
-samples = table_to_samples(table)
+samples = table_to_samples(table) # convert from Gaia table to numpy array
 print(samples)
 
-# use the samples and a KDE learning method to generatea density function
+# use the samples and a KDE learning method to generate a density function
 density = generate_KDE(samples, 'gaussian', width)
 
 # get the gradient of energy and momentum at the point
