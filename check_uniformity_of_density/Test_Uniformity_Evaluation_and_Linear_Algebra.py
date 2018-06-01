@@ -52,10 +52,18 @@ def test_compatibility_with_integral_of_motion():
     del_E_a = del_E(a)
     del_Lz_a = del_Lz(a)
     print('energy vector = {}, momentum vector = {}'.format(del_E_a, del_Lz_a))
-
+    
+def test_normalize_vector():
+    b = normalize_vector(a)
+    print('original vector a = ', a)
+    print('normalized vector b = ', b)
+    print('b/a = ', b/a)
+    print('norm(b) = ', np.sum(b**2))    
 
 #test_orthonormality(W)
 print()
 test_evaluate_uniformity_and_orthogonal_complement(f, point, W)
 print()
 test_compatibility_with_integral_of_motion()
+print()
+test_normalize_vector()
