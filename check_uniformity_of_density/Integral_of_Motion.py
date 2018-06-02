@@ -86,7 +86,7 @@ def cylindrical_to_cartesian(R, phi, z, vR, vT, vz):
     x = R*np.cos(phi)
     y = R*np.sin(phi)
     vx = vR*np.cos(phi) - vT*np.sin(phi)
-    vy = vT*np.cos(phi) + vR*sin(phi)
+    vy = vT*np.cos(phi) + vR*np.sin(phi)
     return x, y, z, vx, vy, vz
 
 
