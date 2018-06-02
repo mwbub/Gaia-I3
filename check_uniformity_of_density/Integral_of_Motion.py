@@ -54,6 +54,42 @@ def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
     vT = R*(x * vy - y * vx)/(x**2 + y**2)
     return R, phi, z, vR, vT, vz
 
+def cylindrical_to_cartesian(R, phi, z, vR, vT, vz):
+    """
+    NAME:
+        cylindrical_to_cartesian
+
+    PURPOSE:
+        Given 6 coordinates for the position and velocity of a star in
+        cylindrical coordinate, convert to Cartesian
+
+    INPUT:
+        R = radius in cylindrical
+        phi = angle from x axis
+        z = z coordinate
+        vR = radial velocity
+        vT = tangential velocity
+        vz = velocity in z
+
+    OUTPUT:
+        (x, y, z, vx, vy, vz) where:
+        x =  x coordinate
+        y = y coordinate
+        z = z coordinate
+        vx = velocity in x
+        vy = velocity in y
+        vz = velocity in z
+
+    HISTORY:
+        2018-05-25 - Written - Samuel Wong
+    """
+    x = R*np.cos(phi)
+    y = R*np.sin(phi)
+    vx = vR*np.cos(phi) - vT*np.sin(phi)
+    vy = vT*np.cos(phi) + vR*sin(phi)
+    return x, y, z, vx, vy, vz
+
+
 
 def Energy(coord):
     """
