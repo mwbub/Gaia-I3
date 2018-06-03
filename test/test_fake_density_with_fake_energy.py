@@ -1,12 +1,14 @@
 """
 NAME:
-    test_fake_density
+    test_fake_density_with_fake_energy
 
 PURPOSE:
-    Test the main function by replacing KDE with a fake density function
+    Test the main function by replacing KDE with a fake density function. As
+    well, test it with a known fake energy function. Since all the functions
+    here are known analytic functions, the result should be very close to zero.
     
 HISTORY:
-    2018-05-31 - Written - Samuel Wong
+    2018-06-03 - Written - Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -28,16 +30,20 @@ def third_function(coord):
     
 
 def fake_density(coord):
-    e = Energy(coord)
+    e = fake_energy(coord)
     l = L_z(coord)
     return e**2 + l**2
 
 
 def fake_density_2(coord):
-    e = Energy(coord)
+    e = fake_energy(coord)
     l = L_z(coord)
     i3 = third_function(coord)
     return e**2 + l**2 + i3**2
+
+def fake_energy(coord):
+    x, y, z, vx, vy, vz = coord
+    return vx**2 + vy**2 + vz**2 - x**2 - y**2 - z**2
 
 # at this point, every thing should have physical units
 # get coordinate of the star to be searched from user
@@ -47,7 +53,7 @@ point_galactocentric, point_galactic = get_star_coord_from_user()
 # rename the search star to a
 a = to_natural_units(np.array([point_galactocentric]))[0]
 # get the gradient of energy and momentum of the search star
-del_E = grad(Energy, 6)
+del_E = grad(fake_energy, 6)
 del_Lz = grad(L_z, 6)
 del_E_a = del_E(a)
 del_Lz_a = del_Lz(a)
@@ -61,3 +67,4 @@ directional_derivatives = evaluate_uniformity(fake_density, a, W)
 
 for i in range(len(directional_derivatives)):
     print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
+
