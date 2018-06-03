@@ -34,7 +34,7 @@ def fourth_function(coord):
 def fake_density(coord):
     e = Energy(coord)
     l = L_z(coord)
-    return (e**2 + l**2)/(e + l + e*l)+e**1/3 - l
+    return e**2 + l**2
 
 
 def fake_density_2(coord):
@@ -61,7 +61,7 @@ V = np.array([del_E_a, del_Lz_a])
 W = orthogonal_complement(V)
 # evaluate if density is changing along the subspace 
 # check to see if they are all 0; if so, it is not changing
-directional_derivatives = evaluate_uniformity(fake_density_2, a, W)
+directional_derivatives = evaluate_uniformity(fake_density, a, W)
 
 for i in range(len(directional_derivatives)):
     print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
