@@ -30,4 +30,12 @@ def test_natural_unit(t):
     print('galpy natural momentum = ', natural_momentum)
     print('my momentum = ', my_momentum)
     
+def test_frame_conversion(x, y, z, vx, vy, vz):
+    point = np.array([x, y, z, vx, vy, vz])
+    print(galactocentric_to_galactic(galactic_to_galactocentric(point)))
+    print(galactic_to_galactocentric(galactocentric_to_galactic(point)))
+    
+    
+    
 test_natural_unit(38)
+test_frame_conversion(1.,2.,3.5,6.7, 8.3,3.2)

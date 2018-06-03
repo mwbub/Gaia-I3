@@ -61,7 +61,7 @@ def partial_derivative(f, i):
         # now that we have the function treating all other variables as constants except for the ith one, we have a
         # normal 1 dimensional derivative; evaluate it at the ith coordinate of the point
         # set dx to sufficiently small number
-        normal_derivative = derivative(fixed_value_except_ith, point[i], dx=1e-6)
+        normal_derivative = derivative(fixed_value_except_ith, point[i], dx=1e-8)
         return normal_derivative
 
     # return the function that can evaluate partial derivative at a point, without giving it any input.

@@ -23,6 +23,12 @@ def test_cartesian_to_cylindrical(x, y, z, vx, vy, vz):
     v = np.sqrt(vR**2 + vT**2 + vz**2)
     print('net velocity = ', v)
     
+def test_cylindrical_to_cartesian(x, y, z, vx, vy, vz):
+    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    new_x, new_y, new_z, new_vx, new_vy, new_vz = cylindrical_to_cartesian(R, phi, z, vR, vT, vz)
+    print(x, y, z, vx, vy, vz)
+    print(new_x, new_y, new_z, new_vx, new_vy, new_vz)
+    
 def test_energy_and_momentum(x,y,z,vx,vy,vz):
     # test whether energy and momentum changed during an orbit
     # know that they are conserved
@@ -54,6 +60,8 @@ def test_energy_momentum_of_sun():
     print(o.L()[0][2] == L_z(coord))
     
 test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+print()
+test_cylindrical_to_cartesian(1,2,3,4,5,6)
 print()
 test_energy_and_momentum(x, y, z, vx, vy, vz)
 print()

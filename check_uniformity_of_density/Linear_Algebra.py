@@ -58,7 +58,23 @@ def orthogonal_complement(V):
     return W
 
 def normalize_vector(v):
+    """
+    NAME:
+        normalize_vector
+
+    PURPOSE:
+        Given a vector v, return the normalized versioon.
+
+    INPUT:
+        v = a numpy array containing n components
+
+    OUTPUT:
+        a vector in the same directin as v but has unit length
+
+    HISTORY:
+        2018-05-30 - Written - Samuel Wong
+    """
     v = Matrix(v)
     v = v.normalized()
     v = np.array(v.T)
-    return v
+    return v[0]
