@@ -45,7 +45,7 @@ samples = to_natural_units(samples)
 # use the samples and a KDE learning method to generate a density function
 density = generate_KDE(samples, 'epanechnikov', width)
 
-# turn the galactocentric representation of the search star to be unit less
+# turn the galactocentric representation of the search star to be unit-less
 # rename the search star to a
 a = to_natural_units(np.array([point_galactocentric]))[0]
 # get the gradient of energy and momentum of the search star
