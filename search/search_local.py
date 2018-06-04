@@ -21,7 +21,8 @@ gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*units.deg,
                         distance=1/gaia_rv['parallax']*units.kpc,
                         pm_ra_cosdec=gaia_rv['pmra']*units.mas/units.yr,
                         pm_dec=gaia_rv['pmdec']*units.mas/units.yr,
-                        radial_velocity=gaia_rv['radial_velocity']*units.km/units.s)
+                        radial_velocity=
+                        gaia_rv['radial_velocity']*units.km/units.s)
 
 gaia_rv_gal = gaia_rv_icrs.transform_to('galactic')
 gaia_rv_gal.representation_type = 'cartesian'

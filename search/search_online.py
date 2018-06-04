@@ -161,7 +161,8 @@ def table_to_samples(table):
                           distance=table['d']*units.kpc, 
                           pm_ra_cosdec=table['pmra']*units.mas/units.yr, 
                           pm_dec=table['pmdec']*units.mas/units.yr,
-                          radial_velocity=table['radial_velocity']*units.km/units.s)
+                          radial_velocity=
+                          table['radial_velocity']*units.km/units.s)
     galcen_coord = icrs_coord.transform_to('galactocentric')
     galcen_coord.representation_type = 'cartesian'
     samples = np.stack([galcen_coord.x.value, galcen_coord.y.value, 
