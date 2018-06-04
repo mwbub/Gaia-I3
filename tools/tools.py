@@ -185,3 +185,51 @@ def get_star_coord_from_user():
             point_galactic = galactocentric_to_galactic(point_galactocentric)
             
     return (point_galactocentric, point_galactic)
+
+
+def create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
+                    vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing):
+    """
+    NAME:
+        create_meshgrid
+
+    PURPOSE:
+        Create a meshgrid of R^6 values used to evaluate many points easily along
+        a given density function.
+
+    Input:
+        User is prompted to input the minimum, maximum and spacing values of each
+        galactocentric coordinate (x, y, z, vx, vy, vz). The meshgrid goes from minimum
+        to maximum inclusive.
+
+        Note: xy are put together to simplify input as we assume the bounds and spacing should
+        be the same. We assume the circle of Milky Way stars is symmetric in x, y, vx and vy.
+        vxy_min and vxy_max refers to the bounds of vx and vy as the same.
+
+    OUTPUT:
+        numpy array of 6 dimensional tuples, in the order of (x, y, z, vx, vy, vy)
+        x, y and x are in kpc.
+        vx, vy and vz are in km/s.
+
+    HISTORY:
+        2018-06-04 - Written - Michael Poon
+    """
+
+    x = np.arange(xy_min, xy_max + xy_spacing, xy_spacing)
+    y = np.arange(xy_min, xy_max + xy_spacing, xy_spacing)
+    z = np.arange(z_min, z_max + z_spacing, z_spacing)
+    vx = np.arange(vxy_min, vxy_max + vxy_spacing, vxy_spacing)
+    vy = np.arange(vxy_min, vxy_max + vxy_spacing, vxy_spacing)
+    vz = np.arange(vz_min, vz_max + vz_spacing, vz_spacing)
+
+    x_values, y_values, z_values, vx_values, vy_values, vz_values = np.meshgrid(x, y, z, vx, vy, vz)
+
+    x_values = x_values.reshape(-1, 1)  # -1 is flatten and 1 is put into 1D column
+    y_values = y_values.reshape(-1, 1)
+    z_values = z_values.reshape(-1, 1)
+    vx_values = vx_values.reshape(-1, 1)
+    vy_values = vy_values.reshape(-1, 1)
+    vz_values = vz_values.reshape(-1, 1)
+
+    meshgrid = np.concatenate((x_values, y_values, z_values, vx_values, vy_values, vz_values), axis=1)
+    return meshgrid
