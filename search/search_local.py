@@ -16,6 +16,8 @@ from gaia_tools import load
 # load the Gaia DR2 RV catalogue
 if 'gaia_rv' not in globals():
     gaia_rv = load.gaiarv()
+    # cut out stars with parallax errors over 20%
+    gaia_rv = gaia_rv[gaia_rv['parallax_over_error'] > 5]
 
 # organize the catalogue into a SkyCoord object
 gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*units.deg, 
