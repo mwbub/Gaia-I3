@@ -1,7 +1,7 @@
 """ 
 Filename: search_phase_space.py
 Author: Mathew Bub
-Last Revision Date: 2018-05-31
+Last Revision Date: 2018-06-04
 
 This module contains the search_phase_space function, which queries the 
 Gaia archive for stars close to a given point in phase space, using a galactic 
@@ -9,7 +9,7 @@ coordinate frame. Coordinate transformations are dervied from Bovy (2011).
 [https://github.com/jobovy/stellarkinematics/blob/master/stellarkinematics.pdf]
 """
 import numpy as np
-import astropy.units as u
+from astropy import units
 from astroquery.gaia import Gaia
 from astropy.coordinates import SkyCoord
 from galpy.util.bovy_coords import lb_to_radec
@@ -18,7 +18,7 @@ from galpy.util.bovy_coords import lb_to_radec
 ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 
 # conversion factor from kpc*mas/yr to km/s
-k = (u.kpc*u.mas/u.yr).to(u.km*u.rad/u.s)
+k = (units.kpc*units.mas/units.yr).to(units.km*units.rad/units.s)
 
 def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0, 
                        cone_r=None):
@@ -66,12 +66,12 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
     warnings.filterwarnings("ignore")
     
     # convert coordinates into consistent u
-    u0 = u.Quantity(u0, u.kpc)
-    v0 = u.Quantity(v0, u.kpc)
-    w0 = u.Quantity(w0, u.kpc)
-    U0 = u.Quantity(U0, u.km/u.s)
-    V0 = u.Quantity(V0, u.km/u.s)
-    W0 = u.Quantity(W0, u.km/u.s)
+    u0 = units.Quantity(u0, units.kpc)
+    v0 = units.Quantity(v0, units.kpc)
+    w0 = units.Quantity(w0, units.kpc)
+    U0 = units.Quantity(U0, units.km/units.s)
+    V0 = units.Quantity(V0, units.km/units.s)
+    W0 = units.Quantity(W0, units.km/units.s)
     
     # distance check to limit the size of the initial query
     d = np.sqrt(u0.value**2 + v0.value**2 + w0.value**2)
@@ -156,12 +156,12 @@ def table_to_samples(table):
         Nx6 array of galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
     """
-    icrs_coord = SkyCoord(ra=table['ra']*u.deg, 
-                          dec=table['dec']*u.deg, 
-                          distance=table['d']*u.kpc, 
-                          pm_ra_cosdec=table['pmra']*u.mas/u.yr, 
-                          pm_dec=table['pmdec']*u.mas/u.yr,
-                          radial_velocity=table['radial_velocity']*u.km/u.s)
+    icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
+                          dec=table['dec']*units.deg, 
+                          distance=table['d']*units.kpc, 
+                          pm_ra_cosdec=table['pmra']*units.mas/units.yr, 
+                          pm_dec=table['pmdec']*units.mas/units.yr,
+                          radial_velocity=table['radial_velocity']*units.km/units.s)
     galcen_coord = icrs_coord.transform_to('galactocentric')
     galcen_coord.representation_type = 'cartesian'
     samples = np.stack([galcen_coord.x.value, galcen_coord.y.value, 

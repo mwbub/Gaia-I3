@@ -8,21 +8,20 @@ Gaia archive for stars close to a given point in phase space, using a galactic
 coordinate frame. This version of the module uses a local downloaded copy of
 the Gaia DR2 RV catalogue.
 """
-
 import numpy as np
-import astropy.units as u
+from astropy import units
 from astropy.coordinates import SkyCoord
 from gaia_tools import load
 
 if 'gaia_rv' not in globals():
     gaia_rv = load.gaiarv()
 
-gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*u.deg, 
-                        dec=gaia_rv['dec']*u.deg,
-                        distance=1/gaia_rv['parallax']*u.kpc,
-                        pm_ra_cosdec=gaia_rv['pmra']*u.mas/u.yr,
-                        pm_dec=gaia_rv['pmdec']*u.mas/u.yr,
-                        radial_velocity=gaia_rv['radial_velocity']*u.km/u.s)
+gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*units.deg, 
+                        dec=gaia_rv['dec']*units.deg,
+                        distance=1/gaia_rv['parallax']*units.kpc,
+                        pm_ra_cosdec=gaia_rv['pmra']*units.mas/units.yr,
+                        pm_dec=gaia_rv['pmdec']*units.mas/units.yr,
+                        radial_velocity=gaia_rv['radial_velocity']*units.km/units.s)
 
 gaia_rv_gal = gaia_rv_icrs.transform_to('galactic')
 gaia_rv_gal.representation_type = 'cartesian'
@@ -68,12 +67,12 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
     """
-    u0 = u.Quantity(u0, u.kpc).value
-    v0 = u.Quantity(v0, u.kpc).value
-    w0 = u.Quantity(w0, u.kpc).value
-    U0 = u.Quantity(U0, u.km/u.s).value
-    V0 = u.Quantity(V0, u.km/u.s).value
-    W0 = u.Quantity(W0, u.km/u.s).value
+    u0 = units.Quantity(u0, units.kpc).value
+    v0 = units.Quantity(v0, units.kpc).value
+    w0 = units.Quantity(w0, units.kpc).value
+    U0 = units.Quantity(U0, units.km/units.s).value
+    V0 = units.Quantity(V0, units.km/units.s).value
+    W0 = units.Quantity(W0, units.km/units.s).value
     
     u = gaia_rv_gal.u.value
     v = gaia_rv_gal.v.value
