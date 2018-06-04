@@ -1,1 +1,1 @@
-__all__ = ['search_phase_space']
+__all__ = ['search_online', 'search_local']
