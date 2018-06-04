@@ -30,7 +30,7 @@ gaia_rv_gal.representation_type = 'cartesian'
 gaia_rv_galcen = gaia_rv_icrs.transform_to('galactocentric')
 gaia_rv_galcen.representation_type = 'cartesian'
 
-def search_phase_space(x0, y0, z0, U0, V0, W0, epsilon, v_scale=1.0):
+def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
     """
     NAME:
         search_phase_space
@@ -39,13 +39,13 @@ def search_phase_space(x0, y0, z0, U0, V0, W0, epsilon, v_scale=1.0):
         search the Gaia DR2 RV catalogue for stars near a point in phase space
         
     INPUT:
-        x0 - rectangular x coordinate in the galactic frame (can be Quantity,
+        u0 - rectangular x coordinate in the galactic frame (can be Quantity,
         otherwise given in kpc)
         
-        y0 - rectangular y coordinate in the galactic frame (can be Quantity,
+        v0 - rectangular y coordinate in the galactic frame (can be Quantity,
         otherwise given in kpc)
         
-        z0 - rectangular z coordinate in the galactic frame (can be Quantity,
+        w0 - rectangular z coordinate in the galactic frame (can be Quantity,
         otherwise given in kpc)
         
         U0 - x velocity in the galactic frame (can be Quantity, otherwise given
@@ -66,23 +66,23 @@ def search_phase_space(x0, y0, z0, U0, V0, W0, epsilon, v_scale=1.0):
         Nx6 array of galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         consisting of stars within a distance of epsilon from the point
-        (x0, y0, z0, U0, V0, W0)
+        (u0, v0, w0, U0, V0, W0)
     """
-    x0 = u.Quantity(x0, u.kpc).value
-    y0 = u.Quantity(y0, u.kpc).value
-    z0 = u.Quantity(z0, u.kpc).value
+    u0 = u.Quantity(u0, u.kpc).value
+    v0 = u.Quantity(v0, u.kpc).value
+    w0 = u.Quantity(w0, u.kpc).value
     U0 = u.Quantity(U0, u.km/u.s).value
     V0 = u.Quantity(V0, u.km/u.s).value
     W0 = u.Quantity(W0, u.km/u.s).value
     
-    x = gaia_rv_gal.u.value
-    y = gaia_rv_gal.v.value
-    z = gaia_rv_gal.w.value
+    u = gaia_rv_gal.u.value
+    v = gaia_rv_gal.v.value
+    w = gaia_rv_gal.w.value
     U = gaia_rv_gal.U.value
     V = gaia_rv_gal.V.value
     W = gaia_rv_gal.W.value
     
-    mask = ((x - x0)**2 + (y - y0)**2 + (z - z0)**2 + ((U - U0)**2 + 
+    mask = ((u - u0)**2 + (v - v0)**2 + (w - w0)**2 + ((U - U0)**2 + 
             (V - V0)**2 + (W - W0)**2) * v_scale**2) < epsilon**2
              
     results = gaia_rv_galcen[mask]
