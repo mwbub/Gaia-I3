@@ -54,15 +54,15 @@ width = 10
 # define parameters for the grid
 xy_min = -15
 xy_max = 15
-xy_spacing = 0.1
+xy_spacing = 3
 z_min = -0.15
 z_max = 0.15
-z_spacing = 0.01
+z_spacing = 0.05
 vxy_min = -300
 vxy_max = 300
-vxy_spacing = 1
-vz_min = -26
-vz_max = 24
+vxy_spacing = 50
+vz_min = -1
+vz_max = 1
 vz_spacing = 1
 
 # at this point, every thing should have physical units
