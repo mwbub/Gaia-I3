@@ -65,7 +65,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
     import warnings
     warnings.filterwarnings("ignore")
     
-    # convert coordinates into consistent u
+    # convert coordinates into consistent units
     u0 = units.Quantity(u0, units.kpc)
     v0 = units.Quantity(v0, units.kpc)
     w0 = units.Quantity(w0, units.kpc)

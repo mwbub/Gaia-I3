@@ -13,9 +13,11 @@ from astropy import units
 from astropy.coordinates import SkyCoord
 from gaia_tools import load
 
+# load the Gaia DR2 RV catalogue
 if 'gaia_rv' not in globals():
     gaia_rv = load.gaiarv()
 
+# organize the catalogue into a SkyCoord object
 gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*units.deg, 
                         dec=gaia_rv['dec']*units.deg,
                         distance=1/gaia_rv['parallax']*units.kpc,
@@ -24,9 +26,11 @@ gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*units.deg,
                         radial_velocity=
                         gaia_rv['radial_velocity']*units.km/units.s)
 
+# convert to galactic rectangular coordiantes
 gaia_rv_gal = gaia_rv_icrs.transform_to('galactic')
 gaia_rv_gal.representation_type = 'cartesian'
 
+# convert to galactocentric rectangular coordiantes
 gaia_rv_galcen = gaia_rv_icrs.transform_to('galactocentric')
 gaia_rv_galcen.representation_type = 'cartesian'
 
@@ -68,6 +72,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
     """
+    # convert coordinates into consistent units
     u0 = units.Quantity(u0, units.kpc).value
     v0 = units.Quantity(v0, units.kpc).value
     w0 = units.Quantity(w0, units.kpc).value
@@ -75,6 +80,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
     V0 = units.Quantity(V0, units.km/units.s).value
     W0 = units.Quantity(W0, units.km/units.s).value
     
+    # grab the galactic coordinates of the Gaia RV catalogue
     u = gaia_rv_gal.u.value
     v = gaia_rv_gal.v.value
     w = gaia_rv_gal.w.value
@@ -82,11 +88,15 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
     V = gaia_rv_gal.V.value
     W = gaia_rv_gal.W.value
     
+    # search for stars within a distance of epsilon from the point 
+    # (u0, v0, w0, U0, V0, W0)
     mask = ((u - u0)**2 + (v - v0)**2 + (w - w0)**2 + ((U - U0)**2 + 
             (V - V0)**2 + (W - W0)**2) * v_scale**2) < epsilon**2
              
+    # get the galactocentric coordinates of the stars that were found
     results = gaia_rv_galcen[mask]
     
+    # organize the coordinates into an Nx6 array
     samples = np.stack([results.x.value, 
                         results.y.value, 
                         results.z.value, 
@@ -114,6 +124,7 @@ def get_entire_catalogue():
         Nx6 array of galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
     """
+    # organize the coordinates into an Nx6 array
     samples = np.stack([gaia_rv_galcen.x.value,
                         gaia_rv_galcen.y.value,
                         gaia_rv_galcen.z.value,
@@ -122,4 +133,3 @@ def get_entire_catalogue():
                         gaia_rv_galcen.v_z.value], axis=1)
     return samples
              
-    
