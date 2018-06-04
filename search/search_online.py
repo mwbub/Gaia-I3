@@ -129,7 +129,6 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
           1/parallax AS d
     FROM gaiadr2.gaia_source
         WHERE radial_velocity IS NOT NULL
-        AND parallax_over_error > 5
         {3}) table0) table1) table2) table3
     WHERE POWER({11},2) > POWER({4}-x,2) + POWER({5}-y,2) + POWER({6}-z,2) +
     (POWER({7}-u,2) + POWER({8}-v,2) + POWER({9}-w,2))*POWER({10},2)
