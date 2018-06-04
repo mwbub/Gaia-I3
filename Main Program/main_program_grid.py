@@ -1,15 +1,16 @@
 """
 NAME:
-    main_program
+    main_program_grid
 
 PURPOSE:
     choose a point in phase space and check whether the density is changing
     locally in the four dimensional plane where energy and angular momentum
     are conserved. If it is not, I_3 does not exist.
     
+    Evaluate dot product on a 6 dimensional grid.
+    
 HISTORY:
-    2018-05-28 - Written - Samuel Wong
-    2018-05-31 - Changed to natural units - Samuel Wong
+    2018-06-04 - written - Michael Poon, Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -24,11 +25,45 @@ from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from kde_function.kde_function import *
 from tools.tools import *
+
+def evaluate_uniformity_from_point(point_galactocentric, density):
+    # turn the galactocentric representation of the search star to be unit-less
+    # rename the search star to a
+    a = to_natural_units(np.array([point_galactocentric]))[0]
+    # get the gradient of energy and momentum of the search star
+    del_E = grad(Energy, 6)
+    del_Lz = grad(L_z, 6)
+    del_E_a = del_E(a)
+    del_Lz_a = del_Lz(a)
+    # create matrix of the space spanned by direction of changing energy and momentum
+    V = np.array([del_E_a, del_Lz_a])
+    # get the 4 dimensional orthogonal complement of del E and del Lz
+    W = orthogonal_complement(V)
+    # evaluate if density is changing along the subspace 
+    # check to see if they are all 0; if so, it is not changing
+    directional_derivatives = evaluate_uniformity(density, a, W)
     
+    for i in range(len(directional_derivatives)):
+        print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
+
+
 # define parameters for the search and KDE
-epsilon = 0.5
+epsilon = 1
 v_scale = 0.1
 width = 10
+# define parameters for the grid
+xy_min = -15
+xy_max = 15
+xy_spacing = 0.1
+z_min = -0.15
+z_max = 0.15
+z_spacing = 0.01
+vxy_min = -300
+vxy_max = 300
+vxy_spacing = 1
+vz_min = -26
+vz_max = 24
+vz_spacing = 1
 
 # at this point, every thing should have physical units
 # get coordinate of the star to be searched from user
@@ -41,25 +76,16 @@ samples = table_to_samples(table)
 # Turn all data to natrual units; working with natural unit, galactocentric,
 # cartesian from this point on
 samples = to_natural_units(samples)
+# display number of stars found
+print('Found a sample of {} of stars.'.format(np.shape(samples)[0]))
 
 # use the samples and a KDE learning method to generate a density function
 density = generate_KDE(samples, 'epanechnikov', width)
 
-# turn the galactocentric representation of the search star to be unit-less
-# rename the search star to a
-a = to_natural_units(np.array([point_galactocentric]))[0]
-# get the gradient of energy and momentum of the search star
-del_E = grad(Energy, 6)
-del_Lz = grad(L_z, 6)
-del_E_a = del_E(a)
-del_Lz_a = del_Lz(a)
-# create matrix of the space spanned by direction of changing energy and momentum
-V = np.array([del_E_a, del_Lz_a])
-# get the 4 dimensional orthogonal complement of del E and del Lz
-W = orthogonal_complement(V)
-# evaluate if density is changing along the subspace 
-# check to see if they are all 0; if so, it is not changing
-directional_derivatives = evaluate_uniformity(density, a, W)
-print('from a sample of {} of stars,'.format(np.shape(samples)[0]))
-for i in range(len(directional_derivatives)):
-    print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
+# get a six dimensional grid to evaluate points at
+grid = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
+                    vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
+
+for i in range(len(grid)):
+    evaluate_uniformity_from_point(grid[i], density)
+

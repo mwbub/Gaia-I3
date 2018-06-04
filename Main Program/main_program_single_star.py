@@ -40,6 +40,7 @@ point_galactocentric, point_galactic = get_star_coord_from_user()
 table = search_phase_space(*point_galactic, epsilon, v_scale)
  # convert from Gaia table to numpy array; output in galactocentric, with units
 samples = table_to_samples(table)
+print(samples)
 # Turn all data to natrual units; working with natural unit, galactocentric,
 # cartesian from this point on
 samples = to_natural_units(samples)
