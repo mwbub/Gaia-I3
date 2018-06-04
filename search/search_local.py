@@ -8,11 +8,11 @@ if 'gaia_rv' not in globals():
     gaia_rv = load.gaiarv()
 
 gaia_rv_icrs = SkyCoord(ra=gaia_rv['ra']*u.deg, 
-                      dec=gaia_rv['dec']*u.deg,
-                      distance=1/gaia_rv['parallax']*u.kpc,
-                      pm_ra_cosdec=gaia_rv['pmra']*u.mas/u.yr,
-                      pm_dec=gaia_rv['pmdec']*u.mas/u.yr,
-                      radial_velocity=gaia_rv['radial_velocity']*u.km/u.s)
+                        dec=gaia_rv['dec']*u.deg,
+                        distance=1/gaia_rv['parallax']*u.kpc,
+                        pm_ra_cosdec=gaia_rv['pmra']*u.mas/u.yr,
+                        pm_dec=gaia_rv['pmdec']*u.mas/u.yr,
+                        radial_velocity=gaia_rv['radial_velocity']*u.km/u.s)
 
 gaia_rv_gal = gaia_rv_icrs.transform_to('galactic')
 gaia_rv_gal.representation_type = 'cartesian'
@@ -51,7 +51,13 @@ def search_phase_space(x0, y0, z0, U0, V0, W0, epsilon, v_scale=1.0):
         return samples
     raise Exception("no results found")
     
-    
-    
+def get_entire_catalogue():
+    samples = np.stack([gaia_rv_galcen.x.value,
+                        gaia_rv_galcen.y.value,
+                        gaia_rv_galcen.z.value,
+                        gaia_rv_galcen.v_x.value,
+                        gaia_rv_galcen.v_y.value,
+                        gaia_rv_galcen.v_z.value], axis=1)
+    return samples
              
     
