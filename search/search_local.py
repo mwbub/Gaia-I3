@@ -1,3 +1,13 @@
+""" 
+Filename: search_local.py
+Author: Mathew Bub
+Last Revision Date: 2018-06-04
+
+This module contains the search_phase_space function, which searches the 
+Gaia archive for stars close to a given point in phase space, using a galactic 
+coordinate frame. This version of the module uses a local downloaded copy of
+the Gaia DR2 RV catalogue.
+"""
 
 import numpy as np
 import astropy.units as u
@@ -21,6 +31,43 @@ gaia_rv_galcen = gaia_rv_icrs.transform_to('galactocentric')
 gaia_rv_galcen.representation_type = 'cartesian'
 
 def search_phase_space(x0, y0, z0, U0, V0, W0, epsilon, v_scale=1.0):
+    """
+    NAME:
+        search_phase_space
+    
+    PURPOSE:
+        search the Gaia DR2 RV catalogue for stars near a point in phase space
+        
+    INPUT:
+        x0 - rectangular x coordinate in the galactic frame (can be Quantity,
+        otherwise given in kpc)
+        
+        y0 - rectangular y coordinate in the galactic frame (can be Quantity,
+        otherwise given in kpc)
+        
+        z0 - rectangular z coordinate in the galactic frame (can be Quantity,
+        otherwise given in kpc)
+        
+        U0 - x velocity in the galactic frame (can be Quantity, otherwise given
+        in km/s)
+        
+        V0 - y velocity in the galactic frame (can be Quantity, otherwise given
+        in km/s)
+        
+        W0 - z velocity in the galactic frame (can be Quantity, otherwise given
+        in km/s)
+        
+        epsilon - radius in phase space in which to search for stars
+        
+        v_scale - scale factor for velocities used when calculating phase space
+        distances (optional; default = 1.0)
+        
+    OUTPUT:
+        Nx6 array of galactocentric coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
+        consisting of stars within a distance of epsilon from the point
+        (x0, y0, z0, U0, V0, W0)
+    """
     x0 = u.Quantity(x0, u.kpc).value
     y0 = u.Quantity(y0, u.kpc).value
     z0 = u.Quantity(z0, u.kpc).value
@@ -52,6 +99,21 @@ def search_phase_space(x0, y0, z0, U0, V0, W0, epsilon, v_scale=1.0):
     raise Exception("no results found")
     
 def get_entire_catalogue():
+    """
+    NAME:
+        get_entire_catalogue
+        
+    PURPOSE:
+        return the entire Gaia DR2 catalogue in galactocentric rectangular
+        coordinates for use in generating a KDE
+        
+    INPUT:
+        None
+        
+    OUTPUT:
+        Nx6 array of galactocentric coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
+    """
     samples = np.stack([gaia_rv_galcen.x.value,
                         gaia_rv_galcen.y.value,
                         gaia_rv_galcen.z.value,
