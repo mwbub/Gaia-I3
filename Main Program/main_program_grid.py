@@ -42,25 +42,49 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
     # evaluate if density is changing along the subspace 
     # check to see if they are all 0; if so, it is not changing
     directional_derivatives = evaluate_uniformity(density, a, W)
+    return directional_derivatives
+
+
+def evaluate_uniformity_from_grid(density):
+    # get a six dimensional grid to evaluate points at
+    grid = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
+                        vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
+    print(len(grid))
+
+    # initialize an list of all directional derivatives for all stars
+    list_directional_derivatives = []
     
-    for i in range(len(directional_derivatives)):
-        print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
+    for i in range(len(grid)):
+        directional_derivative = evaluate_uniformity_from_point(grid[i], density)
+        print("directional_derivative: ", directional_derivative)
+        print(i+1, "of 729")
+        list_directional_derivatives.append(directional_derivative)
+        
+    list_directional_derivatives = np.array(list_directional_derivatives)
+    list_directional_derivatives = np.concatenate(list_directional_derivatives)
+    print(list_directional_derivatives)
+    
+    print('average of dot product = ', np.mean(list_directional_derivatives))
+    print('maximum of dot product = ', np.max(list_directional_derivatives))
+    print('minimum of dot product = ', np.min(list_directional_derivatives))
+    print('standard deviation of dot product = ', np.std(list_directional_derivatives))
+    print('number of dot product = ', list_directional_derivatives.size)
 
 
 # define parameters for the search and KDE
-epsilon = 1
+epsilon = 0.2
 v_scale = 0.1
 width = 10
 # define parameters for the grid
 xy_min = -15
 xy_max = 15
-xy_spacing = 3
+xy_spacing = 15
 z_min = -0.15
 z_max = 0.15
-z_spacing = 0.05
+z_spacing = 0.15
 vxy_min = -300
 vxy_max = 300
-vxy_spacing = 50
+vxy_spacing = 300
 vz_min = -1
 vz_max = 1
 vz_spacing = 1
@@ -82,10 +106,7 @@ print('Found a sample of {} of stars.'.format(np.shape(samples)[0]))
 # use the samples and a KDE learning method to generate a density function
 density = generate_KDE(samples, 'epanechnikov', width)
 
-# get a six dimensional grid to evaluate points at
-grid = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
-                    vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
+evaluate_uniformity_from_grid(density)
 
-for i in range(len(grid)):
-    evaluate_uniformity_from_point(grid[i], density)
+
 
