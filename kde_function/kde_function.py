@@ -1,3 +1,9 @@
+
+# coding: utf-8
+
+# In[68]:
+
+
 #Ayush Pandhi, last updated 06/04/2018
 
 #Importing the required modules
@@ -36,6 +42,9 @@ def generate_KDE(inputs, ker):
         Returns:
             dens (ndarray): 1xQ array of density values for Q data points.
         """
+        #To correct the type of information from other functions into acceptable input
+        samples = [samples]
+        
         #Get the log density for selected samples and apply exponential to get normal probabilities
         log_dens = kde.score_samples(samples)
         dens = np.exp(log_dens)
