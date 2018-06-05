@@ -14,7 +14,7 @@ def generate_KDE(inputs, ker):
         inputs (ndarray): NxM matrix, N = # of data points, M = # of parameters.
         ker (string): One of the 6 avaliable kernel types (gaussian, tophat, epanechnikov, exponential, linear, cosine)
     Returns:
-        kde (function):
+        kde (function): A blackbox function used for sampling data.
     """
     #Optimizing bandwidth in terms of Scott's Rule of Thumb
     shape_string = str(inputs.shape)
