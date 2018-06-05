@@ -210,6 +210,7 @@ def create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
         numpy array of 6 dimensional tuples, in the order of (x, y, z, vx, vy, vy)
         x, y and x are in kpc.
         vx, vy and vz are in km/s.
+        We artifically remove any point whose (x,y,z) = (0,0,0)
 
     HISTORY:
         2018-06-04 - Written - Michael Poon
@@ -232,4 +233,5 @@ def create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
     vz_values = vz_values.reshape(-1, 1)
 
     meshgrid = np.concatenate((x_values, y_values, z_values, vx_values, vy_values, vz_values), axis=1)
+    
     return meshgrid

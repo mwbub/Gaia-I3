@@ -40,10 +40,11 @@ def test_create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
 
     result = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
                     vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
+    print('The grid is :')
     for point in result:
         print(point)
-    
+    print('Grid size is', result.shape[0])
 
 test_natural_unit(38)
 test_frame_conversion(1.,2.,3.5,6.7, 8.3,3.2)
-test_create_meshgrid(1, 3, 1, 4, 6, 1, 7, 9, 1, 10, 15, 1)
+test_create_meshgrid(-1, 1, 1, -1, 1, 1, 8, 9, 1, 10, 11, 1)

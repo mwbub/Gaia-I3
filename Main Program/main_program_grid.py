@@ -42,33 +42,38 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
     # evaluate if density is changing along the subspace 
     # check to see if they are all 0; if so, it is not changing
     directional_derivatives = evaluate_uniformity(density, a, W)
-    return directional_derivatives
+    return directional_derivatives, del_E_a, del_Lz_a, W
 
 
 def evaluate_uniformity_from_grid(density):
     # get a six dimensional grid to evaluate points at
     grid = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
                         vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
-    print(len(grid))
+    print(grid)
 
     # initialize an list of all directional derivatives for all stars
     list_directional_derivatives = []
     
     for i in range(len(grid)):
-        directional_derivative = evaluate_uniformity_from_point(grid[i], density)
+        # forbid user to evaluate energy at origin
+        if (grid[i][0], grid[i][1], grid[i][2]) == (0.,0.,0.):
+            print(grid[i])
+            raise Exception("Cannot evaluate energy at origin")
+            
+        directional_derivative, del_E_a, del_Lz_a, W = evaluate_uniformity_from_point(grid[i], density)
         print("directional_derivative: ", directional_derivative)
-        print(i+1, "of 729")
+        print((i+1), 'of 729')
         list_directional_derivatives.append(directional_derivative)
-        
+    
+    # convert list to array and flatten the array
     list_directional_derivatives = np.array(list_directional_derivatives)
     list_directional_derivatives = np.concatenate(list_directional_derivatives)
-    print(list_directional_derivatives)
     
+    # print out important information from the result
     print('average of dot product = ', np.mean(list_directional_derivatives))
     print('maximum of dot product = ', np.max(list_directional_derivatives))
     print('minimum of dot product = ', np.min(list_directional_derivatives))
     print('standard deviation of dot product = ', np.std(list_directional_derivatives))
-    print('number of dot product = ', list_directional_derivatives.size)
 
 
 # define parameters for the search and KDE
