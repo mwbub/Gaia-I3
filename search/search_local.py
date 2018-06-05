@@ -102,15 +102,15 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
     samples = np.stack([results.x.value, 
                         results.y.value, 
                         results.z.value, 
-                        results.v_x.value*v_scale, 
-                        results.v_y.value*v_scale, 
-                        results.v_z.value*v_scale], axis=1)
+                        results.v_x.value, 
+                        results.v_y.value, 
+                        results.v_z.value], axis=1)
     
     if samples.size > 0:
         return samples
     raise Exception("no results found")
     
-def get_entire_catalogue(v_scale=1.0):
+def get_entire_catalogue():
     """
     NAME:
         get_entire_catalogue
@@ -120,7 +120,7 @@ def get_entire_catalogue(v_scale=1.0):
         coordinates for use in generating a KDE
         
     INPUT:
-        v_scale - scale factor for velocities (optional; default = 1.0)
+        None
         
     OUTPUT:
         Nx6 array of galactocentric coordinates of the form 
@@ -130,8 +130,8 @@ def get_entire_catalogue(v_scale=1.0):
     samples = np.stack([gaia_rv_galcen.x.value,
                         gaia_rv_galcen.y.value,
                         gaia_rv_galcen.z.value,
-                        gaia_rv_galcen.v_x.value*v_scale,
-                        gaia_rv_galcen.v_y.value*v_scale,
-                        gaia_rv_galcen.v_z.value*v_scale], axis=1)
+                        gaia_rv_galcen.v_x.value,
+                        gaia_rv_galcen.v_y.value,
+                        gaia_rv_galcen.v_z.value], axis=1)
     return samples
              

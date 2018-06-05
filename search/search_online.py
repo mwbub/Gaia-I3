@@ -140,7 +140,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
         return table
     raise Exception("query returned no results")
 
-def table_to_samples(table, v_scale=1.0):
+def table_to_samples(table):
     """
     NAME:
         table_to_samples
@@ -151,8 +151,6 @@ def table_to_samples(table, v_scale=1.0):
         
     INPUT:
         table - astropy Table returned by search_phase_space
-        
-        v_scale - scale factor for velocities (optional; default = 1.0)
         
     OUTPUT:
         Nx6 array of galactocentric coordinates of the form 
@@ -170,7 +168,7 @@ def table_to_samples(table, v_scale=1.0):
     samples = np.stack([galcen_coord.x.value, 
                         galcen_coord.y.value, 
                         galcen_coord.z.value, 
-                        galcen_coord.v_x.value*v_scale, 
-                        galcen_coord.v_y.value*v_scale, 
-                        galcen_coord.v_z.value*v_scale], axis=1)
+                        galcen_coord.v_x.value, 
+                        galcen_coord.v_y.value, 
+                        galcen_coord.v_z.value], axis=1)
     return samples
