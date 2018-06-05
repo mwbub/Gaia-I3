@@ -34,8 +34,17 @@ def test_frame_conversion(x, y, z, vx, vy, vz):
     point = np.array([x, y, z, vx, vy, vz])
     print(galactocentric_to_galactic(galactic_to_galactocentric(point)))
     print(galactic_to_galactocentric(galactocentric_to_galactic(point)))
-    
-    
-    
+
+def test_create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
+                         vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing):
+
+    result = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
+                    vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
+    print('The grid is :')
+    for point in result:
+        print(point)
+    print('Grid size is', result.shape[0])
+
 test_natural_unit(38)
 test_frame_conversion(1.,2.,3.5,6.7, 8.3,3.2)
+test_create_meshgrid(-1, 1, 1, -1, 1, 1, 8, 9, 1, 10, 11, 1)

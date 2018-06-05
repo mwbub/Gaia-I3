@@ -1,6 +1,6 @@
 """
 NAME:
-    main_program
+    main_program_single_star
 
 PURPOSE:
     choose a point in phase space and check whether the density is changing
@@ -10,6 +10,8 @@ PURPOSE:
 HISTORY:
     2018-05-28 - Written - Samuel Wong
     2018-05-31 - Changed to natural units - Samuel Wong
+    2018-06-04 - Changed name from 'main_program' to 'main_program_single_star'
+                - Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -38,6 +40,7 @@ point_galactocentric, point_galactic = get_star_coord_from_user()
 table = search_phase_space(*point_galactic, epsilon, v_scale)
  # convert from Gaia table to numpy array; output in galactocentric, with units
 samples = table_to_samples(table)
+print(samples)
 # Turn all data to natrual units; working with natural unit, galactocentric,
 # cartesian from this point on
 samples = to_natural_units(samples)
