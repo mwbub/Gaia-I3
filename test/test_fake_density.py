@@ -19,25 +19,12 @@ from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from tools.tools import *
-
-
-def third_function(coord):
-    x, y, z, vx, vy, vz = coord
-    #R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
-    return x*y*z*vx*vy*vz
     
 
 def fake_density(coord):
     e = Energy(coord)
     l = L_z(coord)
     return e**2 + l**2
-
-
-def fake_density_2(coord):
-    e = Energy(coord)
-    l = L_z(coord)
-    i3 = third_function(coord)
-    return e**2 + l**2 + i3**2
 
 # at this point, every thing should have physical units
 # get coordinate of the star to be searched from user
