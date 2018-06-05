@@ -42,14 +42,13 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
     # evaluate if density is changing along the subspace 
     # check to see if they are all 0; if so, it is not changing
     directional_derivatives = evaluate_uniformity(density, a, W)
-    return directional_derivatives, del_E_a, del_Lz_a, W
+    return directional_derivatives
 
 
 def evaluate_uniformity_from_grid(density):
     # get a six dimensional grid to evaluate points at
     grid = create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
                         vxy_min, vxy_max, vxy_spacing, vz_min, vz_max, vz_spacing)
-    print(grid)
 
     # initialize an list of all directional derivatives for all stars
     list_directional_derivatives = []
@@ -57,12 +56,9 @@ def evaluate_uniformity_from_grid(density):
     for i in range(len(grid)):
         # forbid user to evaluate energy at origin
         if (grid[i][0], grid[i][1], grid[i][2]) == (0.,0.,0.):
-            print(grid[i])
             raise Exception("Cannot evaluate energy at origin")
-            
-        directional_derivative, del_E_a, del_Lz_a, W = evaluate_uniformity_from_point(grid[i], density)
-        print("directional_derivative: ", directional_derivative)
-        print((i+1), 'of 729')
+        # evaluate uniformity at the point, which gives an array of 4 dot product
+        directional_derivative = evaluate_uniformity_from_point(grid[i], density)
         list_directional_derivatives.append(directional_derivative)
     
     # convert list to array and flatten the array
@@ -83,7 +79,7 @@ width = 10
 # define parameters for the grid
 xy_min = -15
 xy_max = 15
-xy_spacing = 15
+xy_spacing = 10 # choose spacing such that xy is never 0
 z_min = -0.15
 z_max = 0.15
 z_spacing = 0.15
