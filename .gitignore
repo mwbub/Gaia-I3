@@ -1,5 +1,6 @@
 .ipynb_checkpoints
 *.pyc
+*.cpython-36
 *.aux
 *.log
 *.gz
