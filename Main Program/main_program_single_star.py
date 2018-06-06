@@ -26,7 +26,7 @@ from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from kde_function.kde_function import *
 from tools.tools import *
-    
+
 # define parameters for the search and KDE
 epsilon = 0.5
 v_scale = 0.1
