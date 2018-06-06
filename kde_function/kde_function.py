@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[68]:
-
-
 #Ayush Pandhi, last updated 06/04/2018
 
 #Importing the required modules
