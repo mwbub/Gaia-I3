@@ -1,7 +1,6 @@
 """
 NAME:
     test_qdf
-
 PURPOSE:
     Test the main function by replacing KDE with a quasiisothermal density
     function.
@@ -58,9 +57,3 @@ directional_derivatives = evaluate_uniformity(cartesian_qdf, a, W)
 
 for i in range(len(directional_derivatives)):
     print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
-    
- 
-
-
-    
-    

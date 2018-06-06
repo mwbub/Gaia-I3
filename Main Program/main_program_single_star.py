@@ -1,6 +1,6 @@
 """
 NAME:
-    main_program
+    main_program_single_star
 
 PURPOSE:
     choose a point in phase space and check whether the density is changing
@@ -10,6 +10,8 @@ PURPOSE:
 HISTORY:
     2018-05-28 - Written - Samuel Wong
     2018-05-31 - Changed to natural units - Samuel Wong
+    2018-06-04 - Changed name from 'main_program' to 'main_program_single_star'
+                - Samuel Wong
 """
 import os, sys
 # get the outer folder as the path
@@ -18,7 +20,7 @@ check_uniformity_path =  os.path.abspath(os.path.join(outer_path, 'check_uniform
 sys.path.append(outer_path)
 sys.path.append(check_uniformity_path)
 # import relevant functions from different folders
-from search_phase_space.search_phase_space import *
+from search.search_online import *
 from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
@@ -38,6 +40,7 @@ point_galactocentric, point_galactic = get_star_coord_from_user()
 table = search_phase_space(*point_galactic, epsilon, v_scale)
  # convert from Gaia table to numpy array; output in galactocentric, with units
 samples = table_to_samples(table)
+print(samples)
 # Turn all data to natrual units; working with natural unit, galactocentric,
 # cartesian from this point on
 samples = to_natural_units(samples)
