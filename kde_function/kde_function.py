@@ -1,3 +1,9 @@
+
+# coding: utf-8
+
+# In[68]:
+
+
 #Ayush Pandhi, last updated 06/04/2018
 
 #Importing the required modules
@@ -14,8 +20,14 @@ def generate_KDE(inputs, ker):
         inputs (ndarray): NxM matrix, N = # of data points, M = # of parameters.
         ker (string): One of the 6 avaliable kernel types (gaussian, tophat, epanechnikov, exponential, linear, cosine)
     Returns:
-        kde (function): A blackbox function used for sampling data.
+        kde (function):
     """
+    #Scaling velocities with v_scale
+    v_scale = 0.1
+    positions, velocities = np.hsplit(inputs, 2)
+    velocities_scaled = velocities*v_scale
+    inputs = np.hstack((positions, velocities_scaled))
+    
     #Optimizing bandwidth in terms of Scott's Rule of Thumb
     shape_string = str(inputs.shape)
     objects, parameters = shape_string.split(', ')
@@ -38,6 +50,12 @@ def generate_KDE(inputs, ker):
         """
         #To correct the type of information from other functions into acceptable input
         samples = [samples]
+        
+        #Scaling samples with v_scale
+        v_scale = 0.1
+        samp_positions, samp_velocities = np.hsplit(samples, 2)
+        samp_velocities_scaled = samp_velocities*v_scale
+        samples = np.hstack((samp_positions, samp_velocities_scaled))
         
         #Get the log density for selected samples and apply exponential to get normal probabilities
         log_dens = kde.score_samples(samples)
