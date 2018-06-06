@@ -1,1 +1,0 @@
-__all__ = ['search_phase_space']
