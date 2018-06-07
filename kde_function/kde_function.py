@@ -6,18 +6,18 @@ from sklearn.neighbors import KernelDensity
 from scipy.stats import iqr
 
 #Defining a KDE function to quickly compute probabilities for the data set
-def generate_KDE(inputs, ker):
+def generate_KDE(inputs, ker, v_scale):
     """
     Takes an NxM matrix for inputs and a ker string to output a function input_DKE that treats kde 
     as a black box function for sampling.
     Args:
         inputs (ndarray): NxM matrix, N = # of data points, M = # of parameters.
         ker (string): One of the 6 avaliable kernel types (gaussian, tophat, epanechnikov, exponential, linear, cosine)
+        v_scale: velocity scaling argument
     Returns:
         kde (function):
     """
     #Scaling velocities with v_scale
-    v_scale = 0.1
     positions, velocities = np.hsplit(inputs, 2)
     velocities_scaled = velocities*v_scale
     inputs = np.hstack((positions, velocities_scaled))
@@ -46,7 +46,6 @@ def generate_KDE(inputs, ker):
         samples = [samples]
         
         #Scaling samples with v_scale
-        v_scale = 0.1
         samp_positions, samp_velocities = np.hsplit(samples, 2)
         samp_velocities_scaled = samp_velocities*v_scale
         samples = np.hstack((samp_positions, samp_velocities_scaled))
