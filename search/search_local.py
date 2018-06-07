@@ -106,7 +106,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
                         results.v_y.value, 
                         results.v_z.value], axis=1)
     
-    if samples.size > 0:
+    if len(samples) > 0:
         return samples
     raise Exception("no results found")
     

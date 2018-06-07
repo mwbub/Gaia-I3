@@ -59,8 +59,10 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
         default = None)
         
     OUTPUT:
-        astropy Table, containing stars from the Gaia DR2 RV catalogue that are
-        within a distance of epsilon from the point (u0, v0, w0, U0, V0, W0)
+        Nx6 array of galactocentric coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
+        consisting of stars within a distance of epsilon from the point
+        (u0, v0, w0, U0, V0, W0)
     """
     import warnings
     warnings.filterwarnings("ignore")
@@ -136,26 +138,10 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
     
     job = Gaia.launch_job_async(query)
     table = job.get_results()
-    if table:
-        return table
-    raise Exception("query returned no results")
-
-def table_to_samples(table):
-    """
-    NAME:
-        table_to_samples
-        
-    PURPOSE:
-        convert the table returned by search_phase_space into an Nx6 array
-        of samples in galactocentric rectangular coordinates
-        
-    INPUT:
-        table - astropy Table returned by search_phase_space
-        
-    OUTPUT:
-        Nx6 array of galactocentric coordinates of the form 
-        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
-    """
+    
+    if not table:
+        raise Exception("query returned no results")
+    
     icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
                           dec=table['dec']*units.deg, 
                           distance=table['d']*units.kpc, 
@@ -163,12 +149,15 @@ def table_to_samples(table):
                           pm_dec=table['pmdec']*units.mas/units.yr,
                           radial_velocity=
                           table['radial_velocity']*units.km/units.s)
+    
     galcen_coord = icrs_coord.transform_to('galactocentric')
     galcen_coord.representation_type = 'cartesian'
+    
     samples = np.stack([galcen_coord.x.value, 
                         galcen_coord.y.value, 
                         galcen_coord.z.value, 
                         galcen_coord.v_x.value, 
                         galcen_coord.v_y.value, 
                         galcen_coord.v_z.value], axis=1)
+    
     return samples
