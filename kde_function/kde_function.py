@@ -6,7 +6,7 @@ from sklearn.neighbors import KernelDensity
 from scipy.stats import iqr
 
 #Defining a KDE function to quickly compute probabilities for the data set
-def generate_KDE(inputs, ker, v_scale):
+def generate_KDE(inputs, ker, v_scale = 0.1):
     """
     Takes an NxM matrix for inputs and a ker string to output a function input_DKE that treats kde 
     as a black box function for sampling.
