@@ -36,7 +36,7 @@ gaia_rv_gal.representation_type = 'cartesian'
 gaia_rv_galcen = gaia_rv_icrs.transform_to('galactocentric')
 gaia_rv_galcen.representation_type = 'cartesian'
 
-def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
+def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale):
     """
     NAME:
         search_phase_space
@@ -66,7 +66,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0):
         epsilon - radius in phase space in which to search for stars
         
         v_scale - scale factor for velocities used when calculating phase space
-        distances (optional; default = 1.0)
+        distances
         
     OUTPUT:
         Nx6 array of galactocentric coordinates of the form 

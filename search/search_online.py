@@ -20,8 +20,7 @@ ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 # conversion factor from kpc*mas/yr to km/s
 k = (units.kpc*units.mas/units.yr).to(units.km*units.rad/units.s)
 
-def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0, 
-                       cone_r=None):
+def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
     """
     NAME:
         search_phase_space
@@ -51,7 +50,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale=1.0,
         epsilon - radius in phase space in which to search for stars
         
         v_scale - scale factor for velocities used when calculating phase space
-        distances (optional; default = 1.0)
+        distances
         
         cone_r - cone search radius used to limit the initial size of the 
         query; if None, will use the minimal cone that completely encompasses
