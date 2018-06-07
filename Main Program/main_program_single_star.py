@@ -20,10 +20,10 @@ check_uniformity_path =  os.path.abspath(os.path.join(outer_path, 'check_uniform
 sys.path.append(outer_path)
 sys.path.append(check_uniformity_path)
 # import relevant functions from different folders
-from search.search_online import *
 from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
+import search.search_online as search_online
 from kde_function.kde_function import *
 from tools.tools import *
 
@@ -69,30 +69,41 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
     directional_derivatives = evaluate_uniformity(density, a, W)
     return directional_derivatives
 
-# define parameters for the search and KDE
-epsilon = 0.2
-v_scale = 0.1
-width = 10
-# declare the two gradient functions for energy and angular momentum as global variables
-del_E = grad(Energy, 6)
-del_Lz = grad(L_z, 6)
 
-# at this point, everything should have physical units
-# get coordinate of the star to be searched from user
-point_galactocentric, point_galactic = get_star_coord_from_user()
-# get stars within an epsilon ball of the point in phase space from Gaia
-# input the galactic coordinate into search function
-table = search_phase_space(*point_galactic, epsilon, v_scale)
- # convert from Gaia table to numpy array; output in galactocentric, with units
-samples = table_to_samples(table)
-# Turn all data to natrual units; working with natural unit, galactocentric,
-# cartesian from this point on
-samples = to_natural_units(samples)
-
-# use the samples and a KDE learning method to generate a density function
-density = generate_KDE(samples, 'epanechnikov', width)
-
-directional_derivatives = evaluate_uniformity_from_point(point_galactocentric, density)
-print('From a sample of {} of stars,'.format(np.shape(samples)[0]))
-for i in range(len(directional_derivatives)):
-    print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
+def main(custom_density = None, search_method = "online"):
+    # at this point, everything should have physical units
+    # get coordinate of the star to be evaluated from user
+    point_galactocentric, point_galactic = get_star_coord_from_user()
+    if custom_density == None:
+        # define parameters for the search and KDE
+        epsilon = 0.2
+        v_scale = 0.1
+        # declare the two gradient functions for energy and angular momentum as global variables
+        del_E = grad(Energy, 6)
+        del_Lz = grad(L_z, 6)
+        # depending on the argument of main function, search stars online, locally
+        # or use all of local catalogue
+        # if we are searching, get stars within an epsilon ball of the point in 
+        # phase space from Gaia, input the galactic coordinate into search function
+        if search_method == "online":
+            samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
+        elif search_method == "local":
+            samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
+        elif search_method == "all of local":
+            import search.search_local as search_local # only import local if needed, since it is slow
+            samples = search_local.get_entire_catalogue()
+        print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
+        # Turn all data to natrual units; working with natural unit, galactocentric,
+        # cartesian from this point on
+        samples = to_natural_units(samples)
+        # use the samples and a KDE learning method to generate a density function
+        density = generate_KDE(samples, 'epanechnikov', v_scale)
+    else:
+        density = custom_density
+    
+    directional_derivatives = evaluate_uniformity_from_point(point_galactocentric, density)
+    for i in range(len(directional_derivatives)):
+        print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
+    
+if __name__ == "__main__":
+    main(None, "online")
