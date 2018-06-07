@@ -1,7 +1,7 @@
 """ 
 Filename: search_phase_space.py
 Author: Mathew Bub
-Last Revision Date: 2018-06-04
+Last Revision Date: 2018-06-07
 
 This module contains the search_phase_space function, which queries the 
 Gaia archive for stars close to a given point in phase space, using a galactic 
