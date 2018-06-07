@@ -43,7 +43,7 @@ def generate_KDE(inputs, ker, v_scale):
             dens (ndarray): 1xQ array of density values for Q data points.
         """
         #To correct the type of information from other functions into acceptable input
-        samples = [samples]
+        samples = np.array([samples])
         
         #Scaling samples with v_scale
         samp_positions, samp_velocities = np.hsplit(samples, 2)
