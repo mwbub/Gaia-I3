@@ -28,5 +28,3 @@ def test_search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale):
         
     for i in range(3):
         run_search(u0, v0, w0, U0, V0, W0, epsilon, v_scale, False)
-    
-    
