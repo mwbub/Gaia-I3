@@ -46,6 +46,8 @@ def gaiarv(fields=None, parallax_cut=True):
              in file_paths], autoconvert=True)
     
     if parallax_cut:
+        import warnings
+        warnings.filterwarnings('ignore')
         data = data[data['parallax_over_error'] > 5]
         
     return data
