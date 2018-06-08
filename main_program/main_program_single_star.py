@@ -26,6 +26,10 @@ from check_uniformity_of_density.Uniformity_Evaluation import *
 from search import search_online
 from kde_function.kde_function import *
 from tools.tools import *
+# ask user whether importing search local is necessary
+reload_local = input('Reload local catalogue? (y/n) ')
+if reload_local == 'y' or reload_local == 'yes':
+    from search import search_local
 
 
 def evaluate_uniformity_from_point(point_galactocentric, density):
@@ -73,6 +77,28 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
 
 
 def main(custom_density = None, search_method = "online"):
+    """
+    NAME:
+        main
+
+    PURPOSE:
+        Call on all modules to evaluate uniformity of density at a user -
+        specified point. Allows the user to specify search method or give 
+        custom density function.
+
+    INPUT:
+        custom_density = a customized density functiont that takes an array
+                         of 6 numbers representing the coordinate and return
+                         the density; if this input is None, then the code
+                         will use a search method to get data from Gaia catalogue
+                         and use KDE to genereate a density function
+        search_method = search the gaia catalogue online ("online"),
+                        locally on a downloaded file ('local'), or use the
+                        the entire downloaded gaia rv file ('all of local')
+
+    HISTORY:
+        2018-06-07 - Written - Samuel Wong
+    """
     # at this point, everything should have physical units
     # get coordinate of the star to be evaluated from user
     point_galactocentric, point_galactic = get_star_coord_from_user()
@@ -87,10 +113,8 @@ def main(custom_density = None, search_method = "online"):
         if search_method == "online":
             samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
         elif search_method == "local":
-            from search import search_local # only import local if needed, since it is slow
             samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
         elif search_method == "all of local":
-            from search import search_local # only import local if needed, since it is slow
             samples = search_local.get_entire_catalogue()
         print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
         # Turn all data to natrual units; working with natural unit, galactocentric,
@@ -106,4 +130,4 @@ def main(custom_density = None, search_method = "online"):
         print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
     
 if __name__ == "__main__":
-    main(None, "local")
+    main(None, "online")
