@@ -68,7 +68,7 @@ def load_gaiarv(parallax_cut=True):
     _GAIARV_GALCEN = gaiarv_icrs.transform_to('galactocentric')
     _GAIARV_GALCEN.representation_type = 'cartesian'
     
-    # store the settings of this load
+    # store the state of this load
     _GAIA_LOADED = True
     _PARALLAX_CUT = parallax_cut
 
@@ -185,4 +185,3 @@ def get_entire_catalogue(parallax_cut=True):
                         _GAIARV_GALCEN.v_y.value,
                         _GAIARV_GALCEN.v_z.value], axis=1)
     return samples
-             
