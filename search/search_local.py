@@ -39,6 +39,12 @@ def load_gaiarv(parallax_cut=True):
         
     OUTPUT:
         None (defines global variables to store the Gaia data)
+        
+    WARNINGS:
+        if using Spyder 3, this function works best with User Module Reloader
+        disabled; otherwise, the Gaia data will have to be reloaded every
+        time the search_local module is imported; the setting can be found in
+        Tools -> Preferences -> Python interpreter -> User Module Reloader
     """
     global _GAIARV_GAL
     global _GAIARV_GALCEN
