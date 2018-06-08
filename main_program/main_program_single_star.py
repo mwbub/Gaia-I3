@@ -24,13 +24,9 @@ from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from search import search_online
+from search import search_local
 from kde_function.kde_function import *
 from tools.tools import *
-# ask user whether importing search local is necessary
-reload_local = input('Reload local catalogue? (y/n) ')
-if reload_local == 'y' or reload_local == 'yes':
-    from search import search_local
-
 
 def evaluate_uniformity_from_point(point_galactocentric, density):
     """
