@@ -12,6 +12,24 @@ import astropy.io.fits as pyfits
 from gaia_tools.load import path, download
 
 def gaiarv(fields=None, parallax_cut=True):
+    """
+    NAME:
+        gaiarv
+        
+    PURPOSE:
+        Load desired columns from the Gaia DR2 RV catalogue.
+       
+    INPUT:
+        fields - list of field/column names to load; if None, will load every
+        column in the catalogue (optional; default = None)
+        
+        parallax_cut - if True, will perform a cut for stars with parallax
+        errors < 20% (optional; default = True)
+        
+    OUTPUT:
+        numpy.ma.core.MaskedArray containing the columns from the Gaia DR2 RV
+        catalogue that were specified in fields
+    """
     file_paths = path.gaiarvPath()
     if not np.all([os.path.exists(file_path) for file_path in file_paths]):
         download.gaiarv()

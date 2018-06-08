@@ -15,9 +15,10 @@ from astropy import units
 from astropy.coordinates import SkyCoord
 from tools import load
 
+# check if the Gaia data has already been loaded on a previous run
 try:
-    gaiarv_gal
-    gaiarv_galcen
+    _GAIARV_GAL
+    _GAIARV_GALCEN
     _GAIA_LOADED
     _PARALLAX_CUT
 except NameError:
@@ -25,11 +26,25 @@ except NameError:
     _PARALLAX_CUT = None
 
 def load_gaiarv(parallax_cut=True):
-    global gaiarv_gal
-    global gaiarv_galcen
+    """
+    NAME:
+        load_gaiarv
+        
+    PURPOSE:
+        load the Gaia DR2 RV catalogue for use in search_local
+        
+    INPUT:
+        parallax_cut - if True, will perform a cut for stars with parallax
+        errors < 20% (optional; default = True)
+        
+    OUTPUT:
+        None (defines global variables to store the Gaia data)
+    """
+    global _GAIARV_GAL
+    global _GAIARV_GALCEN
     global _GAIA_LOADED
     global _PARALLAX_CUT
-        
+    
     # fields to load
     fields = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', 'radial_velocity']
         
@@ -46,13 +61,14 @@ def load_gaiarv(parallax_cut=True):
                            data['radial_velocity']*units.km/units.s)
     
     # convert to galactic rectangular coordiantes
-    gaiarv_gal = gaiarv_icrs.transform_to('galactic')
-    gaiarv_gal.representation_type = 'cartesian'
+    _GAIARV_GAL = gaiarv_icrs.transform_to('galactic')
+    _GAIARV_GAL.representation_type = 'cartesian'
     
     # convert to galactocentric rectangular coordiantes
-    gaiarv_galcen = gaiarv_icrs.transform_to('galactocentric')
-    gaiarv_galcen.representation_type = 'cartesian'
+    _GAIARV_GALCEN = gaiarv_icrs.transform_to('galactocentric')
+    _GAIARV_GALCEN.representation_type = 'cartesian'
     
+    # store the settings of this load
     _GAIA_LOADED = True
     _PARALLAX_CUT = parallax_cut
 
@@ -89,12 +105,17 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
         v_scale - scale factor for velocities used when calculating phase space
         distances
         
+        parallax_cut - if True, will perform a cut for stars with parallax
+        errors < 20% (optional; default = True)
+        
     OUTPUT:
         Nx6 array of galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
     """
+    # load the Gaia data if not already loaded or if the parallax_cut setting
+    # of this search does not match the _PARALLAX_CUT of the loaded data
     if not _GAIA_LOADED or parallax_cut != _PARALLAX_CUT:
         load_gaiarv(parallax_cut=parallax_cut)
 
@@ -107,12 +128,12 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
     W0 = units.Quantity(W0, units.km/units.s).value
     
     # grab the galactic coordinates of the Gaia RV catalogue
-    u = gaiarv_gal.u.value
-    v = gaiarv_gal.v.value
-    w = gaiarv_gal.w.value
-    U = gaiarv_gal.U.value
-    V = gaiarv_gal.V.value
-    W = gaiarv_gal.W.value
+    u = _GAIARV_GAL.u.value
+    v = _GAIARV_GAL.v.value
+    w = _GAIARV_GAL.w.value
+    U = _GAIARV_GAL.U.value
+    V = _GAIARV_GAL.V.value
+    W = _GAIARV_GAL.W.value
     
     # search for stars within a distance of epsilon from the point 
     # (u0, v0, w0, U0, V0, W0)
@@ -120,7 +141,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
             (V - V0)**2 + (W - W0)**2) * v_scale**2) < epsilon**2
              
     # get the galactocentric coordinates of the stars that were found
-    results = gaiarv_galcen[mask]
+    results = _GAIARV_GALCEN[mask]
     
     # organize the coordinates into an Nx6 array
     samples = np.stack([results.x.value, 
@@ -144,21 +165,24 @@ def get_entire_catalogue(parallax_cut=True):
         coordinates for use in generating a KDE
         
     INPUT:
-        None
+        parallax_cut - if True, will perform a cut for stars with parallax
+        errors < 20% (optional; default = True)
         
     OUTPUT:
         Nx6 array of galactocentric coordinates of the form
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
     """
+    # load the Gaia data if not already loaded or if the parallax_cut setting
+    # of this search does not match the _PARALLAX_CUT of the loaded data
     if not _GAIA_LOADED or parallax_cut != _PARALLAX_CUT:
         load_gaiarv(parallax_cut=parallax_cut)
     
     # organize the coordinates into an Nx6 array
-    samples = np.stack([gaiarv_galcen.x.value,
-                        gaiarv_galcen.y.value,
-                        gaiarv_galcen.z.value,
-                        gaiarv_galcen.v_x.value,
-                        gaiarv_galcen.v_y.value,
-                        gaiarv_galcen.v_z.value], axis=1)
+    samples = np.stack([_GAIARV_GALCEN.x.value,
+                        _GAIARV_GALCEN.y.value,
+                        _GAIARV_GALCEN.z.value,
+                        _GAIARV_GALCEN.v_x.value,
+                        _GAIARV_GALCEN.v_y.value,
+                        _GAIARV_GALCEN.v_z.value], axis=1)
     return samples
              
