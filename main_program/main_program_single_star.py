@@ -23,9 +23,13 @@ sys.path.append(check_uniformity_path)
 from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
-import search.search_online as search_online
+from search import search_online
 from kde_function.kde_function import *
 from tools.tools import *
+# ask user whether importing search local is necessary
+reload_local = input('Reload local catalogue? (y/n) ')
+if reload_local == 'y' or reload_local == 'yes':
+    from search import search_local
 
 
 def evaluate_uniformity_from_point(point_galactocentric, density):
@@ -58,6 +62,8 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
     # rename the search star to a
     a = to_natural_units(np.array([point_galactocentric]))[0]
     # get the gradient of energy and momentum of the search star
+    del_E = grad(Energy, 6)
+    del_Lz = grad(L_z, 6)
     del_E_a = del_E(a)
     del_Lz_a = del_Lz(a)
     # create matrix of the space spanned by direction of changing energy and momentum
@@ -71,6 +77,28 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
 
 
 def main(custom_density = None, search_method = "online"):
+    """
+    NAME:
+        main
+
+    PURPOSE:
+        Call on all modules to evaluate uniformity of density at a user -
+        specified point. Allows the user to specify search method or give 
+        custom density function.
+
+    INPUT:
+        custom_density = a customized density functiont that takes an array
+                         of 6 numbers representing the coordinate and return
+                         the density; if this input is None, then the code
+                         will use a search method to get data from Gaia catalogue
+                         and use KDE to genereate a density function
+        search_method = search the gaia catalogue online ("online"),
+                        locally on a downloaded file ('local'), or use the
+                        the entire downloaded gaia rv file ('all of local')
+
+    HISTORY:
+        2018-06-07 - Written - Samuel Wong
+    """
     # at this point, everything should have physical units
     # get coordinate of the star to be evaluated from user
     point_galactocentric, point_galactic = get_star_coord_from_user()
@@ -78,9 +106,6 @@ def main(custom_density = None, search_method = "online"):
         # define parameters for the search and KDE
         epsilon = 0.2
         v_scale = 0.1
-        # declare the two gradient functions for energy and angular momentum as global variables
-        del_E = grad(Energy, 6)
-        del_Lz = grad(L_z, 6)
         # depending on the argument of main function, search stars online, locally
         # or use all of local catalogue
         # if we are searching, get stars within an epsilon ball of the point in 
@@ -90,7 +115,6 @@ def main(custom_density = None, search_method = "online"):
         elif search_method == "local":
             samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
         elif search_method == "all of local":
-            import search.search_local as search_local # only import local if needed, since it is slow
             samples = search_local.get_entire_catalogue()
         print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
         # Turn all data to natrual units; working with natural unit, galactocentric,
@@ -99,7 +123,7 @@ def main(custom_density = None, search_method = "online"):
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
     else:
-        density = custom_density
+        density = custom_density # use the custom density function
     
     directional_derivatives = evaluate_uniformity_from_point(point_galactocentric, density)
     for i in range(len(directional_derivatives)):
