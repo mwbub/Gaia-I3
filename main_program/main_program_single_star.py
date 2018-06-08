@@ -126,4 +126,4 @@ def main(custom_density = None, search_method = "online"):
         print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
     
 if __name__ == "__main__":
-    main(None, "online")
+    main(None, "local")
