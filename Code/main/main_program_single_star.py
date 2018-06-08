@@ -25,7 +25,7 @@ from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from search import search_online
 from search import search_local
-from kde_function.kde_function import *
+from kde.kde_function import *
 from tools.tools import *
 
 def evaluate_uniformity_from_point(point_galactocentric, density):

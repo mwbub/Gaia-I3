@@ -1,5 +1,6 @@
-import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys
+sys.path.append('..')
+
 from search import search_local
 import time
 

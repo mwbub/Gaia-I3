@@ -13,7 +13,7 @@ import os, sys
 outer_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(outer_path)
 # import relevant functions from different folders
-from main_program.main_program_single_star import *
+from main.main_program_single_star import *
 
 def fake_density(coord):
     e = Energy(coord)
