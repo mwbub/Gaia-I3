@@ -8,8 +8,9 @@ Gaia archive for stars close to a given point in phase space, using a galactic
 coordinate frame. This version of the module uses a local downloaded copy of
 the Gaia DR2 RV catalogue.
 """
-import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys
+sys.path.append('..')
+
 import numpy as np
 from astropy import units
 from astropy.coordinates import SkyCoord
