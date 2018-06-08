@@ -99,11 +99,11 @@ def main(custom_density = None, search_method = "online"):
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
     else:
-        density = custom_density
+        density = custom_density # use the custom density function
     
     directional_derivatives = evaluate_uniformity_from_point(point_galactocentric, density)
     for i in range(len(directional_derivatives)):
         print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
     
 if __name__ == "__main__":
-    main(None, "online")
+    main(None, "local")
