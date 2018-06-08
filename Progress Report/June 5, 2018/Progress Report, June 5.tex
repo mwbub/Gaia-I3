@@ -79,6 +79,10 @@ I incorporated the meshgrid function into the main program and ran preliminary t
 
 I was originally going to add a code the create mesh grid tool that artificially delete all points in the grid that include the origin. But I had troubles with numpy "delete" function.
 
+\section{Mathew's Accomplished Tasks}
+\subsection{Implemented local search}
+Using \texttt{gaia\_tools}, I have reimplemented the search function using a locally downloaded copy of the Gaia data. There were a number of challenges with implementing this search. First, \texttt{gaia\_tools} had a minor incompatibility problem with Windows that I had to fix. Also, loading the entire Gaia catalogue is very memory intensive. As a trade-off, the search function (which now uses numpy arrays and astropy coordinate transformations, rather than ADQL) is extremely fast. I will work on more efficient ways to store the data in memory.
+
 \section{Next Steps} 
 Allow main program to select point or meshgrid search 
 

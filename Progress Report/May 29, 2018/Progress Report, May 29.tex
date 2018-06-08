@@ -24,7 +24,8 @@
 \subsection{Updated the Research Plan}
 We updated the research plan by carefully sorting through the logical steps behind the "uniformity by perpendicular to gradient" argument.
 \subsection{Cone Search Function}
-We have written a cone search function that searches for star within a radius of a star. We have yet to find values for $v_{scale}$ and $\epsilon$.
+We have written a cone search function that searches for stars within a phase space radius of a star. We have yet to find values for $v_{scale}$ and $\epsilon$. The search function implements coordinate transformations from within an ADQL query. Coordinate transformations were derived from Jo Bovy (https://github.com/jobovy/stellarkinematics/blob/master/stellarkinematics.pdf).
+
 \subsection*{Question}
 How do we tune the proper value for $v_{scale}$? Currently, since the position are measured in kpc, position values are on the scale of 0 to 20.
 Since the unit of velocity is km/s, those values are on the scale of 0 to 300. So we set $v_{scale} = 0.1$ to reduce one order of magnitude.
