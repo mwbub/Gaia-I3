@@ -21,7 +21,7 @@ ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 k = (units.kpc*units.mas/units.yr).to(units.km*units.rad/units.s)
 
 def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None,
-                       parallax_cut=False, return_frame="galactocentric"):
+                       parallax_cut=False, return_frame='galactocentric'):
     """
     NAME:
         search_phase_space
