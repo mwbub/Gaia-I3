@@ -1,7 +1,7 @@
 """ 
 Filename: search_online.py
 Author: Mathew Bub
-Last Revision Date: 2018-06-07
+Last Revision Date: 2018-06-11
 
 This module contains the search_phase_space function, which queries the 
 Gaia archive for stars close to a given point in phase space, using a galactic 
@@ -20,7 +20,8 @@ ra_ngp, dec_ngp = lb_to_radec(0, np.pi/2, epoch=None)
 # conversion factor from kpc*mas/yr to km/s
 k = (units.kpc*units.mas/units.yr).to(units.km*units.rad/units.s)
 
-def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
+def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None,
+                       parallax_cut=False, return_frame="galactocentric"):
     """
     NAME:
         search_phase_space
@@ -57,14 +58,20 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
         the search sphere in physical space (optional; given in degrees;
         default = None)
         
+        parallax_cut - if True, will perform a cut for stars with parallax
+        errors < 20% (optional; default = False)
+        
+        return_frame - coordinate frame of the output; can be either
+        'galactocentric' or 'galactic' (optional; default = 'galactocentric')
+        
     OUTPUT:
-        Nx6 array of galactocentric coordinates of the form 
+        Nx6 array of rectangular phase space coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
     """
     import warnings
-    warnings.filterwarnings("ignore")
+    warnings.filterwarnings('ignore')
     
     # convert coordinates into consistent units
     u0 = units.Quantity(u0, units.kpc)
@@ -76,7 +83,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
     
     # distance check to limit the size of the initial query
     d = np.sqrt(u0.value**2 + v0.value**2 + w0.value**2)
-    limiting_condition = "AND ABS({} - 1/parallax) < {}".format(d, epsilon)
+    limiting_condition = 'AND ABS({} - 1/parallax) < {}'.format(d, epsilon)
     
     # add a cone search if the search sphere does not contain the Sun, or if 
     # cone_r is set manually
@@ -98,6 +105,9 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
         limiting_condition += ("\n\tAND 1=CONTAINS(POINT('ICRS', ra, dec), "
                                "CIRCLE('ICRS', {}, {}, {}))"
                                ).format(cone_ra, cone_dec, cone_r)
+    
+    if parallax_cut:
+        limiting_condition += '\n\tAND parallax_over_error > 5'
     
     # query parameters
     params = (k, dec_ngp, ra_ngp, limiting_condition, u0.value, v0.value,
@@ -139,7 +149,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
     table = job.get_results()
     
     if not table:
-        raise Exception("query returned no results")
+        raise Exception('query returned no results')
     
     icrs_coord = SkyCoord(ra=table['ra']*units.deg, 
                           dec=table['dec']*units.deg, 
@@ -148,15 +158,26 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale, cone_r=None):
                           pm_dec=table['pmdec']*units.mas/units.yr,
                           radial_velocity=
                           table['radial_velocity']*units.km/units.s)
-    
-    galcen_coord = icrs_coord.transform_to('galactocentric')
-    galcen_coord.representation_type = 'cartesian'
-    
-    samples = np.stack([galcen_coord.x.value, 
-                        galcen_coord.y.value, 
-                        galcen_coord.z.value, 
-                        galcen_coord.v_x.value, 
-                        galcen_coord.v_y.value, 
-                        galcen_coord.v_z.value], axis=1)
+
+    if return_frame == 'galactocentric':
+        galcen_coord = icrs_coord.transform_to('galactocentric')
+        galcen_coord.representation_type = 'cartesian'
+        samples = np.stack([galcen_coord.x.value, 
+                            galcen_coord.y.value, 
+                            galcen_coord.z.value, 
+                            galcen_coord.v_x.value, 
+                            galcen_coord.v_y.value, 
+                            galcen_coord.v_z.value], axis=1)
+    elif return_frame == 'galactic':
+        gal_coord = icrs_coord.transform_to('galactic')
+        gal_coord.representation_type = 'cartesian'
+        samples = np.stack([gal_coord.u.value, 
+                            gal_coord.v.value, 
+                            gal_coord.w.value, 
+                            gal_coord.U.value, 
+                            gal_coord.V.value, 
+                            gal_coord.W.value], axis=1)
+    else:
+        raise ValueError("return_frame must be 'galactocentric' or 'galactic'")
     
     return samples
