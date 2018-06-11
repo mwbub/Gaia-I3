@@ -9,7 +9,7 @@ coordinate frame. This version of the module uses a local downloaded copy of
 the Gaia DR2 RV catalogue.
 """
 import sys
-sys.path.append("..")
+sys.path.append('..')
 
 import numpy as np
 from astropy import units
@@ -53,34 +53,34 @@ def load_gaiarv(parallax_cut=True):
     global _PARALLAX_CUT
     
     # fields to load
-    fields = ["ra", "dec", "parallax", "pmra", "pmdec", "radial_velocity"]
+    fields = ['ra', 'dec', 'parallax', 'pmra', 'pmdec', 'radial_velocity']
         
     # load the Gaia DR2 RV catalogue
     data = load.gaiarv(fields=fields, parallax_cut=parallax_cut)
         
     # organize the catalogue into a SkyCoord object
-    gaiarv_icrs = SkyCoord(ra=data["ra"]*units.deg,
-                           dec=data["dec"]*units.deg,
-                           distance=1/data["parallax"]*units.kpc,
-                           pm_ra_cosdec=data["pmra"]*units.mas/units.yr,
-                           pm_dec=data["pmdec"]*units.mas/units.yr,
+    gaiarv_icrs = SkyCoord(ra=data['ra']*units.deg,
+                           dec=data['dec']*units.deg,
+                           distance=1/data['parallax']*units.kpc,
+                           pm_ra_cosdec=data['pmra']*units.mas/units.yr,
+                           pm_dec=data['pmdec']*units.mas/units.yr,
                            radial_velocity=
-                           data["radial_velocity"]*units.km/units.s)
+                           data['radial_velocity']*units.km/units.s)
     
     # convert to galactic rectangular coordiantes
-    _GAIARV_GAL = gaiarv_icrs.transform_to("galactic")
-    _GAIARV_GAL.representation_type = "cartesian"
+    _GAIARV_GAL = gaiarv_icrs.transform_to('galactic')
+    _GAIARV_GAL.representation_type = 'cartesian'
     
     # convert to galactocentric rectangular coordiantes
-    _GAIARV_GALCEN = gaiarv_icrs.transform_to("galactocentric")
-    _GAIARV_GALCEN.representation_type = "cartesian"
+    _GAIARV_GALCEN = gaiarv_icrs.transform_to('galactocentric')
+    _GAIARV_GALCEN.representation_type = 'cartesian'
     
     # store the state of this load
     _GAIA_LOADED = True
     _PARALLAX_CUT = parallax_cut
 
 def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
-                       parallax_cut=True, return_frame="galactocentric"):
+                       parallax_cut=True, return_frame='galactocentric'):
     """
     NAME:
         search_phase_space
@@ -150,7 +150,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
     mask = ((u - u0)**2 + (v - v0)**2 + (w - w0)**2 + ((U - U0)**2 + 
             (V - V0)**2 + (W - W0)**2) * v_scale**2) < epsilon**2
              
-    if return_frame == "galactocentric":
+    if return_frame == 'galactocentric':
         # get the galactocentric coordinates of the stars that were found
         results = _GAIARV_GALCEN[mask]
         
@@ -161,7 +161,7 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
                             results.v_x.value, 
                             results.v_y.value, 
                             results.v_z.value], axis=1)
-    elif return_frame == "galactic":
+    elif return_frame == 'galactic':
         # get the galactic coordinates of the stars that were found
         results = _GAIARV_GAL[mask]
         
@@ -177,9 +177,9 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
         
     if len(samples) > 0:
         return samples
-    raise Exception("no results found")
+    raise Exception('no results found')
     
-def get_entire_catalogue(parallax_cut=True, return_frame="galactocentric"):
+def get_entire_catalogue(parallax_cut=True, return_frame='galactocentric'):
     """
     NAME:
         get_entire_catalogue
@@ -204,7 +204,7 @@ def get_entire_catalogue(parallax_cut=True, return_frame="galactocentric"):
     if not _GAIA_LOADED or parallax_cut != _PARALLAX_CUT:
         load_gaiarv(parallax_cut=parallax_cut)
     
-    if return_frame == "galactocentric":
+    if return_frame == 'galactocentric':
         # organize the coordinates into an Nx6 array
         samples = np.stack([_GAIARV_GALCEN.x.value,
                             _GAIARV_GALCEN.y.value,
@@ -212,7 +212,7 @@ def get_entire_catalogue(parallax_cut=True, return_frame="galactocentric"):
                             _GAIARV_GALCEN.v_x.value,
                             _GAIARV_GALCEN.v_y.value,
                             _GAIARV_GALCEN.v_z.value], axis=1)
-    elif return_frame == "galactic":
+    elif return_frame == 'galactic':
         # organize the coordinates into an Nx6 array
         samples = np.stack([_GAIARV_GAL.u.value,
                             _GAIARV_GAL.v.value,
