@@ -37,7 +37,7 @@ def plot_clusters(points, n_clusters, cluster_scale):
 
 def test_cluster_scale(cluster_scale, n_cluster, epsilon, v_scale):
     samples = search_local.search_phase_space(0, 0, 0, 0, 0, 0, epsilon, v_scale)
-    plot_clusters(samples, 5, cluster_scale)
+    plot_clusters(samples, n_cluster, cluster_scale)
     
 epsilon = float(input('epsilon = '))
 v_scale = float(input('v_scale = '))
