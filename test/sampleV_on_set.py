@@ -11,6 +11,43 @@ HISTORY:
 import numpy as np
 from scipy.interpolate import RectBivariateSpline as interpolation
 
+def separate_outliers(data, num_std):
+    """
+    NAME:
+        separate_outliers
+
+    PURPOSE:
+        Given a numpy array of 2 dimensional tuples, separate the data to
+        a group of normal points and another group of outliers whose values
+        are <std> standard deviation away from the mean, in either directions.
+
+    INPUT:
+        data = a numpy array of shape (n, 2), where n is any integer
+        num_std = the number of standard deviation to eliminate. Must be integer
+
+    OUTPUT:
+        (normal, outliers) = a split of the original data into two groups
+
+    HISTORY:
+        2018-06-12 - Written - Samuel Wong
+    """
+    # get the standard deviation and mean of x and y
+    std_x, std_y = np.std(data, axis = 0)
+    mean_x, mean_y = np.mean(data, axis = 0)
+    
+    # initialize outliers and normal list
+    outliers = []
+    normal = []
+    
+    # seperate the data into normal and outlier list
+    for point in data:
+        if np.abs(point[0] - mean_x) > num_std*std_x or np.abs(point[1] - 
+                 mean_y) > num_std*std_y:
+            outliers.append(point)
+        else:
+            normal.append(point)
+            
+    return np.array(normal), np.array(outliers)
 
 def sampleV_on_set(rz_set, df):
     """
@@ -86,13 +123,4 @@ def sampleV_on_set(rz_set, df):
     # combine normal and outlier result
     coord_v = np.vstack((normal_coord_v, outlier_coord_v))
     return coord_v
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
