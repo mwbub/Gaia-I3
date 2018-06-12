@@ -9,7 +9,7 @@ import numpy as np
 
 def plot_clusters(points, n_clusters, cluster_scale):
     kmeans = KMeans(n_clusters=n_clusters, max_iter=1000)
-    kmeans.fit(np.concatenate((points[:,:2], points[:,3:]*cluster_scale), axis=1))
+    kmeans.fit(np.concatenate((points[:,:3], points[:,3:]*cluster_scale), axis=1))
                
     cmap = plt.get_cmap('jet')
     colours = cmap(np.linspace(0, 1, n_clusters))
@@ -19,6 +19,8 @@ def plot_clusters(points, n_clusters, cluster_scale):
 
     pos_ax = fig.add_subplot(121, projection='3d')
     pos_ax.scatter(*points.transpose()[:3], s=5, c=colours[kmeans.labels_])
+    pos_ax.scatter(*kmeans.cluster_centers_.transpose()[:3], s=100,
+                   c='black', marker='x')
     pos_ax.set_title('Positions')
     pos_ax.set_xlabel('$x$ (kpc)')
     pos_ax.set_ylabel('$y$ (kpc)')
@@ -26,6 +28,8 @@ def plot_clusters(points, n_clusters, cluster_scale):
 
     vel_ax = fig.add_subplot(122, projection='3d')
     vel_ax.scatter(*points.transpose()[3:], s=5, c=colours[kmeans.labels_])
+    vel_ax.scatter(*kmeans.cluster_centers_.transpose()[3:]/cluster_scale, 
+                   s=100, c='black', marker='x')
     vel_ax.set_title('Velocities')
     vel_ax.set_xlabel('$v_x$ (km/s)')
     vel_ax.set_ylabel('$v_y$ (km/s)')
@@ -34,13 +38,10 @@ def plot_clusters(points, n_clusters, cluster_scale):
     fig.subplots_adjust(wspace=0)
                
     plt.show()
-
-def test_cluster_scale(cluster_scale, n_cluster, epsilon, v_scale):
-    samples = search_local.search_phase_space(0, 0, 0, 0, 0, 0, epsilon, v_scale)
-    plot_clusters(samples, n_cluster, cluster_scale)
     
 epsilon = float(input('epsilon = '))
 v_scale = float(input('v_scale = '))
 n_cluster = int(input('n_cluster = '))
 cluster_scale = float(input('cluster_scale = '))
-test_cluster_scale(cluster_scale, n_cluster, epsilon, v_scale)
+samples = search_local.search_phase_space(0, 0, 0, 0, 0, 0, epsilon, v_scale)
+plot_clusters(samples, n_cluster, cluster_scale)
