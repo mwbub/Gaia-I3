@@ -41,6 +41,6 @@ def test_cluster_scale(cluster_scale, n_cluster, epsilon, v_scale):
     
 epsilon = float(input('epsilon = '))
 v_scale = float(input('v_scale = '))
-n_cluster = float(input('n_cluster = '))
+n_cluster = int(input('n_cluster = '))
 cluster_scale = float(input('cluster_scale = '))
 test_cluster_scale(cluster_scale, n_cluster, epsilon, v_scale)
