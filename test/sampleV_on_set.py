@@ -89,10 +89,12 @@ def optimize_grid_dim(data):
     # get the range in each direction
     x_range = x_max - x_min
     y_range = y_max - y_min
-    
+    # get the optimized pixel in each direction that makes sure the error is
+    # below a maximum error and runs in the fastest time
+    x_pixel, y_pixel = get_pixel(max_error)
+    # calculate the number of spacing in each direction
     x_number = x_range/x_pixel
     y_number = y_range/y_pixel
-    
     return (x_number, y_number)
 
 def sampleV_on_set(rz_set, df):
