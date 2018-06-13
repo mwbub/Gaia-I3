@@ -35,7 +35,7 @@ def plot_points(title, points, cluster_centres, n_clusters, cluster_labels):
                
     plt.show()
 
-def plot_clusters(points, n_clusters, cluster_scale):
+def plot_with_manual_scale(points, n_clusters, cluster_scale):
     kmeans = KMeans(n_clusters=n_clusters, max_iter=1000)
     kmeans.fit(np.concatenate((points[:,:3], points[:,3:]*cluster_scale), axis=1))
     
@@ -82,7 +82,7 @@ samples = search_local.search_phase_space(0, 0, 0, 0, 0, 0, epsilon, v_scale)
     
 if scale_type == 'a':
     cluster_scale = float(input('cluster_scale = '))
-    plot_clusters(samples, n_clusters, cluster_scale)
+    plot_with_manual_scale(samples, n_clusters, cluster_scale)
 elif scale_type == 'b':
     plot_with_std_scale(samples, n_clusters)
 else:
