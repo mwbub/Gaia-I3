@@ -78,8 +78,7 @@ def generate_grid(data, x_number, y_number):
     y = np.linspace(y_min, y_max, y_number)
     # mesh and create the grid
     xv, yv = np.meshgrid(x, y)
-    grid = np.dstack(xv, yv
-                     )
+    grid = np.dstack((xv, yv))
     return grid, x, y
     
 
