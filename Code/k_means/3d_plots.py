@@ -8,7 +8,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import iqr
 import numpy as np
 
-def plot_points(title, points, cluster_centres, n_clusters, cluster_labels):
+def plot_points(title, points, cluster_centres, cluster_labels):
+    n_clusters = len(cluster_centres[0])
     cmap = plt.get_cmap('jet')
     colours = cmap(np.linspace(0, 1, n_clusters))
                
@@ -42,10 +43,9 @@ def plot_with_manual_scale(points, n_clusters, cluster_scale):
     cluster_centres = np.concatenate((kmeans.cluster_centers_[:,:3], 
                                       kmeans.cluster_centers_[:,3:]/cluster_scale), axis=1)
     
-    plot_points('cluster_scale = {:.2f}'.format(cluster_scale),
+    plot_points('cluster_scale = {}'.format(cluster_scale),
                 points.transpose(),
                 cluster_centres.transpose(),
-                n_clusters,
                 kmeans.labels_)
     
 def plot_with_iqr_scale(points, n_clusters):
@@ -56,7 +56,6 @@ def plot_with_iqr_scale(points, n_clusters):
     plot_points('Scaled for IQR',
                 points.transpose(),
                 (kmeans.cluster_centers_*points_iqr).transpose(),
-                n_clusters,
                 kmeans.labels_)
     
 def plot_with_std_scale(points, n_clusters):
@@ -67,7 +66,6 @@ def plot_with_std_scale(points, n_clusters):
     plot_points('Scaled for $\sigma$',
                 points.transpose(),
                 (kmeans.cluster_centers_*points_std).transpose(),
-                n_clusters,
                 kmeans.labels_)
     
 epsilon = float(input('epsilon = '))
