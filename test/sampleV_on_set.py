@@ -49,6 +49,46 @@ def separate_outliers(data, num_std):
             
     return np.array(normal), np.array(outliers)
 
+
+def generate_grid(data, x_number, y_number):
+    """
+    NAME:
+        generate_grid
+
+    PURPOSE:
+        Given a numpy array of 2 dimensional tuples, as well as the number of 
+        spacing in the x and y axis of the grid, generate a grid whose
+        minimum and maximum of both x and y correspond to that of the data,
+        such that the grid encloses the data.
+
+    INPUT:
+        data = a numpy array of shape (n, 2), where n is any integer
+        x_number = number of spacing in the x axis of the grid
+        y_number = number of spacing in the y axis of the grid
+
+    OUTPUT:
+        (grid, x, y) where
+        grid = an array that stores the 2 dimensional coordinate in a 2
+        dimensional array
+        x = the linspace in the x direction
+        y = the linspace in the y direction
+
+    HISTORY:
+        2018-06-12 - Written - Samuel Wong
+    """
+    # get the minimum and maximum of each coordinate
+    x_min, y_min = np.min(data, axis = 0)
+    x_max, y_max = np.max(data, axis = 0)
+    # create the linspace in each direction according to the specified number
+    # of points in each axis
+    x = np.linspace(x_min, x_max, x_number)
+    y = np.linspace(y_min, y_max, y_number)
+    # mesh and create the grid
+    xv, yv = np.meshgrid(x, y)
+    grid = np.dstack(xv, yv)
+    return grid, x, y
+    
+
 def sampleV_on_set(rz_set, df):
     """
     NAME:
