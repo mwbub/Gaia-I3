@@ -34,20 +34,13 @@ def separate_outliers(data, num_std):
     # get the standard deviation and mean of x and y
     std_x, std_y = np.std(data, axis = 0)
     mean_x, mean_y = np.mean(data, axis = 0)
-    
-    # initialize outliers and normal list
-    outliers = []
-    normal = []
-    
-    # seperate the data into normal and outlier list
-    for point in data:
-        if np.abs(point[0] - mean_x) > num_std*std_x or np.abs(point[1] - 
-                 mean_y) > num_std*std_y:
-            outliers.append(point)
-        else:
-            normal.append(point)
-            
-    return np.array(normal), np.array(outliers)
+    # create a boolean mask that encodes which stars are outliers
+    mask = np.any([np.abs(data[:, 0] - mean_x) > num_std*std_x, 
+                   np.abs(data[:, 1] - mean_y) > num_std*std_y], axis = 0)
+    # create outliers and normal numpy array
+    outliers = data[mask]
+    normal = data[~mask]
+    return normal, outliers
 
 
 def generate_grid(data, x_number, y_number):
@@ -85,7 +78,8 @@ def generate_grid(data, x_number, y_number):
     y = np.linspace(y_min, y_max, y_number)
     # mesh and create the grid
     xv, yv = np.meshgrid(x, y)
-    grid = np.dstack(xv, yv)
+    grid = np.dstack(xv, yv
+                     )
     return grid, x, y
     
 
