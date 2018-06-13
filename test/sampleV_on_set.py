@@ -89,6 +89,19 @@ def generate_grid(data, x_number, y_number):
     return grid, x, y
     
 
+def optimize_grid_dim(data):
+    # get the minimum and maximum of each coordinate
+    x_min, y_min = np.min(data, axis = 0)
+    x_max, y_max = np.max(data, axis = 0)
+    # get the range in each direction
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+    
+    x_number = x_range/x_pixel
+    y_number = y_range/y_pixel
+    
+    return (x_number, y_number)
+
 def sampleV_on_set(rz_set, df):
     """
     NAME:
