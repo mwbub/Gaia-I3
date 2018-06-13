@@ -157,8 +157,8 @@ def sampleV_on_set(rz_set, df):
     normal_vz = ip_vz.ev(normal_R, normal_z)
     # putting together position coordinate with velocity coordinate for normal
     # points
-    normal_coord_v = np.concatenate((normal_R, normal_z, normal_vR, 
-                                     normal_vT, normal_vz))
+    normal_coord_v = np.dstack((normal_R, normal_z, normal_vR, 
+                                     normal_vT, normal_vz))[0]
     
     # combine normal and outlier result
     coord_v = np.vstack((normal_coord_v, outlier_coord_v))
