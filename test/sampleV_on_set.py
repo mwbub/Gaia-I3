@@ -97,6 +97,9 @@ def optimize_grid_dim(data):
     y_number = y_range/y_pixel
     return (x_number, y_number)
 
+def get_pixel(max_error):
+    return (1,1)
+
 def sampleV_on_set(rz_set, df):
     """
     NAME:
