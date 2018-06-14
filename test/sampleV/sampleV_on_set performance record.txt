@@ -1,0 +1,4 @@
+pixel = (2,2)
+interpolation time =  20.124035120010376
+slow time =  153.56666779518127
+fractional error =  0.6806418858486863

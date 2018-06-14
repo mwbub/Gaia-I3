@@ -99,7 +99,7 @@ def optimize_grid_dim(data):
     return (x_number, y_number)
 
 def get_pixel(max_error):
-    return (1,1)
+    return (2,2)
 
 def sampleV_on_set(rz_set, df):
     """
@@ -158,22 +158,24 @@ def sampleV_on_set(rz_set, df):
         for j in range(R_number):
             R, z = grid[i][j]
             vR, vT, vz = df.sampleV(R, z)[0]
-            #print(grid_vR[i][j])
             grid_vR[i][j] = vR
-            #print(grid_vR[i][j])
             grid_vT[i][j] = vT
             grid_vz[i][j] = vz
+            print('sampled ', i, j)
     # generate interpolation objects
     ip_vR = interpolation(z_linspace, R_linspace, grid_vR)
     ip_vT = interpolation(z_linspace, R_linspace, grid_vT)
     ip_vz = interpolation(z_linspace, R_linspace, grid_vz)
+    print('Instantiated interpolation objects')
     #break down normal into its R and z components
     normal_R = normal[:,0]
     normal_z = normal[:,1]
     # sample the velocity of normal points using interpolation of the grid
     normal_vR = ip_vR.ev(normal_z, normal_R)
+    print('evaluated vR interpolation')
     normal_vT = ip_vT.ev(normal_z, normal_R)
     normal_vz = ip_vz.ev(normal_z, normal_R)
+    print('evaluated all interpolation')
     # putting together position coordinate with velocity coordinate for normal
     # points
     normal_coord_v = np.dstack((normal_R, normal_z, normal_vR, 
@@ -181,5 +183,6 @@ def sampleV_on_set(rz_set, df):
     
     # combine normal and outlier result
     coord_v = np.vstack((normal_coord_v, outlier_coord_v))
+    print('returning coord v')
     return coord_v
     
