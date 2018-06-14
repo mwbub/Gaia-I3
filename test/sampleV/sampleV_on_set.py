@@ -145,9 +145,9 @@ def sampleV_on_set(rz_set, df):
     # get grid
     grid, R_linspace, z_linspace = generate_grid(normal, R_number, z_number)
     # initialize grid values. We have a separate grid for each velocity value
-    grid_vR = np.empty(grid.shape)
-    grid_vT = np.empty(grid.shape)
-    grid_vz = np.empty(grid.shape)
+    grid_vR = np.empty((grid.shape[0], grid.shape[1]))
+    grid_vT = np.empty((grid.shape[0], grid.shape[1]))
+    grid_vz = np.empty((grid.shape[0], grid.shape[1]))
     # get the grid value using sample V
     # common misconception: even though we are thinking of the Rz grid as a 
     # cartesian grid, the notation in numpy has the row first and then the 
@@ -156,13 +156,15 @@ def sampleV_on_set(rz_set, df):
         for j in range(R_number):
             R, z = grid[i][j]
             vR, vT, vz = df.sampleV(R, z)[0]
+            #print(grid_vR[i][j])
             grid_vR[i][j] = vR
+            #print(grid_vR[i][j])
             grid_vT[i][j] = vT
             grid_vz[i][j] = vz
     # generate interpolation objects
-    ip_vR = interpolation(R_linspace, z_linspace, grid_vR)
-    ip_vT = interpolation(R_linspace, z_linspace, grid_vT)
-    ip_vz = interpolation(R_linspace, z_linspace, grid_vz)
+    ip_vR = interpolation(z_linspace, R_linspace, grid_vR)
+    ip_vT = interpolation(z_linspace, R_linspace, grid_vT)
+    ip_vz = interpolation(z_linspace, R_linspace, grid_vz)
     #break down normal into its R and z components
     normal_R = normal[:,0]
     normal_z = normal[:,1]
