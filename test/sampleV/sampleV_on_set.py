@@ -145,6 +145,8 @@ def sampleV_on_set(rz_set, df):
     # get grid
     grid, R_linspace, z_linspace = generate_grid(normal, R_number, z_number)
     # initialize grid values. We have a separate grid for each velocity value
+    # grid is a 3 dimensional array since it stores pairs of values, but 
+    # grid values are 2 dimensinal array
     grid_vR = np.empty((grid.shape[0], grid.shape[1]))
     grid_vT = np.empty((grid.shape[0], grid.shape[1]))
     grid_vz = np.empty((grid.shape[0], grid.shape[1]))
