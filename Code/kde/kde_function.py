@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[ ]:
-
-
 #Importing the required modules
 import numpy as np
 from sklearn.neighbors import KernelDensity
@@ -90,4 +84,3 @@ def generate_KDE(inputs, ker, v_scale):
     
     #Return a black box function for sampling
     return input_KDE
-
