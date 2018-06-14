@@ -24,6 +24,11 @@ interpolation time =  22.36904239654541
 slow time =  114.01900839805603
 fractional error =  -0.10713635176098549
 
+pixel = (2,2)
+interpolation time =  14.274024963378906
+slow time =  82.9453444480896
+fractional error =  0.08531373382078795
+
 pixel = (2,1)
 interpolation time =  60.49341058731079
 slow time =  101.83148574829102
