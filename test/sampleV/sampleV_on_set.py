@@ -125,15 +125,15 @@ def sampleV_on_set(rz_set, df):
         2018-06-11 - Written - Samuel Wong
     """
     # separate the coodinates into outliers and normal points.
-    # outliers are defined to be values more than 3 standard deviation
-    normal, outliers = separate_outliers(rz_set, 3)
+    # outliers are defined to be values more than 2 standard deviation
+    normal, outliers = separate_outliers(rz_set, 2)
     
     # initialize numpy array storing result of outliers
     outlier_coord_v = np.empty((outliers.shape[0], 5))
     # sample the velocity of outliers directly
     for i, outlier in enumerate(outliers):
         R, z = outlier
-        vR, vT, vz = df.sampleV(R, z)
+        vR, vT, vz = df.sampleV(R, z)[0]
         outlier_coord_v[i] = np.array([R, z, vR, vT, vz])
     
     # for the normal stars, we will be evaluating sample v on a grid and doing
@@ -149,10 +149,13 @@ def sampleV_on_set(rz_set, df):
     grid_vT = np.empty(grid.shape)
     grid_vz = np.empty(grid.shape)
     # get the grid value using sample V
-    for i in range(R_number):
-        for j in range(z_number):
+    # common misconception: even though we are thinking of the Rz grid as a 
+    # cartesian grid, the notation in numpy has the row first and then the 
+    # column. So the for loop should loop through z, then R.
+    for i in range(z_number):
+        for j in range(R_number):
             R, z = grid[i][j]
-            vR, vT, vz = df.sampleV(R, z)
+            vR, vT, vz = df.sampleV(R, z)[0]
             grid_vR[i][j] = vR
             grid_vT[i][j] = vT
             grid_vz[i][j] = vz
