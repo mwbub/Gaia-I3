@@ -25,6 +25,6 @@ z_linspace = np.linspace(-1, 1, 3)
 Rv, zv = np.meshgrid(R_linspace, z_linspace)
 Rv = Rv.reshape(-1,1)
 zv = zv.reshape(-1,1)
-grid = np.concatenate((Rv, zv), axis = 1)
+data = np.concatenate((Rv, zv), axis = 1)
 
-print(sampleV_on_set(grid, qdf))
+print(sampleV_on_set(data, qdf))
