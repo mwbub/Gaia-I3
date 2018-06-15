@@ -9,42 +9,15 @@ data = np.concatenate((Rv, zv), axis = 1)
 
 Result:
 
-pixel = (2,2)
-interpolation time =  16.702430486679077
-slow time =  108.00539827346802
-fractional error =  0.05722050338307181
-
-pixel = (2,2)
-interpolation time =  14.312225341796875
-slow time =  76.18273949623108
-fractional error =  0.04273756088922477
-
-pixel = (2,2)
-interpolation time =  22.36904239654541
-slow time =  114.01900839805603
-fractional error =  -0.10713635176098549
-
-pixel = (2,2)
-interpolation time =  14.274024963378906
-slow time =  82.9453444480896
-fractional error =  0.08531373382078795
+pixel = (2,2), repeat = 5
+interpolation time =  20.476971197128297
+slow time =  102.1244411945343
+fractional error =  5.733700931476237
 
 pixel = (2,1)
-interpolation time =  60.49341058731079
-slow time =  101.83148574829102
-fractional error =  0.007462377905436643
 
-pixel = (2,1)
-interpolation time =  41.77707552909851
-slow time =  101.96318745613098
-fractional error =  0.18931769504621582
 
 pixel = (1,1)
-interpolation time =  88.87875819206238
-slow time =  159.9957537651062
-fractional error =  -0.040603112182982314
+
 
 pixel = (1,1)
-interpolation time =  87.32996964454651
-slow time =  100.40078806877136
-fractional error =  0.056196560788269824
