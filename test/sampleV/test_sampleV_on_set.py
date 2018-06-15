@@ -28,25 +28,16 @@ Rv = Rv.reshape(-1,1)
 zv = zv.reshape(-1,1)
 data = np.concatenate((Rv, zv), axis = 1)
 
-# initialize a list that stores the result of interpolation and real sampling
-# multiple times
+# initialize a list that stores the result of real sampling multiple times
 repeat = 5
-interpolated_result = []
 real_result = []
 
 # interpolate
-start= time_class.time()
-# interpolate 5 times and find the average result
-for j in range(repeat):
-    interpolate = sampleV_on_set(data, qdf)
-    # we take out the position and only compare velocity
-    interpolate = interpolate[:,2:]
-    interpolated_result.append(interpolate)
+start = time_class.time()
+interpolated_result = sampleV_on_set(data, qdf)
 inter_time = time_class.time() - start
-inter_time = inter_time/repeat
-# find the mean of interpolated result
-interpolated_result = np.array(interpolated_result)
-interpolated_result = np.mean(interpolated_result, axis = 0)
+# we take out the position and only compare velocity
+interpolated_result = interpolated_result[:,2:]
 
 # real sampling
 start= time_class.time()
