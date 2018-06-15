@@ -26,8 +26,8 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     INPUT:
         n - number of samples to generate (optional; default = 1)
         
-        r_range - radial range in which to sample stars; if None, will sample
-        sample stars at any radius (optional; default = None)
+        r_range - radial range in natural units in which to sample stars; if 
+        None, will sample sample stars at any radius (optional; default = None)
         
         integration_time - length of time to integrate orbits in Gyr; used for
         adding a z component to each star (optional; default = 1)
@@ -39,23 +39,30 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         list of integrated galpy.orbit.Orbit objects containing R, vR, vT, z,
         and vz values, representing sampled stars
     """
+    # sample R, vR, and vT over r_range
     df = dehnendf()
     sampled_ROrbits = df.sample(n=n, rrange=r_range)
     
+    # get the R, vR, and vT values from each sampled orbit
     R = np.array([o.R() for o in sampled_ROrbits])
     vRz = np.array([o.vR() for o in sampled_ROrbits])
     vT = np.array([o.vT() for o in sampled_ROrbits])
     
+    # divide radial kinetic energy evenly between the R and z directions
     kRz = vRz**2/2
     kR = kRz * np.random.random(n)
     kz = kRz - kR
     
+    # convert kinetic energy to velocities, choosing a random starting 
+    # direction for vz and retaining the original direction of vR
     vR = np.sqrt(2*kR) * np.sign(vRz)
     vz = np.sqrt(2*kz) * np.random.choice((1, -1), size=n)
     
+    # create new orbit objects containing R, vR, vT, z, and vz
     vxvv = [[R[i], vR[i], vT[i], 0, vz[i]] for i in range(n)]
     orbits = [Orbit(vxvv=vxvv[i]) for i in range(n)]
     
+    # integrate the orbits for integration_time Gyr
     t = np.linspace(0, integration_time/time_in_Gyr(vo=220., ro=8.), 
                     integration_steps)
     for o in orbits:
@@ -82,9 +89,14 @@ def distribute_over_phi_range(sampled_orbits, phi_range):
         list of galpy.orbit.Orbit objects containing R, vR, vT, z, vz, and phi,
         representing sampled stars distributed over phi_range
     """
+    # get a uniform distribution of phis
     phi = np.random.uniform(*phi_range, len(sampled_orbits))
+    
+    # add the new phi values to the sampled orbits
     vxvv = np.stack([o.getOrbit()[-1] for o in sampled_orbits], axis=0)
     vxvv = np.concatenate((vxvv, phi.reshape((-1, 1))), axis=1)
+    
+    # create new orbit objects containing R, vR, vT, z, vz, and phi
     orbits_with_phi = [Orbit(vxvv=vxvv[i]) for i in range(len(sampled_orbits))]
     return orbits_with_phi
 
@@ -101,23 +113,27 @@ def generate_sample_data(n, phi_range, r_range=None):
         
         phi_range - phi range over which to distribute the samples
         
-        r_range - radial range in which to sample stars; if None, will sample
-        sample stars at any radius (optional; default = None)
+        r_range - radial range in kpc in which to sample stars; if None, will 
+        sample sample stars at any radius (optional; default = None)
         
     OUTPUT:
-        nx6 array of rectangular phase space coordinates of the form 
+        nx6 array of rectangular galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         representing sampled stars
     """
+    # convert r_range to natural units
     if r_range is not None:
         r_range = [r/8. for r in r_range]
     
+    # sample orbits over r_range and phi_range
     orbits = get_samples_with_z(n=n, r_range=r_range)
     orbits = distribute_over_phi_range(orbits, phi_range)
     
+    # return in physical units
     for o in orbits:
         o.turn_physical_on()
     
+    # organize the data into an nx6 array of galactocentric coordinates
     samples = np.stack([[o.x(), o.y(), o.z(), o.vx(), o.vy(), o.vz()] 
                         for o in orbits], axis=0)
     return samples
