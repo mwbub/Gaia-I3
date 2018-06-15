@@ -10,14 +10,11 @@ data = np.concatenate((Rv, zv), axis = 1)
 Result:
 
 pixel = (2,2), repeat = 5
-interpolation time =  20.476971197128297
-slow time =  102.1244411945343
-fractional error =  5.733700931476237
+
 
 pixel = (2,1), repeat = 5
-interpolation time =  41.38010234832764
-slow time =  108.99324083328247
-fractional error =  5.894301356078787
+
+
 
 
 pixel = (1,1)
