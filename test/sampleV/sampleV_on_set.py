@@ -124,9 +124,12 @@ def sampleV_on_set(rz_set, df):
     HISTORY:
         2018-06-11 - Written - Samuel Wong
     """
+    # define the number of time the code repeatedly sample velocity on the grid
+    # before finding the average and interpolate those values
+    repeat = 5
     # separate the coodinates into outliers and normal points.
     # outliers are defined to be values more than 2 standard deviation
-    normal, outliers = separate_outliers(rz_set, 2)
+    normal, outliers = separate_outliers(rz_set, 10)
     
     # initialize numpy array storing result of outliers
     outlier_coord_v = np.empty((outliers.shape[0], 5))
@@ -157,22 +160,25 @@ def sampleV_on_set(rz_set, df):
     for i in range(z_number):
         for j in range(R_number):
             R, z = grid[i][j]
-            vR, vT, vz = df.sampleV(R, z)[0]
-            grid_vR[i][j] = vR
-            grid_vT[i][j] = vT
-            grid_vz[i][j] = vz
-            print('sampled ', i, j)
+            # initialize array to store multiple samples of velocity
+            vR = np.empty(repeat)
+            vT = np.empty(repeat)
+            vz = np.empty(repeat)
+            for k in range(repeat):
+                vR[k], vT[k], vz[k] = df.sampleV(R, z)[0]
+            # store the average of the velocity on grid
+            grid_vR[i][j] = np.mean(vR)
+            grid_vT[i][j] = np.mean(vT)
+            grid_vz[i][j] = np.mean(vz)
     # generate interpolation objects
     ip_vR = interpolation(z_linspace, R_linspace, grid_vR)
     ip_vT = interpolation(z_linspace, R_linspace, grid_vT)
     ip_vz = interpolation(z_linspace, R_linspace, grid_vz)
-    print('Instantiated interpolation objects')
     #break down normal into its R and z components
     normal_R = normal[:,0]
     normal_z = normal[:,1]
     # sample the velocity of normal points using interpolation of the grid
     normal_vR = ip_vR.ev(normal_z, normal_R)
-    print('evaluated vR interpolation')
     normal_vT = ip_vT.ev(normal_z, normal_R)
     normal_vz = ip_vz.ev(normal_z, normal_R)
     print('evaluated all interpolation')
@@ -183,6 +189,5 @@ def sampleV_on_set(rz_set, df):
     
     # combine normal and outlier result
     coord_v = np.vstack((normal_coord_v, outlier_coord_v))
-    print('returning coord v')
     return coord_v
     
