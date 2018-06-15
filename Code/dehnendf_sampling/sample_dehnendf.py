@@ -4,10 +4,10 @@ from galpy.orbit import Orbit
 from galpy.potential import MWPotential2014
 from galpy.util.bovy_conversion import time_in_Gyr
 
-def get_samples_with_z(n=1, rrange=None, integration_time=1, 
-                   integration_steps=100):
+def get_samples_with_z(n=1, r_range=None, integration_time=1, 
+                       integration_steps=100):
     df = dehnendf()
-    sampled_ROrbits = df.sample(n=n, rrange=rrange)
+    sampled_ROrbits = df.sample(n=n, rrange=r_range)
     
     R = np.array([o.R() for o in sampled_ROrbits])
     vRz = np.array([o.vR() for o in sampled_ROrbits])
@@ -29,3 +29,8 @@ def get_samples_with_z(n=1, rrange=None, integration_time=1,
         o.integrate(t, MWPotential2014)
     
     return orbits
+
+def distribute_over_phi_range(sampled_orbits, phi_range):
+    phi = np.random.uniform(*phi_range, len(sampled_orbits))
+    vxvv = np.stack([o.getOrbit()[-1] for o in sampled_orbits], axis=1)
+    return np.concatenate((vxvv, phi.reshape((-1, 1))), axis=1)
