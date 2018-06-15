@@ -32,5 +32,21 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
 
 def distribute_over_phi_range(sampled_orbits, phi_range):
     phi = np.random.uniform(*phi_range, len(sampled_orbits))
-    vxvv = np.stack([o.getOrbit()[-1] for o in sampled_orbits], axis=1)
-    return np.concatenate((vxvv, phi.reshape((-1, 1))), axis=1)
+    vxvv = np.stack([o.getOrbit()[-1] for o in sampled_orbits], axis=0)
+    vxvv = np.concatenate((vxvv, phi.reshape((-1, 1))), axis=1)
+    orbits_with_phi = [Orbit(vxvv=vxvv[i]) for i in range(len(sampled_orbits))]
+    return orbits_with_phi
+
+def generate_sample_data(n, phi_range, r_range):
+    if r_range is not None:
+        r_range = [r/8. for r in r_range]
+    
+    orbits = get_samples_with_z(n=n, r_range=r_range)
+    orbits = distribute_over_phi_range(orbits, phi_range)
+    
+    for o in orbits:
+        o.turn_physical_on()
+    
+    samples = np.stack([[o.x(), o.y(), o.z(), o.vx(), o.vy(), o.vz()] 
+                        for o in orbits], axis=0)
+    return samples
