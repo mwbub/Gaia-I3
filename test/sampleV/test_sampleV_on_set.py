@@ -38,7 +38,7 @@ for (i,point) in enumerate(data):
     R, z = point
     print('about to sample ', R, z)
     vR, vT, vz = qdf.sampleV(R, z)[0]
-    real_result[i] = R, z, vR, vT, vz
+    real_result[i] = vR, vT, vz
     print('finished ', i)
 slow_time = time_class.time() - start
 
@@ -46,11 +46,10 @@ print('interpolation time = ', inter_time)
 print('slow time = ', slow_time)
 
 # we take out the position and only compare the real and interpolated velocity
-real_result = real_result[:,2:]
 interpolated_result = interpolated_result[:,2:]
 # we find the absolute value of the difference
-result_difference = np.abs(real_result - interpolated_result)
+result_difference = real_result - interpolated_result
 # we get the array of fractional error and find the mean
-error = np.mean(result_difference / real_result)
+error = np.mean(np.abs(result_difference / real_result))
 print('fractional error = ', error)
 
