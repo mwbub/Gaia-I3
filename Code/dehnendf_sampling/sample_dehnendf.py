@@ -4,7 +4,7 @@ from galpy.orbit import Orbit
 from galpy.potential import MWPotential2014
 from galpy.util.bovy_conversion import time_in_Gyr
 
-def get_3d_samples(n=1, rrange=None, integration_time=1, 
+def get_samples_with_z(n=1, rrange=None, integration_time=1, 
                    integration_steps=100):
     df = dehnendf()
     sampled_ROrbits = df.sample(n=n, rrange=rrange)

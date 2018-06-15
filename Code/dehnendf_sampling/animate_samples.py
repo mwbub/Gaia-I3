@@ -2,13 +2,13 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from sample_dehnendf import get_3d_samples
+from sample_dehnendf import get_samples_with_z
 from galpy.util.bovy_conversion import time_in_Gyr
 
 norbits = 1000
 t = np.linspace(0, 1/time_in_Gyr(vo=220., ro=8.), 1000)
 
-orbits = get_3d_samples(n=norbits, integration_steps=1000)
+orbits = get_samples_with_z(n=norbits, integration_steps=1000)
 Rs = np.stack([o.R(t) for o in orbits], axis=1)
 zs = np.stack([o.z(t) for o in orbits], axis=1)
 
