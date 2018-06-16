@@ -7,6 +7,7 @@ This module contains functions used to generate mock data using Dehnen DF.
 The functions initially generate random sample stars in 2D, before adding a
 z component to each star. This somewhat generalizes Dehnen DF to 3D. 
 """
+import os
 import time
 import copy
 import numpy as np
@@ -164,6 +165,20 @@ def generate_sample_data(n, phi_range, r_range=None):
     # organize the data into an nx6 array of galactocentric coordinates
     samples = np.stack([[o.x(), o.y(), o.z(), o.vx(), o.vy(), o.vz()] 
                         for o in orbits], axis=0)
+    
+    # create a directory to hold the samples
+    if not os.path.exists('data'):
+        os.mkdir('data')
+    
+    # choose a file name representing the chosen parameters
+    if r_range is not None:
+        filename = ('{}samples_{}-{}deg_{}-{}kpc'
+                    ).format(n, *phi_range, *r_range)
+    else:
+        filename = '{}samples_{}-{}deg'.format(n, *phi_range)
+        
+    np.save('data/' + filename, samples)
+    
     return samples
 
 def get_average_sample_time(r_range=None):
