@@ -44,7 +44,8 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     import warnings
     warnings.filterwarnings('ignore')
     
-    estimate_time = n >= 1000
+    # estimate completion time for larger samples
+    estimate_time = (n >= 1000)
     
     print('sampling orbits...')
     if estimate_time:
