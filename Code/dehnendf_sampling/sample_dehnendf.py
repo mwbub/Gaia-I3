@@ -1,7 +1,7 @@
 """
 Filename: sample_dehnendf.py
 Author: Mathew Bub
-Last Revision Date: 2018-06-15
+Last Revision Date: 2018-06-16
 
 This module contains functions used to generate mock data using Dehnen DF.
 The functions initially generate random sample stars in 2D, before adding a
@@ -64,6 +64,8 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     df = dehnendf()
     sampled_ROrbits = df.sample(n=n, rrange=r_range)
     
+    print('done at ' + time.strftime('%H:%M:%S', time.localtime()))
+    
     # get the R, vR, and vT values from each sampled orbit
     R = np.array([o.R() for o in sampled_ROrbits])
     vRz = np.array([o.vR() for o in sampled_ROrbits])
@@ -87,7 +89,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     t = np.linspace(0, integration_time/time_in_Gyr(vo=220., ro=8.), 
                     integration_steps)
     
-    print('integrating orbits...')
+    print('\nintegrating orbits...')
     if estimate_time:
         average_time = get_average_integration_time(orbits, t)
         time_str = estimate_completion_time(n, average_time)
@@ -95,6 +97,8 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         
     for o in orbits:
         o.integrate(t, MWPotential2014)
+        
+    print('done at ' + time.strftime('%H:%M:%S', time.localtime()))
     
     return orbits
 
@@ -131,7 +135,7 @@ def distribute_over_phi_range(sampled_orbits, phi_range):
     orbits_with_phi = [Orbit(vxvv=vxvv[i]) for i in range(len(sampled_orbits))]
     return orbits_with_phi
 
-def generate_sample_data(n, phi_range, r_range=None):
+def generate_sample_data(n, phi_range, r_range=None, estimate_time=False):
     """
     NAME:
         generate_sample_data
@@ -147,13 +151,17 @@ def generate_sample_data(n, phi_range, r_range=None):
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
         
+        estimate_time - if True and if n > 100, will attempt to estimate the 
+        time to sample and integrate each orbit (optional; default = False)
+        
     OUTPUT:
         nx6 array of rectangular galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         representing sampled stars
     """
     # sample orbits over r_range and phi_range
-    orbits = get_samples_with_z(n=n, r_range=r_range)
+    orbits = get_samples_with_z(n=n, r_range=r_range, 
+                                estimate_time=estimate_time)
     orbits = distribute_over_phi_range(orbits, phi_range)
     
     # return in physical units
