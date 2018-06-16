@@ -150,9 +150,7 @@ def generate_sample_data(n, phi_range, r_range=None):
         sample stars at any radius (optional; default = None)
         
     OUTPUT:
-        nx6 array of rectangular galactocentric coordinates of the form 
-        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
-        representing sampled stars
+        None (saves samples to the data directory)
     """
     # sample orbits over r_range and phi_range
     orbits = get_samples_with_z(n=n, r_range=r_range)
@@ -179,6 +177,17 @@ def generate_sample_data(n, phi_range, r_range=None):
         
     np.save('data/' + filename, samples)
     
+def load_samples(n, phi_range, r_range=None):
+    if r_range is not None:
+        filename = ('{}samples_{}-{}deg_{}-{}kpc.npy'
+                    ).format(n, *phi_range, *r_range)
+    else:
+        filename = '{}samples_{}-{}deg.npy'.format(n, *phi_range)
+        
+    if not os.path.exists('data/' + filename):
+        generate_sample_data(n=n, phi_range=phi_range, r_range=r_range)
+        
+    samples = np.load('data/' + filename)
     return samples
 
 def get_average_sample_time(r_range=None):
