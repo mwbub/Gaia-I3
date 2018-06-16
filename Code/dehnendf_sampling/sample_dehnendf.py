@@ -196,6 +196,7 @@ def get_average_sample_time(r_range=None):
     
     df = dehnendf()
     
+    # get time to sample 100 stars
     start = time.process_time()
     df.sample(n=100, rrange=r_range)
     end = time.process_time()
@@ -218,8 +219,10 @@ def get_average_integration_time(orbits, t):
     OUTPUT:
         average integration time of a random sample of orbits
     """
+    # get a random sample of 100 stars from orbits
     samples = copy.deepcopy(np.random.choice(orbits, size=100, replace=False))
     
+    # get time to integrate the random sample
     start = time.process_time()
     for o in samples:
         o.integrate(t, MWPotential2014)
@@ -247,8 +250,13 @@ def estimate_completion_time(n, average_time):
         completion
     """
     time_format = '%H:%M:%S'
+    
+    # add date to output if completion time is more than 24 hours away
     if average_time * n > 86400:
         time_format = '%d %b ' + time_format
+        
+    # estimate completion time
     completion_time = time.time() + average_time * n
+    
     time_str = time.strftime(time_format, time.localtime(completion_time))
     return time_str
