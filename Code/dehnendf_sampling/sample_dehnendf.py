@@ -178,15 +178,40 @@ def generate_sample_data(n, phi_range, r_range=None):
     np.save('data/' + filename, samples)
     
 def load_samples(n, phi_range, r_range=None):
+    """
+    NAME:
+        load_samples
+        
+    PURPOSE:
+        load a sample of stars; if the sample does not exist in the data
+        directory, generate it first
+        
+    INPUT:
+        n - number of samples to generate
+        
+        phi_range - phi range in degrees over which to distribute the samples
+        
+        r_range - radial range in kpc in which to sample stars; if None, will 
+        sample stars at any radius (optional; default = None)
+        
+    OUTPUT:
+        nx6 array of rectangular galactocentric coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
+        representing sampled stars
+    """
+    # choose a file name representing the chosen parameters
     if r_range is not None:
         filename = ('{}samples_{}-{}deg_{}-{}kpc.npy'
                     ).format(n, *phi_range, *r_range)
     else:
         filename = '{}samples_{}-{}deg.npy'.format(n, *phi_range)
         
+    # check if the file already exists
     if not os.path.exists('data/' + filename):
+        # generate the file if it does not exist
         generate_sample_data(n=n, phi_range=phi_range, r_range=r_range)
         
+    # load the samples
     samples = np.load('data/' + filename)
     return samples
 
