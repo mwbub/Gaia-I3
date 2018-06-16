@@ -27,7 +27,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         n - number of samples to generate (optional; default = 1)
         
         r_range - radial range in kpc in which to sample stars; if None, will 
-        sample sample stars at any radius (optional; default = None)
+        sample stars at any radius (optional; default = None)
         
         integration_time - length of time to integrate orbits in Gyr; used for
         adding a z component to each star (optional; default = 1)
@@ -118,7 +118,7 @@ def generate_sample_data(n, phi_range, r_range=None):
         phi_range - phi range over which to distribute the samples
         
         r_range - radial range in kpc in which to sample stars; if None, will 
-        sample sample stars at any radius (optional; default = None)
+        sample stars at any radius (optional; default = None)
         
     OUTPUT:
         nx6 array of rectangular galactocentric coordinates of the form 
