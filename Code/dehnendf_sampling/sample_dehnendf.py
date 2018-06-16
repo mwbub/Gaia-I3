@@ -7,6 +7,8 @@ This module contains functions used to generate mock data using Dehnen DF.
 The functions initially generate random sample stars in 2D, before adding a
 z component to each star. This somewhat generalizes Dehnen DF to 3D. 
 """
+import time
+import copy
 import numpy as np
 from galpy.df import dehnendf
 from galpy.orbit import Orbit
@@ -14,7 +16,7 @@ from galpy.potential import MWPotential2014
 from galpy.util.bovy_conversion import time_in_Gyr
 
 def get_samples_with_z(n=1, r_range=None, integration_time=1, 
-                       integration_steps=100):
+                       integration_steps=100, estimate_time=False):
     """
     NAME:
         get_samples_with_z
@@ -35,10 +37,25 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         integration_steps - number of steps to use in the orbit integration
         (optional; default = 100)
         
+        estimate_time - if True and if n > 100, will attempt to estimate the 
+        time to sample and integrate each orbit (optional; default = False)
+        
     OUTPUT:
         list of integrated galpy.orbit.Orbit objects containing R, vR, vT, z,
         and vz values, representing sampled stars
     """
+    import warnings
+    warnings.filterwarnings('ignore')
+    
+    if n <= 100:
+        estimate_time = False
+    
+    print('sampling orbits...')
+    if estimate_time:
+        average_time = get_average_sample_time(r_range=r_range)
+        time_str = estimate_completion_time(n, average_time)
+        print('estimated time of completion: ' + time_str)
+        
     # convert r_range to natural units
     if r_range is not None:
         r_range = [r/8. for r in r_range]
@@ -69,6 +86,13 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     # integrate the orbits for integration_time Gyr
     t = np.linspace(0, integration_time/time_in_Gyr(vo=220., ro=8.), 
                     integration_steps)
+    
+    print('integrating orbits...')
+    if estimate_time:
+        average_time = get_average_integration_time(orbits, t)
+        time_str = estimate_completion_time(n, average_time)
+        print('estimated time of completion: ' + time_str)
+        
     for o in orbits:
         o.integrate(t, MWPotential2014)
     
@@ -137,3 +161,83 @@ def generate_sample_data(n, phi_range, r_range=None):
     samples = np.stack([[o.x(), o.y(), o.z(), o.vx(), o.vy(), o.vz()] 
                         for o in orbits], axis=0)
     return samples
+
+def get_average_sample_time(r_range=None):
+    """
+    NAME:
+        get_average_sample_time
+        
+    PURPOSE:
+        estimate the average time to sample orbits in r_range
+        
+    INPUT:
+        r_range - radial range in kpc in which to sample stars; if None, will 
+        sample stars at any radius (optional; default = None)
+        
+    OUTPUT:
+        average sample time
+    """
+    import warnings
+    warnings.filterwarnings('ignore')
+    
+    if r_range is not None:
+        r_range = [r/8. for r in r_range]
+    
+    df = dehnendf()
+    
+    start = time.process_time()
+    df.sample(n=100, rrange=r_range)
+    end = time.process_time()
+    
+    return (end-start)/100
+
+def get_average_integration_time(orbits, t):
+    """
+    NAME:
+        get_average_integration_time
+        
+    PURPOSE:
+        estimate the average time to integrate an orbit over time t
+        
+    INPUT:
+        orbits - the orbits that are to be integrated
+        
+        t - numpy.linspace representing the time over which to integrate
+        
+    OUTPUT:
+        average integration time of a random sample of orbits
+    """
+    samples = copy.deepcopy(np.random.choice(orbits, size=100, replace=False))
+    
+    start = time.process_time()
+    for o in samples:
+        o.integrate(t, MWPotential2014)
+    end = time.process_time()
+    
+    return (end-start)/100
+
+def estimate_completion_time(n, average_time):
+    """
+    NAME:
+        estimate_completion_time
+        
+    PURPOSE:
+        return the estimated completion time of n iterations of a process that
+        takes average_time per iteration
+        
+    INPUT:
+        n - number of iterations
+        
+        average_time - average time to complete each iteration
+        
+    OUTPUT:
+        string representing estimated time of completion; if the completion
+        time is more than 24 hours in the future, also output the date of
+        completion
+    """
+    time_format = '%H:%M:%S'
+    if average_time * n > 86400:
+        time_format = '%d %b ' + time_format
+    completion_time = time.time() + average_time * n
+    time_str = time.strftime(time_format, time.localtime(completion_time))
+    return time_str
