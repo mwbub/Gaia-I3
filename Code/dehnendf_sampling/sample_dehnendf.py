@@ -16,7 +16,7 @@ from galpy.potential import MWPotential2014
 from galpy.util.bovy_conversion import time_in_Gyr
 
 def get_samples_with_z(n=1, r_range=None, integration_time=1, 
-                       integration_steps=100, estimate_time=False):
+                       integration_steps=100):
     """
     NAME:
         get_samples_with_z
@@ -37,9 +37,6 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         integration_steps - number of steps to use in the orbit integration
         (optional; default = 100)
         
-        estimate_time - if True and if n > 100, will attempt to estimate the 
-        time to sample and integrate each orbit (optional; default = False)
-        
     OUTPUT:
         list of integrated galpy.orbit.Orbit objects containing R, vR, vT, z,
         and vz values, representing sampled stars
@@ -47,8 +44,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     import warnings
     warnings.filterwarnings('ignore')
     
-    if n <= 100:
-        estimate_time = False
+    estimate_time = n >= 1000
     
     print('sampling orbits...')
     if estimate_time:
@@ -135,7 +131,7 @@ def distribute_over_phi_range(sampled_orbits, phi_range):
     orbits_with_phi = [Orbit(vxvv=vxvv[i]) for i in range(len(sampled_orbits))]
     return orbits_with_phi
 
-def generate_sample_data(n, phi_range, r_range=None, estimate_time=False):
+def generate_sample_data(n, phi_range, r_range=None):
     """
     NAME:
         generate_sample_data
@@ -151,17 +147,13 @@ def generate_sample_data(n, phi_range, r_range=None, estimate_time=False):
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
         
-        estimate_time - if True and if n > 100, will attempt to estimate the 
-        time to sample and integrate each orbit (optional; default = False)
-        
     OUTPUT:
         nx6 array of rectangular galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         representing sampled stars
     """
     # sample orbits over r_range and phi_range
-    orbits = get_samples_with_z(n=n, r_range=r_range, 
-                                estimate_time=estimate_time)
+    orbits = get_samples_with_z(n=n, r_range=r_range)
     orbits = distribute_over_phi_range(orbits, phi_range)
     
     # return in physical units
