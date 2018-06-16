@@ -26,8 +26,8 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     INPUT:
         n - number of samples to generate (optional; default = 1)
         
-        r_range - radial range in natural units in which to sample stars; if 
-        None, will sample sample stars at any radius (optional; default = None)
+        r_range - radial range in kpc in which to sample stars; if None, will 
+        sample sample stars at any radius (optional; default = None)
         
         integration_time - length of time to integrate orbits in Gyr; used for
         adding a z component to each star (optional; default = 1)
@@ -39,6 +39,10 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         list of integrated galpy.orbit.Orbit objects containing R, vR, vT, z,
         and vz values, representing sampled stars
     """
+    # convert r_range to natural units
+    if r_range is not None:
+        r_range = [r/8. for r in r_range]
+        
     # sample R, vR, and vT over r_range
     df = dehnendf()
     sampled_ROrbits = df.sample(n=n, rrange=r_range)
@@ -121,10 +125,6 @@ def generate_sample_data(n, phi_range, r_range=None):
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         representing sampled stars
     """
-    # convert r_range to natural units
-    if r_range is not None:
-        r_range = [r/8. for r in r_range]
-    
     # sample orbits over r_range and phi_range
     orbits = get_samples_with_z(n=n, r_range=r_range)
     orbits = distribute_over_phi_range(orbits, phi_range)
