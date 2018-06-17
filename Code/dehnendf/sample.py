@@ -170,7 +170,7 @@ def generate_sample_data(n, phi_range, r_range=None):
         filename = ('{}samples_{}-{}deg_{}-{}kpc'
                     ).format(n, *phi_range, *r_range)
     else:
-        filename = '{}samples_{}-{}deg'.format(n, *phi_range)
+        filename = '{}samples_{}-{}rad'.format(n, *phi_range)
         
     np.save('data/' + filename, samples)
     
@@ -201,7 +201,7 @@ def load_samples(n, phi_range, r_range=None):
         filename = ('{}samples_{}-{}deg_{}-{}kpc.npy'
                     ).format(n, *phi_range, *r_range)
     else:
-        filename = '{}samples_{}-{}deg.npy'.format(n, *phi_range)
+        filename = '{}samples_{}-{}rad.npy'.format(n, *phi_range)
         
     # check if the file already exists
     if not os.path.exists('data/' + filename):
