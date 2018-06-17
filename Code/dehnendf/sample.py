@@ -1,7 +1,7 @@
 """
 Filename: sample.py
 Author: Mathew Bub
-Last Revision Date: 2018-06-16
+Last Revision Date: 2018-06-17
 
 This module contains functions used to generate mock data using Dehnen DF.
 The functions initially generate random sample stars in 2D, before adding a
