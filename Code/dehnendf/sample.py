@@ -113,15 +113,12 @@ def distribute_over_phi_range(sampled_orbits, phi_range):
         sampled_orbits - galpy.orbit.Orbit objects returned by 
         get_samples_with_z
         
-        phi_range - phi range in degrees over which to distribute the samples
+        phi_range - phi range in radians over which to distribute the samples
     
     OUTPUT:
         list of galpy.orbit.Orbit objects containing R, vR, vT, z, vz, and phi,
         representing sampled stars distributed over phi_range
     """
-    # convert to radians
-    phi_range = [np.radians(phi) for phi in phi_range]
-    
     # get a uniform distribution of phis
     phi = np.random.uniform(*phi_range, len(sampled_orbits))
     
@@ -144,7 +141,7 @@ def generate_sample_data(n, phi_range, r_range=None):
     INPUT:
         n - number of samples to generate
         
-        phi_range - phi range in degrees over which to distribute the samples
+        phi_range - phi range in radians over which to distribute the samples
         
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
