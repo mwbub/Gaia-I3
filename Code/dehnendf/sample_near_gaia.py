@@ -39,11 +39,17 @@ def get_sample_params(u0, v0, w0, epsilon, parallax_cut=True):
         errors < 20% (optional; default = True)
         
     OUTPUT:
-        number of stars, phi range, and radial range
+        number of stars, phi range, and radial range in galactocentric 
+        coordinates
     """
+    # get Gaia stars within epsilon of the point (u0, v0, w0)
     gaia_data = search_phase_space(u0, v0, w0, 0, 0, 0, epsilon, 0, 
                                    parallax_cut=parallax_cut)
+    
+    # convert to cylindrical coordinates
     R, phi, z = rect_to_cyl(*gaia_data.T[:3])
+    
+    # get number of stars, phi range, and radial range
     n = len(gaia_data)
     phi_range = [np.min(phi), np.max(phi)]
     r_range = [np.min(R), np.max(R)]
