@@ -21,8 +21,8 @@ aA= actionAngleAdiabatic(pot=MWPotential2014,c=True)
 qdf= quasiisothermaldf(1./3.,0.2,0.1,1.,1.,pot=MWPotential2014,aA=aA,cutcounter=True)
 
 # generate artificial data
-R_linspace = np.linspace(1, 14, 13)
-z_linspace = np.linspace(-4, 5, 10)
+R_linspace = np.linspace(0.5, 3., 20)
+z_linspace = np.linspace(-2., 2., 15)
 Rv, zv = np.meshgrid(R_linspace, z_linspace)
 Rv = Rv.reshape(-1,1)
 zv = zv.reshape(-1,1)
@@ -60,6 +60,6 @@ print('slow time = ', slow_time)
 # we find the absolute value of the difference
 result_difference = real_result - interpolated_result
 # we get the array of fractional error and find the mean
-error = np.mean(np.abs(result_difference / real_result))
-print('fractional error = ', error)
+error = np.mean(np.abs(result_difference[:, 1] / real_result[:, 1]))
+print('fractional error in vT = ', error)
 
