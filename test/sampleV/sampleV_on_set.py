@@ -178,9 +178,11 @@ def sampleV_on_set(rz_set, df):
     normal_R = normal[:,0]
     normal_z = normal[:,1]
     # sample the velocity of normal points using interpolation of the grid
-    normal_vR = ip_vR.ev(normal_z, normal_R)
+    # randomnize the sign of vR and vz
+    n = np.size(normal_R)
+    normal_vR = ip_vR.ev(normal_z, normal_R)*np.random.choice([-1,1], size = n)
     normal_vT = ip_vT.ev(normal_z, normal_R)
-    normal_vz = ip_vz.ev(normal_z, normal_R)
+    normal_vz = ip_vz.ev(normal_z, normal_R)*np.random.choice([-1,1], size = n)
     print('evaluated all interpolation')
     # putting together position coordinate with velocity coordinate for normal
     # points
