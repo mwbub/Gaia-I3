@@ -99,7 +99,7 @@ def optimize_grid_dim(data):
     return (x_number, y_number)
 
 def get_pixel(max_error):
-    return (2,2)
+    return (0.3,0.3)
 
 def sampleV_on_set(rz_set, df):
     """
@@ -126,7 +126,7 @@ def sampleV_on_set(rz_set, df):
     """
     # define the number of time the code repeatedly sample velocity on the grid
     # before finding the average and interpolate those values
-    repeat = 5
+    repeat = 1
     # separate the coodinates into outliers and normal points.
     # outliers are defined to be values more than 2 standard deviation
     normal, outliers = separate_outliers(rz_set, 10)
