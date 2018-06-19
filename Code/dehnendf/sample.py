@@ -9,12 +9,14 @@ z component to each star. This somewhat generalizes Dehnen DF to 3D.
 """
 import os
 import time
-import copy
 import numpy as np
+from sys import stdout
 from galpy.df import dehnendf
 from galpy.orbit import Orbit
 from galpy.potential import MWPotential2014
 from galpy.util.bovy_conversion import time_in_Gyr
+
+_ERASESTR = '\r                                                             \r'
 
 def get_samples_with_z(n=1, r_range=None, integration_time=1, 
                        integration_steps=100):
@@ -48,11 +50,11 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     # estimate completion time for larger samples
     estimate_time = (n >= 1000)
     
-    print('sampling orbits...')
+    stdout.write('sampling orbits...')
     if estimate_time:
         average_time = get_average_sample_time(r_range=r_range)
         time_str = estimate_completion_time(n, average_time)
-        print('estimated time of completion: ' + time_str)
+        stdout.write('\nestimated time of completion: ' + time_str)
         
     # convert r_range to natural units
     if r_range is not None:
@@ -62,7 +64,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     df = dehnendf()
     sampled_ROrbits = df.sample(n=n, rrange=r_range)
     
-    print('done at ' + time.strftime('%H:%M:%S', time.localtime()))
+    stdout.write('\ndone at ' + time.strftime('%H:%M:%S', time.localtime()))
     
     # get the R, vR, and vT values from each sampled orbit
     R = np.array([o.R() for o in sampled_ROrbits])
@@ -87,16 +89,22 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     t = np.linspace(0, integration_time/time_in_Gyr(vo=220., ro=8.), 
                     integration_steps)
     
-    print('\nintegrating orbits...')
+    stdout.write('\n\nintegrating orbits...\n')
+    
     if estimate_time:
-        average_time = get_average_integration_time(orbits, t)
-        time_str = estimate_completion_time(n, average_time)
-        print('estimated time of completion: ' + time_str)
+        start = time.time()
         
-    for o in orbits:
-        o.integrate(t, MWPotential2014)
-        
-    print('done at ' + time.strftime('%H:%M:%S', time.localtime()))
+    for i in range(n):
+        orbits[i].integrate(t, MWPotential2014)
+        if estimate_time and i % 1000 == 0:
+            average_time = (time.time() - start)/(i + 1)
+            time_str = estimate_completion_time(n-i, average_time)
+            stdout.write(_ERASESTR)
+            stdout.write('estimated time of completion: ' + time_str)
+    
+    if estimate_time:
+        stdout.write('\n')
+    stdout.write('done at ' + time.strftime('%H:%M:%S', time.localtime()))
     
     return orbits
 
@@ -167,7 +175,7 @@ def generate_sample_data(n, phi_range, r_range=None):
     
     # choose a file name representing the chosen parameters
     if r_range is not None:
-        filename = ('{}samples_{}-{}deg_{}-{}kpc'
+        filename = ('{}samples_{}-{}rad_{}-{}kpc'
                     ).format(n, *phi_range, *r_range)
     else:
         filename = '{}samples_{}-{}rad'.format(n, *phi_range)
@@ -198,7 +206,7 @@ def load_samples(n, phi_range, r_range=None):
     """
     # choose a file name representing the chosen parameters
     if r_range is not None:
-        filename = ('{}samples_{}-{}deg_{}-{}kpc.npy'
+        filename = ('{}samples_{}-{}rad_{}-{}kpc.npy'
                     ).format(n, *phi_range, *r_range)
     else:
         filename = '{}samples_{}-{}rad.npy'.format(n, *phi_range)
@@ -236,38 +244,11 @@ def get_average_sample_time(r_range=None):
     df = dehnendf()
     
     # get time to sample 100 stars
-    start = time.process_time()
-    df.sample(n=100, rrange=r_range)
-    end = time.process_time()
+    start = time.time()
+    df.sample(n=1000, rrange=r_range)
+    end = time.time()
     
-    return (end-start)/100
-
-def get_average_integration_time(orbits, t):
-    """
-    NAME:
-        get_average_integration_time
-        
-    PURPOSE:
-        estimate the average time to integrate an orbit over time t
-        
-    INPUT:
-        orbits - the orbits that are to be integrated
-        
-        t - numpy.linspace representing the time over which to integrate
-        
-    OUTPUT:
-        average integration time of a random sample of orbits
-    """
-    # get a random sample of 100 stars from orbits
-    samples = copy.deepcopy(np.random.choice(orbits, size=100, replace=False))
-    
-    # get time to integrate the random sample
-    start = time.process_time()
-    for o in samples:
-        o.integrate(t, MWPotential2014)
-    end = time.process_time()
-    
-    return (end-start)/100
+    return (end-start)/1000
 
 def estimate_completion_time(n, average_time):
     """
