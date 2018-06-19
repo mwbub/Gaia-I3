@@ -83,7 +83,6 @@ def generate_grid(data, x_number, y_number):
     
 
 def optimize_grid_dim(data):
-    max_error = 0.1
     # get the minimum and maximum of each coordinate
     x_min, y_min = np.min(data, axis = 0)
     x_max, y_max = np.max(data, axis = 0)
@@ -98,7 +97,7 @@ def optimize_grid_dim(data):
     y_number = int(y_range/y_pixel)
     return (x_number, y_number)
 
-def get_pixel(max_error):
+def get_pixel():
     return (0.3,0.3)
 
 def sampleV_on_set(rz_set, df):
