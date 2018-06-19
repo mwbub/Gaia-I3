@@ -165,10 +165,11 @@ def sampleV_on_set(rz_set, df):
             vz = np.empty(repeat)
             for k in range(repeat):
                 vR[k], vT[k], vz[k] = df.sampleV(R, z)[0]
-            # store the average of the velocity on grid
-            grid_vR[i][j] = np.mean(vR)
+            # store the average of the vT and the fiist sample of vR and vz on
+            # grid
+            grid_vR[i][j] = vR[0]
             grid_vT[i][j] = np.mean(vT)
-            grid_vz[i][j] = np.mean(vz)
+            grid_vz[i][j] = vz[0]
     # generate interpolation objects
     ip_vR = interpolation(z_linspace, R_linspace, grid_vR)
     ip_vT = interpolation(z_linspace, R_linspace, grid_vT)
