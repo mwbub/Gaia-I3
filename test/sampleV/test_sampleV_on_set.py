@@ -10,6 +10,7 @@ HISTORY:
 import numpy as np
 from sampleV_on_set import sampleV_on_set
 import time as time_class
+from scipy.stats import ks_2samp
 
 #import qdf related things
 from galpy.potential import MWPotential2014
@@ -50,9 +51,11 @@ for j in range(repeat):
     real_result.append(real)
 slow_time = time_class.time() - start
 slow_time = slow_time/repeat
-# find the mean of real result
+# create the real result by finding mean of vT and using the last vR and vz
 real_result = np.array(real_result)
 real_result = np.mean(real_result, axis = 0)
+real_result[:, 0] = real[:, 0]
+real_result[:, 2] = real[:, 2]
 
 print('interpolation time = ', inter_time)
 print('slow time = ', slow_time)
@@ -60,6 +63,14 @@ print('slow time = ', slow_time)
 # we find the absolute value of the difference
 result_difference = real_result - interpolated_result
 # we get the array of fractional error and find the mean
-error = np.mean(np.abs(result_difference[:, 1] / real_result[:, 1]))
+error_vT = np.mean(np.abs(result_difference[:, 1] / real_result[:, 1]))
 print('fractional error in vT = ', error)
+
+# we check whether the interpolated vR and real vR are from the same distribution
+# by ks test; same for vz
+vR_ks = ks_2samp(real_result[:, 0], interpolated_result[:,0])
+vz_ks = ks_2samp(real_result[:, 2], interpolated_result[:,2])
+print('vR ks statistic = ', vR_ks)
+print('vz ks statistic = ', vz_ks)
+
 
