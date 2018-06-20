@@ -257,6 +257,12 @@ def std_cut(samples, number_of_std_cut):
     OUTPUT:
         Nx6 array of rectangular phase space coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s].
+    
+    NOTES:
+        From a sample of 6376803 (20% parallax cut), if we do a cut of 
+        (3.0 std) -> new_sample = 5950618 (93.3% remaining / 426185 cut)
+        (2.5 std) -> new_sample = 5658852 (88.7% remaining / 717951 cut)
+        (2.0 std) -> new_sample = 5131168 (80.4% remaining / 1245635 cut)
         
     HISTORY:
         2018-06-04 - Written - Michael Poon
