@@ -8,6 +8,7 @@ PURPOSE:
     
 HISTORY:
     2018-05-31 - Written - Samuel Wong
+    2018-06-19 - Added Amount of Standard Deviation Cut function - Michael Poon
 """
 import numpy as np
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
@@ -235,3 +236,41 @@ def create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
     meshgrid = np.concatenate((x_values, y_values, z_values, vx_values, vy_values, vz_values), axis=1)
     
     return meshgrid
+
+
+def std_cut(samples, number_of_std_cut):
+    
+    """
+    NAME:
+        std_cut
+    
+    PURPOSE:
+        Remove outliers (points with any coordinate value further 
+        than a multiple of std from the mean) as a quality cut.
+        
+    INPUT:
+        1. Nx6 array of rectangular phase space coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s].
+        
+        2. Amount of standard deviation cut from each coordinate
+        
+    OUTPUT:
+        Nx6 array of rectangular phase space coordinates of the form 
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s].
+    
+    NOTES:
+        From a sample of 6376803 (20% parallax cut), if we do a cut of 
+        (3.0 std) -> new_sample = 5950618 (93.3% remaining / 426185 cut)
+        (2.5 std) -> new_sample = 5658852 (88.7% remaining / 717951 cut)
+        (2.0 std) -> new_sample = 5131168 (80.4% remaining / 1245635 cut)
+        
+    HISTORY:
+        2018-06-04 - Written - Michael Poon
+    """
+    
+    print("With", len(samples), "samples, now performing a", number_of_std_cut, "std quality cut.")
+    
+    mean, std = np.mean(samples, axis=0), np.std(samples, axis=0, ddof=1)
+    new_samples = samples[np.all(np.abs((samples - mean) / std) < number_of_std_cut, axis=1)]
+    print(len(samples) - len(new_samples), "samples cut. Now there are", len(new_samples), "samples.")
+    return new_samples    

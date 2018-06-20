@@ -1,5 +1,3 @@
-#Ayush Pandhi, last updated 06/04/2018
-
 #Importing the required modules
 import numpy as np
 from sklearn.neighbors import KernelDensity
@@ -8,14 +6,28 @@ from scipy.stats import iqr
 #Defining a KDE function to quickly compute probabilities for the data set
 def generate_KDE(inputs, ker, v_scale):
     """
-    Takes an NxM matrix for inputs and a ker string to output a function input_DKE that treats kde 
-    as a black box function for sampling.
-    Args:
-        inputs (ndarray): NxM matrix, N = # of data points, M = # of parameters.
-        ker (string): One of the 6 avaliable kernel types (gaussian, tophat, epanechnikov, exponential, linear, cosine)
-        v_scale: velocity scaling argument
-    Returns:
-        kde (function):
+    NAME:
+        generate_KDE
+    
+    PURPOSE:
+        Given an NxM matrix for inputs, one of six avaliable ker strings 
+        and a float value for v_scale to output a function `input_DKE` 
+        that treats the density estimate as a black box function that 
+        can be sampled.
+    
+    INPUT:
+        inputs (ndarray) = An NxM matrix where N is the number of data 
+                           points and M is the number of parameters.
+        ker (string) = One of the 6 avaliable kernel types (gaussian, 
+                       tophat, epanechnikov, exponential, linear, cosine).
+        v_scale (float) = A float value to scale velocities for the kde.
+    
+    OUTPUT:
+        input_KDE (function) = A blackbox function for the density estimate
+                               used for sampling data.
+                               
+    HISTORY:
+        2018-06-14 - Updated - Ayush Pandhi
     """
     #Scaling velocities with v_scale
     positions, velocities = np.hsplit(inputs, 2)
@@ -36,11 +48,24 @@ def generate_KDE(inputs, ker, v_scale):
 
     def input_KDE(samples):
         """
-        Takes a QxM matrix for samples to output a 1xQ array of density values.
-        Args:
-            samples (ndarray): QxM matrix, Q = # of points being evaluated, M = # of parameters.
-        Returns:
-            dens (ndarray): 1xQ array of density values for Q data points.
+        NAME:
+            input_KDE
+    
+        PURPOSE:
+            Given a QxM matrix for samples, evaluates the blackbox density
+            estimate function at those points to output a 1xQ array of 
+            density values.
+    
+        INPUT:
+            samples (ndarray) = A QxM matrix where Q is the number of points 
+                                at which the kde is being evaluated and M is 
+                                the number of parameters.
+                                
+        OUTPUT:
+            dens (ndarray) = A 1xQ array of density values for Q data points.
+                               
+        HISTORY:
+            2018-06-14 - Updated - Ayush Pandhi
         """
         #To correct the type of information from other functions into acceptable input
         samples = np.array([samples])
@@ -59,4 +84,3 @@ def generate_KDE(inputs, ker, v_scale):
     
     #Return a black box function for sampling
     return input_KDE
-
