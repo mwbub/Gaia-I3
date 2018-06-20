@@ -30,7 +30,7 @@ zv = zv.reshape(-1,1)
 data = np.concatenate((Rv, zv), axis = 1)
 
 # number of repeat to average out vT
-repeat = 10
+repeat = 1
 
 # interpolate
 start = time_class.time()
@@ -63,11 +63,13 @@ error_vT = np.mean(np.abs(result_difference[:, 1] / real_result[:, 1]))
 # by ks test; same for vz
 vR_ks = ks_2samp(real_result[:, 0], interpolated_result[:,0])
 vz_ks = ks_2samp(real_result[:, 2], interpolated_result[:,2])
+vT_ks = ks_2samp(real_result[:, 1], interpolated_result[:,1])
 
 print('interpolation time = ', inter_time)
 print('slow time = ', slow_time)
 print('fractional error in vT = ', error_vT)
 print('vR ks statistic = ', vR_ks)
 print('vz ks statistic = ', vz_ks)
+print('vT ks statistic = ', vT_ks)
 
 np.save("real and interpolated result, repeat both are 10", real_result, interpolated_result)
