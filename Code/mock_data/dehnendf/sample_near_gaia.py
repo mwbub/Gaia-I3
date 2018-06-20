@@ -7,7 +7,7 @@ This module contains tools for generating Dehnen DF sample data similar in size
 and location to certain regions of the Gaia catalogue.
 """
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 
 import numpy as np
 from sample import load_samples
