@@ -8,7 +8,7 @@ PURPOSE:
     
 HISTORY:
     2018-05-31 - Written - Samuel Wong
-    2018-06-19 - Added 3 Standard Deviation Cut function - Michael Poon
+    2018-06-19 - Added Amount of Standard Deviation Cut function - Michael Poon
 """
 import numpy as np
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
@@ -254,18 +254,21 @@ def std_cut(samples, number_of_std_cut):
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
         
-        2.Amount of standard deviation cut from each coordinate
+        2. Amount of standard deviation cut from each coordinate
         
     OUTPUT:
         Nx6 array of rectangular phase space coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
+        
+    HISTORY:
+        2018-06-04 - Written - Michael Poon
     """
     
-    print("With", len(samples), "stars, now performing a", number_of_std_cut, "std quality cut.")
+    print("With", len(samples), "samples, now performing a", number_of_std_cut, "std quality cut.")
     
     mean, std = np.mean(samples, axis=0), np.std(samples, axis=0, ddof=1)
     new_samples = samples[np.all(np.abs((samples - mean) / std) < number_of_std_cut, axis=1)]
-    print(len(samples) - len(new_samples), "stars cut. Now there are", len(new_samples), "stars.")
+    print(len(samples) - len(new_samples), "samples cut. Now there are", len(new_samples), "samples.")
     return new_samples    
