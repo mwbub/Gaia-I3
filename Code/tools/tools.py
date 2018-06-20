@@ -250,17 +250,13 @@ def std_cut(samples, number_of_std_cut):
         
     INPUT:
         1. Nx6 array of rectangular phase space coordinates of the form 
-        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
-        consisting of stars within a distance of epsilon from the point
-        (u0, v0, w0, U0, V0, W0)
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s].
         
         2. Amount of standard deviation cut from each coordinate
         
     OUTPUT:
         Nx6 array of rectangular phase space coordinates of the form 
-        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
-        consisting of stars within a distance of epsilon from the point
-        (u0, v0, w0, U0, V0, W0)
+        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s].
         
     HISTORY:
         2018-06-04 - Written - Michael Poon
