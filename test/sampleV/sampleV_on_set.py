@@ -125,7 +125,7 @@ def sampleV_on_set(rz_set, df):
     """
     # define the number of time the code repeatedly sample velocity on the grid
     # before finding the average and interpolate those values
-    repeat = 1
+    repeat = 10
     # separate the coodinates into outliers and normal points.
     # outliers are defined to be values more than 2 standard deviation
     normal, outliers = separate_outliers(rz_set, 10)
@@ -183,7 +183,7 @@ def sampleV_on_set(rz_set, df):
     normal_vR = ip_vR.ev(normal_z, normal_R)*np.random.choice([-1,1], size = n)
     normal_vT = ip_vT.ev(normal_z, normal_R)
     normal_vz = ip_vz.ev(normal_z, normal_R)*np.random.choice([-1,1], size = n)
-    print('evaluated all interpolation')
+    print('----------------------------evaluated all interpolation')
     # putting together position coordinate with velocity coordinate for normal
     # points
     normal_coord_v = np.dstack((normal_R, normal_z, normal_vR, 
