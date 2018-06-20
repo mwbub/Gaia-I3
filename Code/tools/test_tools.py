@@ -44,7 +44,14 @@ def test_create_meshgrid(xy_min, xy_max, xy_spacing, z_min, z_max, z_spacing,
     for point in result:
         print(point)
     print('Grid size is', result.shape[0])
+    
+def test_std_cut(number_of_std_cut):
+    samples = np.random.randn(1000,6)
+    print("Shape of random data:", samples.shape)
+    print("Length of random data:", len(samples))
+    print(std_cut(samples, number_of_std_cut))
 
-test_natural_unit(38)
-test_frame_conversion(1.,2.,3.5,6.7, 8.3,3.2)
-test_create_meshgrid(-1, 1, 1, -1, 1, 1, 8, 9, 1, 10, 11, 1)
+#test_natural_unit(38)
+#test_frame_conversion(1.,2.,3.5,6.7, 8.3,3.2)
+#test_create_meshgrid(-1, 1, 1, -1, 1, 1, 8, 9, 1, 10, 11, 1)
+test_std_cut(3)
