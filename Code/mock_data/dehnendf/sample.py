@@ -1,7 +1,7 @@
 """
 Filename: sample.py
 Author: Mathew Bub
-Last Revision Date: 2018-06-17
+Last Revision Date: 2018-06-21
 
 This module contains functions used to generate mock data using Dehnen DF.
 The functions initially generate random sample stars in 2D, before adding a
@@ -13,13 +13,13 @@ import numpy as np
 from sys import stdout
 from galpy.df import dehnendf
 from galpy.orbit import Orbit
-from galpy.potential import MWPotential2014
+from galpy.potential import MWPotential2014, PowerSphericalPotential
 from galpy.util.bovy_conversion import time_in_Gyr
 
-_ERASESTR = '\r                                                             \r'
+_ERASESTR = '\r                                                              \r'
 
 def get_samples_with_z(n=1, r_range=None, integration_time=1, 
-                       integration_steps=100):
+                       integration_steps=100, use_psp=False):
     """
     NAME:
         get_samples_with_z
@@ -39,6 +39,9 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         
         integration_steps - number of steps to use in the orbit integration
         (optional; default = 100)
+        
+        use_psp - if True, will use PowerSphericalPotential for orbit 
+        integration instead of MWPotential2014 (optional; default = False)
         
     OUTPUT:
         list of integrated galpy.orbit.Orbit objects containing R, vR, vT, z,
@@ -89,13 +92,18 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     t = np.linspace(0, integration_time/time_in_Gyr(vo=220., ro=8.), 
                     integration_steps)
     
+    if use_psp:
+        pot = PowerSphericalPotential(alpha=2., normalize=True)
+    else:
+        pot = MWPotential2014
+    
     stdout.write('\n\nintegrating orbits...\n')
     
     if estimate_time:
         start = time.time()
         
     for i in range(n):
-        orbits[i].integrate(t, MWPotential2014)
+        orbits[i].integrate(t, pot)
         if estimate_time and i % 1000 == 0:
             average_time = (time.time() - start)/(i + 1)
             time_str = estimate_completion_time(n-i, average_time)
@@ -138,7 +146,7 @@ def distribute_over_phi_range(sampled_orbits, phi_range):
     orbits_with_phi = [Orbit(vxvv=vxvv[i]) for i in range(len(sampled_orbits))]
     return orbits_with_phi
 
-def generate_sample_data(n, phi_range, r_range=None):
+def generate_sample_data(n, phi_range, r_range=None, use_psp=False):
     """
     NAME:
         generate_sample_data
@@ -154,11 +162,14 @@ def generate_sample_data(n, phi_range, r_range=None):
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
         
+        use_psp - if True, will use PowerSphericalPotential for orbit 
+        integration instead of MWPotential2014 (optional; default = False)
+        
     OUTPUT:
         None (saves samples to the data directory)
     """
     # sample orbits over r_range and phi_range
-    orbits = get_samples_with_z(n=n, r_range=r_range)
+    orbits = get_samples_with_z(n=n, r_range=r_range, use_psp=use_psp)
     orbits = distribute_over_phi_range(orbits, phi_range)
     
     # return in physical units
@@ -180,9 +191,12 @@ def generate_sample_data(n, phi_range, r_range=None):
     else:
         filename = '{}samples_{}-{}rad'.format(n, *phi_range)
         
+    if use_psp:
+        filename += '_psp'
+        
     np.save('data/' + filename, samples)
     
-def load_samples(n, phi_range, r_range=None):
+def load_samples(n, phi_range, r_range=None, use_psp=False):
     """
     NAME:
         load_samples
@@ -199,6 +213,9 @@ def load_samples(n, phi_range, r_range=None):
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
         
+        use_psp - if True, will use PowerSphericalPotential for orbit 
+        integration instead of MWPotential2014 (optional; default = False)
+        
     OUTPUT:
         nx6 array of rectangular galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
@@ -206,18 +223,22 @@ def load_samples(n, phi_range, r_range=None):
     """
     # choose a file name representing the chosen parameters
     if r_range is not None:
-        filename = ('{}samples_{}-{}rad_{}-{}kpc.npy'
+        filename = ('{}samples_{}-{}rad_{}-{}kpc'
                     ).format(n, *phi_range, *r_range)
     else:
-        filename = '{}samples_{}-{}rad.npy'.format(n, *phi_range)
+        filename = '{}samples_{}-{}rad'.format(n, *phi_range)
+        
+    if use_psp:
+        filename += '_psp'
         
     # check if the file already exists
-    if not os.path.exists('data/' + filename):
+    if not os.path.exists('data/' + filename + '.npy'):
         # generate the file if it does not exist
-        generate_sample_data(n=n, phi_range=phi_range, r_range=r_range)
+        generate_sample_data(n=n, phi_range=phi_range, r_range=r_range, 
+                             use_psp=use_psp)
         
     # load the samples
-    samples = np.load('data/' + filename)
+    samples = np.load('data/' + filename + '.npy')
     return samples
 
 def get_average_sample_time(r_range=None):
