@@ -129,9 +129,9 @@ def main(custom_density = None, search_method = "online"):
             print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
     else:
         # let batch size be 10% of the number of samples
-        batch_size = 0.1 * np.shape(samples)[0]
+        batch_size = int(0.1 * np.shape(samples)[0])
         # define the number of cluster centers
-        cluster_number = 1000
+        cluster_number = 100
         # use kmenas to generate a cluster of points
         cluster = kmeans(samples, cluster_number, batch_size)
         # initialize an array of directional derivative for each point
@@ -141,10 +141,11 @@ def main(custom_density = None, search_method = "online"):
             result[i] = evaluate_uniformity_from_point(point, density)
             print('At point {}, dot products are {}'.format(point, result[i]))
         # output summary information
-        mean_of_max = np.mean(np.max(result, axis = 1))
+        mean_of_max = np.nanmean(np.nanmax(result, axis = 1))
         print('The average of the maximum dot product is ', mean_of_max)
         # save result
         np.save(file_name, result)
+        
     
 if __name__ == "__main__":
     main(None, "local")
