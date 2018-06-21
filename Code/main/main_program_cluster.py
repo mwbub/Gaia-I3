@@ -69,7 +69,7 @@ def evaluate_uniformity_from_point(a, density):
     return directional_derivatives
 
 
-def main(custom_density = None, search_method = "local"):
+def main(custom_density = None, search_method = "local", custom_samples = None):
     """
     NAME:
         main
@@ -98,26 +98,36 @@ def main(custom_density = None, search_method = "local"):
     # at this point, everything should have physical units
     # get coordinate of the star to be evaluated from user
     point_galactocentric, point_galactic = get_star_coord_from_user()
+    #  first, check whether custom density is given. If no, then see what
+    # samples to generate density
     if custom_density == None:
-        # define parameters for the search and KDE
-        epsilon = 0.5
-        v_scale = 0.1
-        # depending on the argument of main function, search stars online, locally
-        # or use all of local catalogue
-        # if we are searching, get stars within an epsilon ball of the point in 
-        # phase space from Gaia, input the galactic coordinate into search function
-        if search_method == "online":
-            samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
-        elif search_method == "local":
-            samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
-        elif search_method == "all of local":
-            samples = search_local.get_entire_catalogue()
-        print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
+        # second, if no custom samples are given, then search Gaia and generate
+        # KDE
+        if custom_samples == None:
+            # define parameters for the search and KDE
+            epsilon = 0.5
+            v_scale = 0.1
+            # depending on the argument of main function, search stars online, locally
+            # or use all of local catalogue
+            # if we are searching, get stars within an epsilon ball of the point in 
+            # phase space from Gaia, input the galactic coordinate into search function
+            if search_method == "online":
+                samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
+            elif search_method == "local":
+                samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
+            elif search_method == "all of local":
+                samples = search_local.get_entire_catalogue()
+            print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
+        # But, if there is custom samples, then set that to be the samples
+        else:
+            samples = custom_samples
         # Turn all data to natrual units; working with natural unit, galactocentric,
         # cartesian from this point on
         samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
+    # if density is given, use it directly, skipping all steps with search and
+    # KDE
     else:
         density = custom_density # use the custom density function
     
