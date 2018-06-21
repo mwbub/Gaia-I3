@@ -131,8 +131,8 @@ def main(custom_density = None, search_method = "local"):
     else:
         # let batch size be 10% of the number of samples
         batch_size = int(0.1 * np.shape(samples)[0])
-        # define the number of cluster centers
-        cluster_number = 10000
+        # let the number of cluster centers to be 1% of number of samples
+        cluster_number = int(0.01 * np.shape(samples)[0])
         # use kmenas to generate a cluster of points
         cluster = kmeans(samples, cluster_number, batch_size)
         # initialize an array of directional derivative for each point
@@ -146,7 +146,9 @@ def main(custom_density = None, search_method = "local"):
         print('time =', inter_time/cluster_number)
         # output summary information
         mean_of_max = np.nanmean(np.nanmax(result, axis = 1))
+        std_of_max = np.nanstd(np.nanmax(result, axis = 1), ddof = 1)
         print('The average of the maximum dot product is ', mean_of_max)
+        print('The standard deviation of the maximum dot product is ', std_of_max)
         # save result
         np.save(file_name, result)
         
