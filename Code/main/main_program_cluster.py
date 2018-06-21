@@ -27,6 +27,10 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 
+# declare gradient functions for energy and momentum as global variable
+del_E = grad(Energy, 6)
+del_Lz = grad(L_z, 6)
+
 def evaluate_uniformity_from_point(a, density):
     """
     NAME:
@@ -53,8 +57,6 @@ def evaluate_uniformity_from_point(a, density):
         2018-06-20 - Written - Samuel Wong
     """
     # get the gradient of energy and momentum of the search star
-    del_E = grad(Energy, 6)
-    del_Lz = grad(L_z, 6)
     del_E_a = del_E(a)
     del_Lz_a = del_Lz(a)
     # create matrix of the space spanned by direction of changing energy and momentum
@@ -99,7 +101,7 @@ def main(custom_density = None, search_method = "local"):
     point_galactocentric, point_galactic = get_star_coord_from_user()
     if custom_density == None:
         # define parameters for the search and KDE
-        epsilon = 2
+        epsilon = 0.5
         v_scale = 0.1
         # depending on the argument of main function, search stars online, locally
         # or use all of local catalogue
@@ -142,6 +144,7 @@ def main(custom_density = None, search_method = "local"):
         for (i, point) in enumerate(cluster):
             result[i] = evaluate_uniformity_from_point(point, density)
             print('At point {}, dot products are {}'.format(point, result[i]))
+            print()
         inter_time = time_class.time() - start
         print('time =', inter_time/cluster_number)
         # output summary information
