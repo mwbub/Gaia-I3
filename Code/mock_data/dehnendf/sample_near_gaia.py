@@ -56,7 +56,7 @@ def get_sample_params(u0, v0, w0, epsilon, parallax_cut=True):
     
     return n, phi_range, r_range
 
-def load_mock_data(u0, v0, w0, epsilon, parallax_cut=True):
+def load_mock_data(u0, v0, w0, epsilon, parallax_cut=True, use_psp=False):
     """
     NAME:
         load_mock_data
@@ -79,10 +79,13 @@ def load_mock_data(u0, v0, w0, epsilon, parallax_cut=True):
         parallax_cut - if True, will perform a cut for stars with parallax
         errors < 20% (optional; default = True)
         
+        use_psp - if True, will use PowerSphericalPotential for orbit 
+        integration instead of MWPotential2014 (optional; default = False)
+        
     OUTPUT:
         nx6 array of rectangular galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s],
         representing sampled stars
     """
     params = get_sample_params(u0, v0, w0, epsilon, parallax_cut=parallax_cut)
-    return load_samples(*params)
+    return load_samples(*params, use_psp)
