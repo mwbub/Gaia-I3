@@ -94,6 +94,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
+        2018-06-21 - Added option of custom samples - Samuel Wong and Michael
+                                                      Poon
     """
     # at this point, everything should have physical units
     # get coordinate of the star to be evaluated from user
