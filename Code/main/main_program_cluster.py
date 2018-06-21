@@ -95,7 +95,6 @@ def main(custom_density = None, search_method = "local"):
     HISTORY:
         2018-06-20 - Written - Samuel Wong
     """
-    file_name = input("File name to be stored: ")
     # at this point, everything should have physical units
     # get coordinate of the star to be evaluated from user
     point_galactocentric, point_galactic = get_star_coord_from_user()
@@ -152,8 +151,17 @@ def main(custom_density = None, search_method = "local"):
         std_of_max = np.nanstd(np.nanmax(result, axis = 1), ddof = 1)
         print('The average of the maximum dot product is ', mean_of_max)
         print('The standard deviation of the maximum dot product is ', std_of_max)
+        # create file name
+        if search_method == "all of local":
+            file_name = 'epsilon = {}, v_scale = {}, full sample'.format(
+                epsilon, v_scale)
+        else:
+            file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
+                    epsilon, v_scale, np.array_str(point_galactocentric))
+        # remove any line with \n in the title
+        file_name = file_name.replace('\n','')
         # save result
-        np.save(file_name, result)
+        np.savez(file_name, cluster = cluster, result = result)
         
     
 if __name__ == "__main__":
