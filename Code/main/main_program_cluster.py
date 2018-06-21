@@ -80,7 +80,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         generate sample stars around a point in phase space. Also, allows user
         to give custom density function, but since no points are given for a
         custom density, this program only evaluates uniformity at a point when
-        custom density is given.
+        custom density is given. Also, allows user to give custom sample stars.
 
     INPUT:
         custom_density = a customized density functiont that takes an array
@@ -91,6 +91,9 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         search_method = search the gaia catalogue online ("online"),
                         locally on a downloaded file ('local'), or use the
                         the entire downloaded gaia rv file ('all of local')
+        custom_samples = an N by 6 array that represents the custom samples, 
+                        with each component representing (x,y,z,vx,vy,vz),
+                        respectively. They are in physical units.
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
