@@ -1,7 +1,7 @@
 """
 Filename: sample_near_gaia.py
 Author: Mathew Bub
-Last Revision Date: 2018-06-17
+Last Revision Date: 2018-06-21
 
 This module contains tools for generating Dehnen DF sample data similar in size
 and location to certain regions of the Gaia catalogue.
