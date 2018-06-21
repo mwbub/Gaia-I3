@@ -67,7 +67,7 @@ def evaluate_uniformity_from_point(a, density):
     return directional_derivatives
 
 
-def main(custom_density = None, search_method = "online"):
+def main(custom_density = None, search_method = "local"):
     """
     NAME:
         main
@@ -99,7 +99,7 @@ def main(custom_density = None, search_method = "online"):
     point_galactocentric, point_galactic = get_star_coord_from_user()
     if custom_density == None:
         # define parameters for the search and KDE
-        epsilon = 0.5
+        epsilon = 2
         v_scale = 0.1
         # depending on the argument of main function, search stars online, locally
         # or use all of local catalogue
@@ -132,7 +132,7 @@ def main(custom_density = None, search_method = "online"):
         # let batch size be 10% of the number of samples
         batch_size = int(0.1 * np.shape(samples)[0])
         # define the number of cluster centers
-        cluster_number = 1000
+        cluster_number = 10000
         # use kmenas to generate a cluster of points
         cluster = kmeans(samples, cluster_number, batch_size)
         # initialize an array of directional derivative for each point
