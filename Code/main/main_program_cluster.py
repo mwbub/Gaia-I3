@@ -9,6 +9,7 @@ PURPOSE:
 HISTORY:
     2018-06-20 - Written - Samuel Wong
 """
+import time as time_class
 import numpy as np
 import os, sys
 # get the outer folder as the path
@@ -131,15 +132,18 @@ def main(custom_density = None, search_method = "online"):
         # let batch size be 10% of the number of samples
         batch_size = int(0.1 * np.shape(samples)[0])
         # define the number of cluster centers
-        cluster_number = 100
+        cluster_number = 1000
         # use kmenas to generate a cluster of points
         cluster = kmeans(samples, cluster_number, batch_size)
         # initialize an array of directional derivative for each point
         result = np.empty((np.shape(cluster)[0], 4))
         # evaluate uniformity for each point in cluster
+        start = time_class.time()
         for (i, point) in enumerate(cluster):
             result[i] = evaluate_uniformity_from_point(point, density)
             print('At point {}, dot products are {}'.format(point, result[i]))
+        inter_time = time_class.time() - start
+        print('time =', inter_time/cluster_number)
         # output summary information
         mean_of_max = np.nanmean(np.nanmax(result, axis = 1))
         print('The average of the maximum dot product is ', mean_of_max)
