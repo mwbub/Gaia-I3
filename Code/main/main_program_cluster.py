@@ -27,9 +27,12 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 
-# declare gradient functions for energy and momentum as global variable
+# declare gradient functions for energy and momentum as global variables
 del_E = grad(Energy, 6)
 del_Lz = grad(L_z, 6)
+# define parameters for the search and KDE as global variables
+epsilon = 0.5
+v_scale = 0.1
 
 def evaluate_uniformity_from_point(a, density):
     """
@@ -108,10 +111,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     if custom_density == None:
         # second, if no custom samples are given, then search Gaia and generate
         # KDE
-        if custom_samples == None:
-            # define parameters for the search and KDE
-            epsilon = 0.5
-            v_scale = 0.1
+        if np.any(custom_samples == None):
             # depending on the argument of main function, search stars online, locally
             # or use all of local catalogue
             # if we are searching, get stars within an epsilon ball of the point in 
