@@ -140,12 +140,13 @@ def to_natural_units(list_of_coord):
 def get_star_coord_from_user():
     """
     NAME:
-        cartesian_to_cylindrical
+        get_star_coord_from_user
 
     PURPOSE:
         
     Input: 
-        User is prompted to input coordinate of stars
+        User is prompted to input coordinate of stars. Allowed to choose by
+        default Sun.
 
     OUTPUT:
         (point_galactocentric, point_galactic) where each component is a 
@@ -160,30 +161,38 @@ def get_star_coord_from_user():
     repeat = True
     
     while (repeat):
-        # ask the user for input coordinate frame
-        frame = input("Do you want to search star in galactic or galactocentric coordinate? ")
-        if frame == "galactic":
-            repeat = False
-            print("Please enter position in kpc and velocity in km/s.")
-            u  = float(input('u = '))
-            v  = float(input('v = '))
-            w  = float(input('w = '))
-            U  = float(input('U = '))
-            V  = float(input('V = '))
-            W  = float(input('W = '))
-            point_galactic = np.array([u, v, w, U, V, W])
+        # ask user if want to default to sun
+        sun = input("Do you want to search around the Sun? (y/n) ")
+        if sun == 'y' or sun == 'yes' or sun == 'Yes':
+            point_galactic = np.array([0, 0, 0, 0, 0, 0])
             point_galactocentric = galactic_to_galactocentric(point_galactic)
-        elif frame == "galactocentric":
+            print('Searching around Sun.')
             repeat = False
-            print("Please enter position in kpc and velocity in km/s.")
-            x  = float(input('x = '))
-            y  = float(input('y = '))
-            z  = float(input('z = '))
-            vx  = float(input('vx = '))
-            vy = float(input('vy = '))
-            vz  = float(input('vz = '))
-            point_galactocentric = np.array([x, y, z, vx, vy, vz])
-            point_galactic = galactocentric_to_galactic(point_galactocentric)
+        else:
+            # ask the user for input coordinate frame
+            frame = input("Do you want to search star in galactic or galactocentric coordinate? ")
+            if frame == "galactic":
+                repeat = False
+                print("Please enter position in kpc and velocity in km/s.")
+                u  = float(input('u = '))
+                v  = float(input('v = '))
+                w  = float(input('w = '))
+                U  = float(input('U = '))
+                V  = float(input('V = '))
+                W  = float(input('W = '))
+                point_galactic = np.array([u, v, w, U, V, W])
+                point_galactocentric = galactic_to_galactocentric(point_galactic)
+            elif frame == "galactocentric":
+                repeat = False
+                print("Please enter position in kpc and velocity in km/s.")
+                x  = float(input('x = '))
+                y  = float(input('y = '))
+                z  = float(input('z = '))
+                vx  = float(input('vx = '))
+                vy = float(input('vy = '))
+                vz  = float(input('vz = '))
+                point_galactocentric = np.array([x, y, z, vx, vy, vz])
+                point_galactic = galactocentric_to_galactic(point_galactocentric)
             
     return (point_galactocentric, point_galactic)
 

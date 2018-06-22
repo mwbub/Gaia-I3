@@ -28,6 +28,10 @@ from search import search_local
 from kde.kde_function import *
 from tools.tools import *
 
+# declare gradient functions for energy and momentum as global variable
+del_E = grad(Energy, 6)
+del_Lz = grad(L_z, 6)
+
 def evaluate_uniformity_from_point(point_galactocentric, density):
     """
     NAME:
@@ -58,8 +62,6 @@ def evaluate_uniformity_from_point(point_galactocentric, density):
     # rename the search star to a
     a = to_natural_units(np.array([point_galactocentric]))[0]
     # get the gradient of energy and momentum of the search star
-    del_E = grad(Energy, 6)
-    del_Lz = grad(L_z, 6)
     del_E_a = del_E(a)
     del_Lz_a = del_Lz(a)
     # create matrix of the space spanned by direction of changing energy and momentum
