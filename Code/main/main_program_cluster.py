@@ -11,6 +11,7 @@ HISTORY:
 """
 import time as time_class
 import numpy as np
+import pylab as plt
 import os, sys
 # get the outer folder as the path
 outer_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -190,6 +191,20 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         file_name = file_name.replace('\n','')
         # save result
         np.savez(file_name, cluster = cluster, result = result)
+        
+        # create graph of kmeans projection in 2 dimension
+        fig = plt.figure(figsize=(8, 8))
+        # only plot projection of samples in x and y dimension
+        plt.scatter(samples[:,0], samples[:,1], s=15, c='blue')
+        plt.scatter(cluster[:, 0], cluster[:, 1], s=30, c='red')
+        plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
+        plt.xlabel('x / 8 kpc', fontsize = 15)
+        plt.ylabel('y / per 8 kpc', fontsize = 15)
+        plt.show()
+        # save figure
+        kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
+        plt.savefig(kmeans_figure_name)
+        
         
     
 if __name__ == "__main__":
