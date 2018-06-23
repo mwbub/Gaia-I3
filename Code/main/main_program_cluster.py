@@ -200,11 +200,10 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
         plt.xlabel('x / 8 kpc', fontsize = 15)
         plt.ylabel('y / per 8 kpc', fontsize = 15)
-        plt.show()
         # save figure
         kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
         plt.savefig(kmeans_figure_name)
-        
+        plt.show()
         
     
 if __name__ == "__main__":
