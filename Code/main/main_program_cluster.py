@@ -12,6 +12,7 @@ HISTORY:
 import time as time_class
 import numpy as np
 import pylab as plt
+from mpl_toolkits.mplot3d import Axes3D
 import os, sys
 # get the outer folder as the path
 outer_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -170,12 +171,15 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
             print('At point {}, dot products are {}'.format(point, result[i]))
             print()
         inter_time = time_class.time() - start
-        print('time =', inter_time/cluster_number)
+        print('time per star =', inter_time/cluster_number)
         # output summary information
-        mean_of_max = np.nanmean(np.nanmax(result, axis = 1))
-        std_of_max = np.nanstd(np.nanmax(result, axis = 1), ddof = 1)
-        print('The average of the maximum dot product is ', mean_of_max)
-        print('The standard deviation of the maximum dot product is ', std_of_max)
+        # report the average and standard deviation of the maximum 
+        # dot product in absolute value, ignoring nan values
+        max_dot_product = np.nanmax(np.absolute(result), axis = 1)
+        mean_of_max = np.nanmean(max_dot_product)
+        std_of_max = np.nanstd(max_dot_product, ddof = 1)
+        print('The average of the maximum absolute value of dot product is ', mean_of_max)
+        print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
         # create file name if a search was performed
         if search_method != None:
             # if user is using all of catalogue, record this fact and epsilon and
@@ -203,6 +207,24 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # save figure
         kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
         plt.savefig(kmeans_figure_name)
+        plt.show()
+        
+        # create graph of dot product
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        # get the maximum dot product at each cluster center
+        # change all nan to 0 in result for graphing purpose
+        result2 = np.nan_to_num(result)
+        max_dot_product2 = np.max(np.absolute(result2), axis = 1)
+        # scatter the cluster center x, y, and height is max dot product
+        ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 25)
+        ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
+        ax.set_xlabel('x / 8 kpc')
+        ax.set_ylabel('y / per 8 kpc')
+        ax.set_zlabel('maximum dot product')
+        # save figure
+        dot_product_figure_name = file_name + ', max dot product figure.pdf'
+        plt.savefig(dot_product_figure_name)
         plt.show()
         
     
