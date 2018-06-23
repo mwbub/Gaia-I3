@@ -183,6 +183,10 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         std_of_max = np.nanstd(max_dot_product, ddof = 1)
         print('The average of the maximum absolute value of dot product is ', mean_of_max)
         print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
+        
+        if not os.path.exists('main_program_results'):
+            os.mkdir('main_program_results')
+            
         # create file name if a search was performed
         if search_method != None:
             # if user is using all of catalogue, record this fact and epsilon and
@@ -197,7 +201,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # remove any line with \n in the title
         file_name = file_name.replace('\n','')
         # save result
-        np.savez(file_name, cluster = cluster, result = result)
+        np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
         
         # create graph of kmeans projection in 2 dimension
         fig = plt.figure(figsize=(8, 8))
@@ -206,10 +210,10 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         plt.scatter(cluster[:, 0], cluster[:, 1], s=30, c='red')
         plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
         plt.xlabel('x / 8 kpc', fontsize = 15)
-        plt.ylabel('y / per 8 kpc', fontsize = 15)
+        plt.ylabel('y / 8 kpc', fontsize = 15)
         # save figure
         kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
-        plt.savefig(kmeans_figure_name)
+        plt.savefig('main_program_results/' + kmeans_figure_name)
         plt.show()
         
         # create graph of dot product
@@ -223,11 +227,11 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 25)
         ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
         ax.set_xlabel('x / 8 kpc')
-        ax.set_ylabel('y / per 8 kpc')
+        ax.set_ylabel('y / 8 kpc')
         ax.set_zlabel('maximum dot product')
         # save figure
         dot_product_figure_name = file_name + ', max dot product figure.pdf'
-        plt.savefig(dot_product_figure_name)
+        plt.savefig('main_program_results/' + dot_product_figure_name)
         plt.show()
         
     
