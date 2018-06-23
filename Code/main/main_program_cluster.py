@@ -103,15 +103,15 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
     """
-    # at this point, everything should have physical units
-    # get coordinate of the star to be evaluated from user
-    point_galactocentric, point_galactic = get_star_coord_from_user()
     #  first, check whether custom density is given. If no, then see what
     # samples to generate density
     if custom_density == None:
         # second, if no custom samples are given, then search Gaia and generate
         # KDE
         if np.any(custom_samples == None):
+            # get coordinate of the star to be searched from user
+            # at this point, everything should have physical units
+            point_galactocentric, point_galactic = get_star_coord_from_user()
             # depending on the argument of main function, search stars online, locally
             # or use all of local catalogue
             # if we are searching, get stars within an epsilon ball of the point in 
@@ -126,6 +126,12 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # But, if there is custom samples, then set that to be the samples
         else:
             samples = custom_samples
+            # since custom samples are used, ask user for the name of the file
+            # before running
+            file_name = input('Name of file to be saved: ')
+            # set search method to None so that future file name evaluation 
+            # will not be triggered
+            search_method = None
         # Turn all data to natrual units; working with natural unit, galactocentric,
         # cartesian from this point on
         samples = to_natural_units(samples)
@@ -135,6 +141,9 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     # KDE
     else:
         density = custom_density # use the custom density function
+        # get coordinate of the star to be evaluated from user
+        # at this point, everything should have physical units
+        point_galactocentric, point_galactic = get_star_coord_from_user()
     
     # if custom density is given, only evaluate uniformity at given point
     if custom_density != None:
@@ -166,13 +175,17 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         std_of_max = np.nanstd(np.nanmax(result, axis = 1), ddof = 1)
         print('The average of the maximum dot product is ', mean_of_max)
         print('The standard deviation of the maximum dot product is ', std_of_max)
-        # create file name
-        if search_method == "all of local":
-            file_name = 'epsilon = {}, v_scale = {}, full sample'.format(
-                epsilon, v_scale)
-        else:
-            file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
-                    epsilon, v_scale, np.array_str(point_galactocentric))
+        # create file name if a search was performed
+        if search_method != None:
+            # if user is using all of catalogue, record this fact and epsilon and
+            # v_scale in file name
+            if search_method == "all of local":
+                file_name = 'epsilon = {}, v_scale = {}, full sample'.format(
+                    epsilon, v_scale)
+            # if actual search was done, record search star as well
+            else:
+                file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
+                        epsilon, v_scale, np.array_str(point_galactocentric))
         # remove any line with \n in the title
         file_name = file_name.replace('\n','')
         # save result
