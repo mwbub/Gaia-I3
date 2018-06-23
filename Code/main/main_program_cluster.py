@@ -86,6 +86,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         to give custom density function, but since no points are given for a
         custom density, this program only evaluates uniformity at a point when
         custom density is given. Also, allows user to give custom sample stars.
+        Output figures of results, including kmeans and dot product scatter
+        plot.
 
     INPUT:
         custom_density = a customized density functiont that takes an array
@@ -104,6 +106,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         2018-06-20 - Written - Samuel Wong
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
+        2018-06-22 - Added Figure
     """
     #  first, check whether custom density is given. If no, then see what
     # samples to generate density
