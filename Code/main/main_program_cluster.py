@@ -206,8 +206,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # create graph of kmeans projection in 2 dimension
         fig = plt.figure(figsize=(8, 8))
         # only plot projection of samples in x and y dimension
-        plt.scatter(samples[:,0], samples[:,1], s=15, c='blue')
-        plt.scatter(cluster[:, 0], cluster[:, 1], s=30, c='red')
+        plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
+        plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
         plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
         plt.xlabel('x / 8 kpc', fontsize = 15)
         plt.ylabel('y / 8 kpc', fontsize = 15)
@@ -224,7 +224,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         result2 = np.nan_to_num(result)
         max_dot_product2 = np.max(np.absolute(result2), axis = 1)
         # scatter the cluster center x, y, and height is max dot product
-        ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 25)
+        ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
         ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
         ax.set_xlabel('x / 8 kpc')
         ax.set_ylabel('y / 8 kpc')
