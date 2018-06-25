@@ -133,6 +133,24 @@ def search_for_samples(search_method):
 
 
 def kmeans_plot(samples, cluster, file_name):
+    """
+    NAME:
+        kmeans_plot
+
+    PURPOSE:
+        Given samples and cluster, plot them. Given file name, save the image.
+
+    INPUT:
+        samples = a numpy array storing samples
+        cluster = a numpy array storing cluster centers
+        file_name = a string
+
+    OUTPUT:
+        None
+
+    HISTORY:
+        2018-06-25 - Written - Samuel Wong
+    """
     # create graph of kmeans projection in 2 dimension
     fig = plt.figure(figsize=(8, 8))
     # only plot projection of samples in x and y dimension
