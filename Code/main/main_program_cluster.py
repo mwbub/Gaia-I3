@@ -114,16 +114,19 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # second, if no custom samples are given, then search Gaia and generate
         # KDE
         if np.any(custom_samples == None):
-            # get coordinate of the star to be searched from user
-            # at this point, everything should have physical units
-            point_galactocentric, point_galactic = get_star_coord_from_user()
             # depending on the argument of main function, search stars online, locally
             # or use all of local catalogue
             # if we are searching, get stars within an epsilon ball of the point in 
             # phase space from Gaia, input the galactic coordinate into search function
             if search_method == "online":
+                # get coordinate of the star to be searched from user
+                # at this point, everything should have physical units
+                point_galactocentric, point_galactic = get_star_coord_from_user()
                 samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
             elif search_method == "local":
+                # get coordinate of the star to be searched from user
+                # at this point, everything should have physical units
+                point_galactocentric, point_galactic = get_star_coord_from_user()
                 samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
             elif search_method == "all of local":
                 samples = search_local.get_entire_catalogue()
