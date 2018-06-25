@@ -162,109 +162,98 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
                                                       Poon
         2018-06-22 - Added Figure
     """
-    #  first, check whether custom density is given. If no, then see what
-    # samples to generate density
-    if custom_density == None:
-        # second, if no custom samples are given, then search Gaia and generate
-        # KDE
-        if np.any(custom_samples == None):
-            # at this point, everything should have physical units
-            samples, file_name = search_for_samples(search_method)
-        # But, if there is custom samples, then set that to be the samples
-        else:
-            samples = custom_samples
-            # since custom samples are used, ask user for the name of the file
-            # before running
-            file_name = input('Name of file to be saved: ')
-            # set search method to None so that future file name evaluation 
-            # will not be triggered
-            search_method = None
-        # Turn all data to natrual units; working with natural unit, galactocentric,
-        # cartesian from this point on
-        samples = to_natural_units(samples)
+    # if a custom density is given, set it to the density, and then search
+    # for samples to evaluate on
+    if custom_density != None:
+        density = custom_density # use the custom density function
+        # get the name of density for naming purpose
+        name_of_density = input('Name of custom density function: ')
+        samples, file_name = search_for_samples(search_method)
+        # modify the file name by adding the name of custom density
+        file_name = name_of_density + file_name
+    # if custom samples are given, use those to generate density function
+    elif np.any(custom_samples != None):
+        # since custom samples are used, ask user for the name of the file
+        # before running
+        file_name = input('Name of file to be saved: ')
+        samples = custom_samples
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
-    # if density is given, use it directly, skipping all steps with search and
-    # KDE
+    # if neither custom density nor custom samples are given, then it is the
+    # usual case of searching for stars and put them through KDE
     else:
-        density = custom_density # use the custom density function
-        # get coordinate of the star to be evaluated from user
         # at this point, everything should have physical units
-        point_galactocentric, point_galactic = get_star_coord_from_user()
+        samples, file_name = search_for_samples(search_method)
+        # use the samples and a KDE learning method to generate a density function
+        density = generate_KDE(samples, 'epanechnikov', v_scale)
         
+    # Turn all data to natrual units; working with natural unit, galactocentric,
+    # cartesian from this point on
+    samples = to_natural_units(samples)
+        
+    # let batch size be 10% of the number of samples
+    batch_size = int(0.1 * np.shape(samples)[0])
+    # let the number of cluster centers to be 1% of number of samples
+    cluster_number = int(0.01 * np.shape(samples)[0])
+    # use kmenas to generate a cluster of points
+    cluster = kmeans(samples, cluster_number, batch_size)
+    # initialize an array of directional derivative for each point
+    result = np.empty((np.shape(cluster)[0], 4))
+    # evaluate uniformity for each point in cluster
+    start = time_class.time()
+    for (i, point) in enumerate(cluster):
+        result[i] = evaluate_uniformity_from_point(point, density)
+        print('At point {}, dot products are {}'.format(point, result[i]))
+        print()
+    inter_time = time_class.time() - start
+    print('time per star =', inter_time/cluster_number)
+    # output summary information
+    # report the average and standard deviation of the maximum 
+    # dot product in absolute value, ignoring nan values
+    max_dot_product = np.nanmax(np.absolute(result), axis = 1)
+    mean_of_max = np.nanmean(max_dot_product)
+    std_of_max = np.nanstd(max_dot_product, ddof = 1)
+    print('The average of the maximum absolute value of dot product is ', mean_of_max)
+    print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
     
-    # if custom density is given, only evaluate uniformity at given point
-    if custom_density != None:
-        # convert the point to natural unit first
-        point_gc_natural = to_natural_units(np.array([point_galactocentric]))[0]
-        directional_derivatives = evaluate_uniformity_from_point(
-                point_gc_natural, density)
-        for i in range(len(directional_derivatives)):
-            print('del_rho dot w_{} = {}'.format(i, directional_derivatives[i]))
-    else:
-        # let batch size be 10% of the number of samples
-        batch_size = int(0.1 * np.shape(samples)[0])
-        # let the number of cluster centers to be 1% of number of samples
-        cluster_number = int(0.01 * np.shape(samples)[0])
-        # use kmenas to generate a cluster of points
-        cluster = kmeans(samples, cluster_number, batch_size)
-        # initialize an array of directional derivative for each point
-        result = np.empty((np.shape(cluster)[0], 4))
-        # evaluate uniformity for each point in cluster
-        start = time_class.time()
-        for (i, point) in enumerate(cluster):
-            result[i] = evaluate_uniformity_from_point(point, density)
-            print('At point {}, dot products are {}'.format(point, result[i]))
-            print()
-        inter_time = time_class.time() - start
-        print('time per star =', inter_time/cluster_number)
-        # output summary information
-        # report the average and standard deviation of the maximum 
-        # dot product in absolute value, ignoring nan values
-        max_dot_product = np.nanmax(np.absolute(result), axis = 1)
-        mean_of_max = np.nanmean(max_dot_product)
-        std_of_max = np.nanstd(max_dot_product, ddof = 1)
-        print('The average of the maximum absolute value of dot product is ', mean_of_max)
-        print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
+    if not os.path.exists('main_program_results'):
+        os.mkdir('main_program_results')
         
-        if not os.path.exists('main_program_results'):
-            os.mkdir('main_program_results')
-            
-        # remove any line with \n in the title
-        file_name = file_name.replace('\n','')
-        # save result
-        np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
-        
-        # create graph of kmeans projection in 2 dimension
-        fig = plt.figure(figsize=(8, 8))
-        # only plot projection of samples in x and y dimension
-        plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
-        plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
-        plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
-        plt.xlabel('x / 8 kpc', fontsize = 15)
-        plt.ylabel('y / 8 kpc', fontsize = 15)
-        # save figure
-        kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
-        plt.savefig('main_program_results/' + kmeans_figure_name)
-        plt.show()
-        
-        # create graph of dot product
-        fig = plt.figure(figsize=(8, 8))
-        ax = fig.add_subplot(111, projection='3d')
-        # get the maximum dot product at each cluster center
-        # change all nan to 0 in result for graphing purpose
-        result2 = np.nan_to_num(result)
-        max_dot_product2 = np.max(np.absolute(result2), axis = 1)
-        # scatter the cluster center x, y, and height is max dot product
-        ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
-        ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
-        ax.set_xlabel('x / 8 kpc')
-        ax.set_ylabel('y / 8 kpc')
-        ax.set_zlabel('maximum dot product')
-        # save figure
-        dot_product_figure_name = file_name + ', max dot product figure.pdf'
-        plt.savefig('main_program_results/' + dot_product_figure_name)
-        plt.show()
+    # remove any line with \n in the title
+    file_name = file_name.replace('\n','')
+    # save result
+    np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
+    
+    # create graph of kmeans projection in 2 dimension
+    fig = plt.figure(figsize=(8, 8))
+    # only plot projection of samples in x and y dimension
+    plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
+    plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
+    plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
+    plt.xlabel('x / 8 kpc', fontsize = 15)
+    plt.ylabel('y / 8 kpc', fontsize = 15)
+    # save figure
+    kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
+    plt.savefig('main_program_results/' + kmeans_figure_name)
+    plt.show()
+    
+    # create graph of dot product
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    # get the maximum dot product at each cluster center
+    # change all nan to 0 in result for graphing purpose
+    result2 = np.nan_to_num(result)
+    max_dot_product2 = np.max(np.absolute(result2), axis = 1)
+    # scatter the cluster center x, y, and height is max dot product
+    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
+    ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
+    ax.set_xlabel('x / 8 kpc')
+    ax.set_ylabel('y / 8 kpc')
+    ax.set_zlabel('maximum dot product')
+    # save figure
+    dot_product_figure_name = file_name + ', max dot product figure.pdf'
+    plt.savefig('main_program_results/' + dot_product_figure_name)
+    plt.show()
         
     
 if __name__ == "__main__":
