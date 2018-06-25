@@ -145,6 +145,26 @@ def kmeans_plot(samples, cluster, file_name):
     kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
     plt.savefig('main_program_results/' + kmeans_figure_name)
     plt.show()
+    
+    
+def dot_product_plot(result, cluster, file_name):
+    # create graph of dot product
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    # get the maximum dot product at each cluster center
+    # change all nan to 0 in result for graphing purpose
+    result2 = np.nan_to_num(result)
+    max_dot_product2 = np.max(np.absolute(result2), axis = 1)
+    # scatter the cluster center x, y, and height is max dot product
+    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
+    ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
+    ax.set_xlabel('x / 8 kpc')
+    ax.set_ylabel('y / 8 kpc')
+    ax.set_zlabel('maximum dot product')
+    # save figure
+    dot_product_figure_name = file_name + ', max dot product figure.pdf'
+    plt.savefig('main_program_results/' + dot_product_figure_name)
+    plt.show()
 
 
 def main(custom_density = None, search_method = "local", custom_samples = None):
@@ -248,23 +268,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     # create and save graph of kmeans projection in 2 dimension
     kmeans_plot(samples, cluster, file_name)
     
-    # create graph of dot product
-    fig = plt.figure(figsize=(8, 8))
-    ax = fig.add_subplot(111, projection='3d')
-    # get the maximum dot product at each cluster center
-    # change all nan to 0 in result for graphing purpose
-    result2 = np.nan_to_num(result)
-    max_dot_product2 = np.max(np.absolute(result2), axis = 1)
-    # scatter the cluster center x, y, and height is max dot product
-    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
-    ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
-    ax.set_xlabel('x / 8 kpc')
-    ax.set_ylabel('y / 8 kpc')
-    ax.set_zlabel('maximum dot product')
-    # save figure
-    dot_product_figure_name = file_name + ', max dot product figure.pdf'
-    plt.savefig('main_program_results/' + dot_product_figure_name)
-    plt.show()
+    # create and save graph of dot product
+    dot_product_plot(result, cluster, file_name)
         
     
 if __name__ == "__main__":
