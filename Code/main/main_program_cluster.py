@@ -74,6 +74,58 @@ def evaluate_uniformity_from_point(a, density):
     return directional_derivatives
 
 
+def search_for_samples(search_method):
+    """
+    NAME:
+        search_for_samples
+
+    PURPOSE:
+        Depending on the argument, search_method, search stars online, locally
+        or use all of local catalogue. If we are searching, get stars within an 
+        epsilon ball of the point in phase space from Gaia. We always input the
+        galactic coordinate into search function. In addition, generate
+        a file name to save result
+
+    INPUT:
+        search_method = a string that is either "online", "local", or
+                        "all of local"
+
+    OUTPUT:
+        samples = a numpy arrays containing 6 dimensional coordinates in
+                  galactocentric Cartesian form with physical units
+                  
+        file_name = a string that records the epsilon, v_scale, and search star
+                    or the fact that all of Gaia catalogue was used
+
+    HISTORY:
+        2018-06-25 - Written - Samuel Wong
+    """
+    if search_method == "online":
+        # get coordinate of the star to be searched from user
+        point_galactocentric, point_galactic = get_star_coord_from_user()
+        samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
+    elif search_method == "local":
+        # get coordinate of the star to be searched from user
+        point_galactocentric, point_galactic = get_star_coord_from_user()
+        samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
+    elif search_method == "all of local":
+        samples = search_local.get_entire_catalogue()
+    print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
+    
+    # create file name if a search was performed
+    # if user is using all of catalogue, record this fact and epsilon and
+    # v_scale in file name
+    if search_method == "all of local":
+        file_name = 'epsilon = {}, v_scale = {}, full sample'.format(
+            epsilon, v_scale)
+    # if actual search was done, record search star as well
+    else:
+        file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
+                epsilon, v_scale, np.array_str(point_galactocentric))
+    
+    return samples, file_name
+
+
 def main(custom_density = None, search_method = "local", custom_samples = None):
     """
     NAME:
@@ -114,23 +166,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # second, if no custom samples are given, then search Gaia and generate
         # KDE
         if np.any(custom_samples == None):
-            # depending on the argument of main function, search stars online, locally
-            # or use all of local catalogue
-            # if we are searching, get stars within an epsilon ball of the point in 
-            # phase space from Gaia, input the galactic coordinate into search function
-            if search_method == "online":
-                # get coordinate of the star to be searched from user
-                # at this point, everything should have physical units
-                point_galactocentric, point_galactic = get_star_coord_from_user()
-                samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
-            elif search_method == "local":
-                # get coordinate of the star to be searched from user
-                # at this point, everything should have physical units
-                point_galactocentric, point_galactic = get_star_coord_from_user()
-                samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
-            elif search_method == "all of local":
-                samples = search_local.get_entire_catalogue()
-            print('Found a sample of {} of stars,'.format(np.shape(samples)[0]))
+            # at this point, everything should have physical units
+            samples, file_name = search_for_samples(search_method)
         # But, if there is custom samples, then set that to be the samples
         else:
             samples = custom_samples
@@ -152,6 +189,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # get coordinate of the star to be evaluated from user
         # at this point, everything should have physical units
         point_galactocentric, point_galactic = get_star_coord_from_user()
+        
     
     # if custom density is given, only evaluate uniformity at given point
     if custom_density != None:
@@ -190,17 +228,6 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         if not os.path.exists('main_program_results'):
             os.mkdir('main_program_results')
             
-        # create file name if a search was performed
-        if search_method != None:
-            # if user is using all of catalogue, record this fact and epsilon and
-            # v_scale in file name
-            if search_method == "all of local":
-                file_name = 'epsilon = {}, v_scale = {}, full sample'.format(
-                    epsilon, v_scale)
-            # if actual search was done, record search star as well
-            else:
-                file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
-                        epsilon, v_scale, np.array_str(point_galactocentric))
         # remove any line with \n in the title
         file_name = file_name.replace('\n','')
         # save result
