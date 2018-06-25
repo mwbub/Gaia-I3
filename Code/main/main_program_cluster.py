@@ -36,6 +36,10 @@ del_Lz = grad(L_z, 6)
 epsilon = 0.5
 v_scale = 0.1
 
+# create a subfolder to save results
+if not os.path.exists('main_program_results'):
+    os.mkdir('main_program_results')
+
 def evaluate_uniformity_from_point(a, density):
     """
     NAME:
@@ -182,11 +186,11 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     # if neither custom density nor custom samples are given, then it is the
     # usual case of searching for stars and put them through KDE
     else:
-        # at this point, everything should have physical units
         samples, file_name = search_for_samples(search_method)
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
         
+    # at this point, everything should have physical units
     # Turn all data to natrual units; working with natural unit, galactocentric,
     # cartesian from this point on
     samples = to_natural_units(samples)
@@ -216,11 +220,6 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     print('The average of the maximum absolute value of dot product is ', mean_of_max)
     print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
     
-    if not os.path.exists('main_program_results'):
-        os.mkdir('main_program_results')
-        
-    # remove any line with \n in the title
-    file_name = file_name.replace('\n','')
     # save result
     np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
     
