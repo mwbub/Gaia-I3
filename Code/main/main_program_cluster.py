@@ -167,40 +167,7 @@ def dot_product_plot(result, cluster, file_name):
     plt.show()
 
 
-def main(custom_density = None, search_method = "local", custom_samples = None):
-    """
-    NAME:
-        main
-
-    PURPOSE:
-        Call on all modules to evaluate uniformity of density on a cluster of 
-        points provided by kmeans. Allows the user to specify search method to
-        generate sample stars around a point in phase space. Also, allows user
-        to give custom density function, but since no points are given for a
-        custom density, this program only evaluates uniformity at a point when
-        custom density is given. Also, allows user to give custom sample stars.
-        Output figures of results, including kmeans and dot product scatter
-        plot.
-
-    INPUT:
-        custom_density = a customized density functiont that takes an array
-                         of 6 numbers representing the coordinate and return
-                         the density; if this input is None, then the code
-                         will use a search method to get data from Gaia catalogue
-                         and use KDE to genereate a density function
-        search_method = search the gaia catalogue online ("online"),
-                        locally on a downloaded file ('local'), or use the
-                        the entire downloaded gaia rv file ('all of local')
-        custom_samples = an N by 6 array that represents the custom samples, 
-                        with each component representing (x,y,z,vx,vy,vz),
-                        respectively. They are in physical units.
-
-    HISTORY:
-        2018-06-20 - Written - Samuel Wong
-        2018-06-21 - Added option of custom samples - Samuel Wong and Michael
-                                                      Poon
-        2018-06-22 - Added Figure
-    """
+def get_samples_density_filename(custom_density, search_method, custom_samples):
     # if a custom density is given, set it to the density, and then search
     # for samples to evaluate on
     if custom_density != None:
@@ -237,6 +204,46 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
         
+    return samples, density, file_name
+
+
+def main(custom_density = None, search_method = "local", custom_samples = None):
+    """
+    NAME:
+        main
+
+    PURPOSE:
+        Call on all modules to evaluate uniformity of density on a cluster of 
+        points provided by kmeans. Allows the user to specify search method to
+        generate sample stars around a point in phase space. Also, allows user
+        to give custom density function, but since no points are given for a
+        custom density, this program only evaluates uniformity at a point when
+        custom density is given. Also, allows user to give custom sample stars.
+        Output figures of results, including kmeans and dot product scatter
+        plot.
+
+    INPUT:
+        custom_density = a customized density functiont that takes an array
+                         of 6 numbers representing the coordinate and return
+                         the density; if this input is None, then the code
+                         will use a search method to get data from Gaia catalogue
+                         and use KDE to genereate a density function
+        search_method = search the gaia catalogue online ("online"),
+                        locally on a downloaded file ('local'), or use the
+                        the entire downloaded gaia rv file ('all of local')
+        custom_samples = an N by 6 array that represents the custom samples, 
+                        with each component representing (x,y,z,vx,vy,vz),
+                        respectively. They are in physical units.
+
+    HISTORY:
+        2018-06-20 - Written - Samuel Wong
+        2018-06-21 - Added option of custom samples - Samuel Wong and Michael
+                                                      Poon
+        2018-06-22 - Added Figure
+    """        
+    samples, density, file_name = get_samples_density_filename(
+            custom_density, search_method, custom_samples)
+        
     # let batch size be 10% of the number of samples
     batch_size = int(0.1 * np.shape(samples)[0])
     # let the number of cluster centers to be 1% of number of samples
@@ -261,13 +268,11 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     std_of_max = np.nanstd(max_dot_product, ddof = 1)
     print('The average of the maximum absolute value of dot product is ', mean_of_max)
     print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
-    
     # save result
     np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
     
     # create and save graph of kmeans projection in 2 dimension
     kmeans_plot(samples, cluster, file_name)
-    
     # create and save graph of dot product
     dot_product_plot(result, cluster, file_name)
         
