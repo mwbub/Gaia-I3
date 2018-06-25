@@ -132,6 +132,21 @@ def search_for_samples(search_method):
     return samples, file_name
 
 
+def kmeans_plot(samples, cluster, file_name):
+    # create graph of kmeans projection in 2 dimension
+    fig = plt.figure(figsize=(8, 8))
+    # only plot projection of samples in x and y dimension
+    plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
+    plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
+    plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
+    plt.xlabel('x / 8 kpc', fontsize = 15)
+    plt.ylabel('y / 8 kpc', fontsize = 15)
+    # save figure
+    kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
+    plt.savefig('main_program_results/' + kmeans_figure_name)
+    plt.show()
+
+
 def main(custom_density = None, search_method = "local", custom_samples = None):
     """
     NAME:
@@ -173,6 +188,10 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # get the name of density for naming purpose
         name_of_density = input('Name of custom density function: ')
         samples, file_name = search_for_samples(search_method)
+        # at this point, everything should have physical units
+        # Turn all data to natrual units; working with natural unit, galactocentric,
+        # cartesian from this point on
+        samples = to_natural_units(samples)
         # modify the file name by adding the name of custom density
         file_name = name_of_density + file_name
     # if custom samples are given, use those to generate density function
@@ -181,19 +200,22 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         # before running
         file_name = input('Name of file to be saved: ')
         samples = custom_samples
+        # at this point, everything should have physical units
+        # Turn all data to natrual units; working with natural unit, galactocentric,
+        # cartesian from this point on
+        samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
     # if neither custom density nor custom samples are given, then it is the
     # usual case of searching for stars and put them through KDE
     else:
         samples, file_name = search_for_samples(search_method)
+        # at this point, everything should have physical units
+        # Turn all data to natrual units; working with natural unit, galactocentric,
+        # cartesian from this point on
+        samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov', v_scale)
-        
-    # at this point, everything should have physical units
-    # Turn all data to natrual units; working with natural unit, galactocentric,
-    # cartesian from this point on
-    samples = to_natural_units(samples)
         
     # let batch size be 10% of the number of samples
     batch_size = int(0.1 * np.shape(samples)[0])
@@ -223,18 +245,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     # save result
     np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
     
-    # create graph of kmeans projection in 2 dimension
-    fig = plt.figure(figsize=(8, 8))
-    # only plot projection of samples in x and y dimension
-    plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
-    plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
-    plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
-    plt.xlabel('x / 8 kpc', fontsize = 15)
-    plt.ylabel('y / 8 kpc', fontsize = 15)
-    # save figure
-    kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
-    plt.savefig('main_program_results/' + kmeans_figure_name)
-    plt.show()
+    # create and save graph of kmeans projection in 2 dimension
+    kmeans_plot(samples, cluster, file_name)
     
     # create graph of dot product
     fig = plt.figure(figsize=(8, 8))
@@ -256,4 +268,4 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         
     
 if __name__ == "__main__":
-    main(None, "local")
+    main(custom_density = None, search_method = "local", custom_samples = None)
