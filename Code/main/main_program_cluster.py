@@ -160,6 +160,7 @@ def kmeans_plot(samples, cluster, file_name):
     plt.xlabel('x / 8 kpc', fontsize = 15)
     plt.ylabel('y / 8 kpc', fontsize = 15)
     # save figure
+    kmeans_figure_name = file_name + ', kmeans xy figure.jpg'
     kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
     plt.savefig('main_program_results/' + kmeans_figure_name)
     plt.show()
@@ -199,6 +200,7 @@ def dot_product_plot(result, cluster, file_name):
     ax.set_ylabel('y / 8 kpc')
     ax.set_zlabel('maximum dot product')
     # save figure
+    dot_product_figure_name = file_name + ', max dot product figure.jpg'
     dot_product_figure_name = file_name + ', max dot product figure.pdf'
     plt.savefig('main_program_results/' + dot_product_figure_name)
     plt.show()
