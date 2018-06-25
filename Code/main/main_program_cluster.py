@@ -207,6 +207,16 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
     return samples, density, file_name
 
 
+def get_cluster(samples):
+    # let batch size be 10% of the number of samples
+    batch_size = int(0.1 * np.shape(samples)[0])
+    # let the number of cluster centers to be 1% of number of samples
+    cluster_number = int(0.01 * np.shape(samples)[0])
+    # use kmenas to generate a cluster of points
+    cluster = kmeans(samples, cluster_number, batch_size)
+    return cluster
+
+
 def main(custom_density = None, search_method = "local", custom_samples = None):
     """
     NAME:
@@ -242,14 +252,9 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         2018-06-22 - Added Figure
     """        
     samples, density, file_name = get_samples_density_filename(
-            custom_density, search_method, custom_samples)
-        
-    # let batch size be 10% of the number of samples
-    batch_size = int(0.1 * np.shape(samples)[0])
-    # let the number of cluster centers to be 1% of number of samples
-    cluster_number = int(0.01 * np.shape(samples)[0])
-    # use kmenas to generate a cluster of points
-    cluster = kmeans(samples, cluster_number, batch_size)
+            custom_density, search_method, custom_samples)    
+    cluster = get_cluster(samples)
+    
     # initialize an array of directional derivative for each point
     result = np.empty((np.shape(cluster)[0], 4))
     # evaluate uniformity for each point in cluster
@@ -259,7 +264,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         print('At point {}, dot products are {}'.format(point, result[i]))
         print()
     inter_time = time_class.time() - start
-    print('time per star =', inter_time/cluster_number)
+    print('time per star =', inter_time/np.shape(cluster)[0])
     # output summary information
     # report the average and standard deviation of the maximum 
     # dot product in absolute value, ignoring nan values
