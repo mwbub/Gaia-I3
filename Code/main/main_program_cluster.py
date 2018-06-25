@@ -148,6 +148,25 @@ def kmeans_plot(samples, cluster, file_name):
     
     
 def dot_product_plot(result, cluster, file_name):
+    """
+    NAME:
+        dot_product_plot
+
+    PURPOSE:
+        Given result of dot product and cluster, plot them. Given file name,
+        save the image.
+
+    INPUT:
+        result = a numpy array storing dot product result
+        cluster = a numpy array storing cluster centers
+        file_name = a string
+
+    OUTPUT:
+        None
+
+    HISTORY:
+        2018-06-25 - Written - Samuel Wong
+    """
     # create graph of dot product
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111, projection='3d')
