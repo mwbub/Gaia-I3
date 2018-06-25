@@ -208,6 +208,26 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
 
 
 def get_cluster(samples):
+    """
+    NAME:
+        get_cluster
+
+    PURPOSE:
+        Given a sample, use kmeans minibatch to find some cluster centers that
+        are a good representative of the samples.
+
+    INPUT:
+        samples = a numpy arrays containing 6 dimensional coordinates in
+                  galactocentric Cartesian form with natural units
+
+    OUTPUT:
+        cluster = a numpy arrays containing 6 dimensional coordinates in
+                  galactocentric Cartesian form with natural units; a smal but 
+                  representative cluster centers of samples
+
+    HISTORY:
+        2018-06-25 - Written - Samuel Wong
+    """
     # let batch size be 10% of the number of samples
     batch_size = int(0.1 * np.shape(samples)[0])
     # let the number of cluster centers to be 1% of number of samples
