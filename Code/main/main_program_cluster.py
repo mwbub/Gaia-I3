@@ -195,11 +195,13 @@ def dot_product_plot(result, cluster, file_name):
     result2 = np.nan_to_num(result)
     max_dot_product2 = np.max(np.absolute(result2), axis = 1)
     # scatter the cluster center x, y, and height is max dot product
-    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
+    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 10)
     ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
     ax.set_xlabel('x / 8 kpc')
     ax.set_ylabel('y / 8 kpc')
     ax.set_zlabel('maximum dot product')
+    # force the z limit to 0 and 1
+    ax.set_zlim(0, 1)
     # save figure
     dot_product_figure_name = file_name + ', max dot product figure.jpg'
     plt.savefig('main_program_results/' + dot_product_figure_name)
