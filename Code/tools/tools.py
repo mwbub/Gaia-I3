@@ -13,6 +13,7 @@ HISTORY:
 import numpy as np
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
 import astropy.units as unit
+import galpy.util.bovy_coords as bovy_coords
 
 def galactic_to_galactocentric(point):
     """
@@ -283,3 +284,24 @@ def std_cut(samples, number_of_std_cut):
     new_samples = samples[np.all(np.abs((samples - mean) / std) < number_of_std_cut, axis=1)]
     print(len(samples) - len(new_samples), "samples cut. Now there are", len(new_samples), "samples.")
     return new_samples    
+
+def rect_to_cyl(x, y, z, vx, vy, vz):
+    """
+    NAME:
+        rect_to_cyl
+        
+    PURPOSE:
+        convert rectangular coordinates to cylindrical coordinates with velocity
+        
+    INPUT:
+        x, y, z, vx, vy, vz - rectangular coordinates; can be arrays or
+        individual values
+        
+    OUTPUT:
+        R, vR, vT, z, vz, phi
+    """
+    R, phi, z = bovy_coords.rect_to_cyl(x, y, z)
+    vR, vT, vz = bovy_coords.rect_to_cyl_vec(vx, vy, vz, x, y, z)
+    return np.stack((R, vR, vT, z, vz, phi), axis=1)
+
+    
