@@ -42,7 +42,7 @@ def generate_KDE(inputs, ker):
     
     #Fit data points to selected kernel and bandwidth
     kde = KernelDensity(kernel=ker, bandwidth=bw).fit(inputs)  
-
+    
     def input_KDE(samples):
         """
         NAME:
@@ -68,8 +68,7 @@ def generate_KDE(inputs, ker):
         samples = np.array([samples])
         
         #Scaling samples with standard deviation
-        samples_std = np.nanstd(samples, axis=0)
-        samples = samples/samples_std
+        samples = samples/inputs_std
         
         #Get the log density for selected samples and apply exponential to get normal probabilities
         log_dens = kde.score_samples(samples)
