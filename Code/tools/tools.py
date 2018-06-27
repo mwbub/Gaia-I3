@@ -129,13 +129,12 @@ def to_natural_units(list_of_coord):
 
     HISTORY:
         2018-05-30 - Written - Samuel Wong
+        2018-06-27 - Modified so that it is more efficient by dividing all
+                     of the components at once in numpy - Samuel Wong
     """
-
-    natural_list = np.empty(np.shape(list_of_coord))
-    for (i, coord) in enumerate(list_of_coord):
-        x, y, z, vx, vy, vz = coord
-        natural_list[i] = np.array([x/8., y/8., z/8., vx/220., vy/220., vz/220.])
-    return natural_list
+    list_of_coord[:,0:3] = list_of_coord[:,0:3]/8.
+    list_of_coord[:,3:6] = list_of_coord[:,3:6]/220.
+    return list_of_coord
     
 
 def get_star_coord_from_user():
