@@ -19,8 +19,7 @@ from galpy.util.bovy_conversion import time_in_Gyr
 
 _ERASESTR = '\r                                                              \r'
 
-def get_samples_with_z(n=1, r_range=None, integration_time=1, 
-                       integration_steps=100, use_psp=True):
+def get_samples_with_z(n=1, r_range=None, use_psp=True):
     """
     NAME:
         get_samples_with_z
@@ -34,12 +33,6 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
-        
-        integration_time - length of time to integrate orbits in Gyr; used for
-        adding a z component to each star (optional; default = 1)
-        
-        integration_steps - number of steps to use in the orbit integration
-        (optional; default = 100)
         
         use_psp - if True, will use LogarithmicHaloPotential for orbit 
         integration instead of MWPotential2014 (optional; default = True)
@@ -88,10 +81,6 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     # delete the original orbits to preserve memory
     del sampled_ROrbits
     
-    # integrate the orbits for integration_time Gyr
-    t = np.linspace(0, integration_time/time_in_Gyr(vo=220., ro=8.), 
-                    integration_steps)
-    
     if use_psp:
         pot = LogarithmicHaloPotential(normalize=1.)
     else:
@@ -102,10 +91,12 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     if n >= 1000:
         start = time.time()
         
-    end = t[-1]
+    nperiods = np.random.normal(loc=4., size=n)
     for i in range(n):
         o = Orbit(vxvv=coord[i], ro=8., vo=220.)
+        t = np.linspace(0, nperiods[i]*2*np.pi*o.R(use_physical=False), 100)
         o.integrate(t, pot)
+        end = t[-1]
         coord[i] = [o.R(end), o.vR(end), o.vT(end), o.z(end), o.vz(end)]
         
         if n >= 1000 and i % 1000 == 0:
