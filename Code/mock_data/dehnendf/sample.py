@@ -15,7 +15,6 @@ from galpy.df import dehnendf
 from galpy.orbit import Orbit
 from galpy.potential import MWPotential2014, LogarithmicHaloPotential
 from galpy.util.bovy_coords import cyl_to_rect, cyl_to_rect_vec
-from galpy.util.bovy_conversion import time_in_Gyr
 
 _ERASESTR = '\r                                                              \r'
 
@@ -91,7 +90,7 @@ def get_samples_with_z(n=1, r_range=None, use_psp=True):
     if n >= 1000:
         start = time.time()
         
-    nperiods = np.random.normal(loc=4., size=n)
+    nperiods = np.random.normal(loc=5., size=n)
     for i in range(n):
         o = Orbit(vxvv=coord[i], ro=8., vo=220.)
         t = np.linspace(0, nperiods[i]*2*np.pi*o.R(use_physical=False), 100)
