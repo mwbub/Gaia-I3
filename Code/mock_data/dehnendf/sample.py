@@ -13,7 +13,7 @@ import numpy as np
 from sys import stdout
 from galpy.df import dehnendf
 from galpy.orbit import Orbit
-from galpy.potential import MWPotential2014, PowerSphericalPotential
+from galpy.potential import MWPotential2014, LogarithmicHaloPotential
 from galpy.util.bovy_coords import cyl_to_rect, cyl_to_rect_vec
 from galpy.util.bovy_conversion import time_in_Gyr
 
@@ -41,7 +41,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         integration_steps - number of steps to use in the orbit integration
         (optional; default = 100)
         
-        use_psp - if True, will use PowerSphericalPotential for orbit 
+        use_psp - if True, will use LogarithmicHaloPotential for orbit 
         integration instead of MWPotential2014 (optional; default = False)
         
     OUTPUT:
@@ -93,7 +93,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
                     integration_steps)
     
     if use_psp:
-        pot = PowerSphericalPotential(alpha=2., normalize=True)
+        pot = LogarithmicHaloPotential(normalize=1.)
     else:
         pot = MWPotential2014
     
@@ -136,7 +136,7 @@ def generate_sample_data(n, phi_range, r_range=None, use_psp=False):
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
         
-        use_psp - if True, will use PowerSphericalPotential for orbit 
+        use_psp - if True, will use LogarithmicHaloPotential for orbit 
         integration instead of MWPotential2014 (optional; default = False)
         
     OUTPUT:
@@ -185,7 +185,7 @@ def load_samples(n, phi_range, r_range=None, use_psp=False):
         r_range - radial range in kpc in which to sample stars; if None, will 
         sample stars at any radius (optional; default = None)
         
-        use_psp - if True, will use PowerSphericalPotential for orbit 
+        use_psp - if True, will use LogarithmicHaloPotential for orbit 
         integration instead of MWPotential2014 (optional; default = False)
         
     OUTPUT:

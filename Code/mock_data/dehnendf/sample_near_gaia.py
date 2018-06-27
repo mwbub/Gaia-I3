@@ -79,7 +79,7 @@ def load_mock_data(u0, v0, w0, epsilon, parallax_cut=True, use_psp=False):
         parallax_cut - if True, will perform a cut for stars with parallax
         errors < 20% (optional; default = True)
         
-        use_psp - if True, will use PowerSphericalPotential for orbit 
+        use_psp - if True, will use LogarithmicHaloPotential for orbit 
         integration instead of MWPotential2014 (optional; default = False)
         
     OUTPUT:
