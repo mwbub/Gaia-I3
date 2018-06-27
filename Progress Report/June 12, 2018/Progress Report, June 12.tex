@@ -1,0 +1,50 @@
+\documentclass[12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+\title{Progress Report: (Week of June 12)}
+\author{Samuel Wong, Ayush Pandhi}
+\date{June 12, 2018}
+\maketitle
+
+
+\section{Samuel's Accomplished Tasks}
+
+\subsection{Determined Whether qdf SampleV Is Too Slow}
+I played with qdf sample V and wrote a loop that sample velocity once at each point. Anything over 10000 takes too long ( 30 minutes +). So I concluded that interpolating this function is worthwhile.
+
+\subsection{Wrote the function main() in main program}
+I changed the main program so that it puts all the action in a main() function.
+This function takes an optional custom density and choice of search method. This way, when we are testing, we can just import main and call main(custom density) in a separate module. This makes testing much more efficient.
+
+\subsection{Fixed Cartesian qdf with Ayush}
+I noticed that our Cartesian qdf gives nan a lot, which should not happened. With Ayush, we realized that this is because with our coordinate transformation, it gives negative tangential velocity, which is not accepted by qdf.
+
+\subsection{Wrote a First Draft for SampleV with Ayush}
+Here is our plan for sampleV: we will create a grid on the based on the given data. To make the grid smaller, we will take out outliers that are 3 standard deviations away. Then sample velocity on the intersections of the grid. And then interpolate the three velocities for the data.
+
+This requires us to calculate the optimal number of intersections of the grid that optimizes for interpolation accuracy versus runtime. We started brainstorming how to do this. We left out this part in the first draft of the code.
+
+\section{Ayush’s Accomplished Tasks}
+\subsection{Added v scale Functionality to KDE Function}
+To normalize velocities and positions to similar magnitudes within the 6 dimensional position-velocity space, I added a scaling factor to the KDE function. This applies to both the inputs and samples matrices within the function. It splits the matrices horizontally into two N by 3 matrices for positions and velocities and then multiplies the velocities by the chosen v scale factor and recombines the matrices back into one object. Additionally, based on the given data it seems that an ideal v scale is approximately 0.05 to 0.1 as the velocity magnitudes for the Gaia Radial Velocity sample are roughly 10 times as large as the positions.
+
+\subsection{Updated Notebooks for KDE Function and 1D Tutorial}
+I updated two notebooks that serve as tutorials on how to apply the KDE function to include the v scale functionality as well as fixing some descriptions.
+
+\section{Mathew's and Michael's Accomplished Tasks}
+Our work on K-Means can be found in the power point in this folder.
+
+\end{document}
