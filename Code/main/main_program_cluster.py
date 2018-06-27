@@ -263,7 +263,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         # cartesian from this point on
         samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
-        density = generate_KDE(samples, 'epanechnikov', v_scale)
+        density = generate_KDE(samples, 'epanechnikov')
     # if neither custom density nor custom samples are given, then it is the
     # usual case of searching for stars and put them through KDE
     else:
@@ -273,7 +273,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         # cartesian from this point on
         samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
-        density = generate_KDE(samples, 'epanechnikov', v_scale)
+        density = generate_KDE(samples, 'epanechnikov')
         
     return samples, density, file_name
 
