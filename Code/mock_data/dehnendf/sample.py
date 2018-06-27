@@ -20,7 +20,7 @@ from galpy.util.bovy_conversion import time_in_Gyr
 _ERASESTR = '\r                                                              \r'
 
 def get_samples_with_z(n=1, r_range=None, integration_time=1, 
-                       integration_steps=100, use_psp=False):
+                       integration_steps=100, use_psp=True):
     """
     NAME:
         get_samples_with_z
@@ -42,7 +42,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
         (optional; default = 100)
         
         use_psp - if True, will use LogarithmicHaloPotential for orbit 
-        integration instead of MWPotential2014 (optional; default = False)
+        integration instead of MWPotential2014 (optional; default = True)
         
     OUTPUT:
         nx5 array of cylindrical galactocentric coordinates of the form
@@ -120,7 +120,7 @@ def get_samples_with_z(n=1, r_range=None, integration_time=1,
     
     return coord
 
-def generate_sample_data(n, phi_range, r_range=None, use_psp=False):
+def generate_sample_data(n, phi_range, r_range=None, use_psp=True):
     """
     NAME:
         generate_sample_data
@@ -137,7 +137,7 @@ def generate_sample_data(n, phi_range, r_range=None, use_psp=False):
         sample stars at any radius (optional; default = None)
         
         use_psp - if True, will use LogarithmicHaloPotential for orbit 
-        integration instead of MWPotential2014 (optional; default = False)
+        integration instead of MWPotential2014 (optional; default = True)
         
     OUTPUT:
         None (saves samples to the data directory)
@@ -168,7 +168,7 @@ def generate_sample_data(n, phi_range, r_range=None, use_psp=False):
         
     np.save('data/' + filename, samples)
     
-def load_samples(n, phi_range, r_range=None, use_psp=False):
+def load_samples(n, phi_range, r_range=None, use_psp=True):
     """
     NAME:
         load_samples
@@ -186,7 +186,7 @@ def load_samples(n, phi_range, r_range=None, use_psp=False):
         sample stars at any radius (optional; default = None)
         
         use_psp - if True, will use LogarithmicHaloPotential for orbit 
-        integration instead of MWPotential2014 (optional; default = False)
+        integration instead of MWPotential2014 (optional; default = True)
         
     OUTPUT:
         nx6 array of rectangular galactocentric coordinates of the form 
