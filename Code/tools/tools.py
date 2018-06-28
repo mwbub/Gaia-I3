@@ -316,7 +316,7 @@ def cyl_to_rect(R, vR, vT, z, vz, phi):
         individual values
         
     OUTPUT:
-        R, vR, vT, z, vz, phi
+        x, y, z, vx, vy, vz
     """
     x, y, z = bovy_coords.cyl_to_rect(R, phi, z)
     vx, vy, vz = bovy_coords.cyl_to_rect_vec(vR, vT, vz, phi)
