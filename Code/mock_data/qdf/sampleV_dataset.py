@@ -36,7 +36,7 @@ vR *= 220.
 vT *= 220.
 vz *= 220.
 
-sampleV_set = np.stack([R, phi, z, vR, vT, vz], axis=1)
+sampleV_set = np.stack([R, vR, vT, z, vz, phi], axis=1)
 
 if not os.path.exists('data'):
     os.mkdir('data')
