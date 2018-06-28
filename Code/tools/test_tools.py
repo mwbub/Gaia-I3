@@ -51,7 +51,7 @@ def test_std_cut(number_of_std_cut):
     print("Length of random data:", len(samples))
     print(std_cut(samples, number_of_std_cut))
 
-#test_natural_unit(38)
+test_natural_unit(38)
 #test_frame_conversion(1.,2.,3.5,6.7, 8.3,3.2)
 #test_create_meshgrid(-1, 1, 1, -1, 1, 1, 8, 9, 1, 10, 11, 1)
 test_std_cut(3)

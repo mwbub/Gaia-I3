@@ -33,7 +33,7 @@ from tools.tools import *
 del_E = grad(Energy, 6)
 del_Lz = grad(L_z, 6)
 # define parameters for the search and KDE as global variables
-epsilon = 0.5
+epsilon = 1.0
 v_scale = 0.1
 
 # create a subfolder to save results
@@ -167,7 +167,7 @@ def kmeans_plot(samples, cluster, file_name):
     plt.show()
     
     
-def dot_product_plot(result, cluster, file_name):
+def dot_product_plot(max_dot_product, cluster, file_name):
     """
     NAME:
         dot_product_plot
@@ -177,7 +177,8 @@ def dot_product_plot(result, cluster, file_name):
         save the image.
 
     INPUT:
-        result = a numpy array storing dot product result
+        max_dot_product = a numpy array storing the maximum dot product at each
+                          cluster center
         cluster = a numpy array storing cluster centers
         file_name = a string
 
@@ -191,11 +192,11 @@ def dot_product_plot(result, cluster, file_name):
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111, projection='3d')
     # get the maximum dot product at each cluster center
-    # change all nan to 0 in result for graphing purpose
-    result2 = np.nan_to_num(result)
-    max_dot_product2 = np.max(np.absolute(result2), axis = 1)
+    # filter out nan
+    cluster = cluster[~np.isnan(max_dot_product)]
+    max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
     # scatter the cluster center x, y, and height is max dot product
-    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 10)
+    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product, s = 10)
     ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
     ax.set_xlabel('x / 8 kpc')
     ax.set_ylabel('y / 8 kpc')
@@ -370,7 +371,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     # create and save graph of kmeans projection in 2 dimension
     kmeans_plot(samples, cluster, file_name)
     # create and save graph of dot product
-    dot_product_plot(result, cluster, file_name)
+    dot_product_plot(max_dot_product, cluster, file_name)
         
     
 if __name__ == "__main__":
