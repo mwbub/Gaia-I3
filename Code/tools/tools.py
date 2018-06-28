@@ -304,4 +304,23 @@ def rect_to_cyl(x, y, z, vx, vy, vz):
     vR, vT, vz = bovy_coords.rect_to_cyl_vec(vx, vy, vz, x, y, z)
     return np.stack((R, vR, vT, z, vz, phi), axis=1)
 
+def cyl_to_rect(R, vR, vT, z, vz, phi):
+    """
+    NAME:
+        cyl_to_rect
+        
+    PURPOSE:
+        convert cylindrical coordinates to rectangular coordinates with velocity
+        
+    INPUT:
+        R, vR, vT, z, vz, phi - cylindrical coordinates; can be arrays or
+        individual values
+        
+    OUTPUT:
+        R, vR, vT, z, vz, phi
+    """
+    x, y, z = bovy_coords.cyl_to_rect(R, phi, z)
+    vx, vy, vz = bovy_coords.cyl_to_rect_vec(vR, vT, vz, phi)
+    return np.stack((x, y, z, vx, vy, vz), axis=1)
+
     
