@@ -17,9 +17,8 @@ point_galactocentric, point_galactic = get_star_coord_from_user()
 samples = search_local.search_phase_space(*point_galactic, epsilon, 0)
 R, phi, z = rect_to_cyl(*samples.T[:3])
 
-R = R/8.
-phi = phi/8.
-z = z/8.
+R /= 8.
+z /= 8.
 
 vR = np.empty(len(samples))
 vT = np.empty(len(samples))
@@ -31,9 +30,11 @@ for i in range(len(samples)):
     vz[i] = s[0, 2]
     print('{:.2f}% complete'.format(100*i/(len(samples)-1)))
 
-vR = vR*220.
-vT = vT*220.
-vz = vz*220.
+R *= 8.
+z *= 8.
+vR *= 220.
+vT *= 220.
+vz *= 220.
 
 sampleV_set = np.stack([R, phi, z, vR, vT, vz], axis=1)
 
