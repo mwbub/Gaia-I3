@@ -11,9 +11,9 @@ HISTORY:
     2018-06-19 - Added Amount of Standard Deviation Cut function - Michael Poon
 """
 import numpy as np
-from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
 import astropy.units as unit
-import galpy.util.bovy_coords as bovy_coords
+from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
+from galpy.util import bovy_coords
 
 def galactic_to_galactocentric(point):
     """
