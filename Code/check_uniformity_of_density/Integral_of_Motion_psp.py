@@ -14,11 +14,11 @@ FUNCTIONS:
 HISTORY:
     2018-05-25 - Written - Samuel Wong
 """
-from galpy.potential import PowerSphericalPotential
+from galpy.potential import LogarithmicHaloPotential
 from galpy.potential import evaluatePotentials
 import numpy as np
 
-pot = PowerSphericalPotential(alpha=2., normalize=True)
+pot = LogarithmicHaloPotential(normalize=1.)
 
 def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
     """
