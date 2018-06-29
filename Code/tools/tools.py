@@ -107,7 +107,7 @@ def galactocentric_to_galactic(point):
     W = coord.W.value
     return np.array([u, v, w, U, V, W])
 
-def to_natural_units(list_of_coord):
+def to_natural_units(list_of_coord, ro=8., vo=220.):
     """
     NAME:
         to_natural_units
@@ -131,11 +131,11 @@ def to_natural_units(list_of_coord):
         2018-06-27 - Modified so that it is more efficient by dividing all
                      of the components at once in numpy - Samuel Wong
     """
-    list_of_coord[:,0:3] = list_of_coord[:,0:3]/8.
-    list_of_coord[:,3:6] = list_of_coord[:,3:6]/220.
-    return list_of_coord
+    pos = list_of_coord[:,:3] / ro
+    vel = list_of_coord[:,3:] / vo
+    return np.concatenate((pos, vel), axis=1)
 
-def to_physical_units(natural_coords):
+def to_physical_units(natural_coords, ro=8., vo=220.):
     """
     NAME:
         to_natural_units
@@ -152,9 +152,9 @@ def to_physical_units(natural_coords):
         Nx6 array of rectangular galactocentric coordinates of the form 
         (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
     """
-    natural_coords[:,:3] *= 8.
-    natural_coords[:,3:] *= 220.
-    return natural_coords
+    pos = natural_coords[:,:3] * ro
+    vel = natural_coords[:,3:] * vo
+    return np.concatenate((pos, vel), axis=1)
 
 def get_star_coord_from_user():
     """
