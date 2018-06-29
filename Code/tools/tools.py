@@ -125,6 +125,10 @@ def to_natural_units(list_of_coord, ro=8., vo=220.):
     OUTPUT:            
         natural_list = an array of coordinates, each coordinate has 6 components
             of positions and velocities, in natural units
+            
+        ro = distance from galactic centre to the vantage point
+        
+        vo = circular velocity at ro
 
     HISTORY:
         2018-05-30 - Written - Samuel Wong
@@ -147,6 +151,10 @@ def to_physical_units(natural_coords, ro=8., vo=220.):
     INPUT:
         natural_coords - Nx6 array of rectangular galactocentric coordinates of 
         the form (x, y, z, vx, vy, vz) in natural units
+        
+        ro = distance from galactic centre to the vantage point
+        
+        vo = circular velocity at ro
         
     OUPUT:
         Nx6 array of rectangular galactocentric coordinates of the form 
