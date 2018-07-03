@@ -328,7 +328,11 @@ def rect_to_cyl(x, y, z, vx, vy, vz):
     """
     R, phi, z = bovy_coords.rect_to_cyl(x, y, z)
     vR, vT, vz = bovy_coords.rect_to_cyl_vec(vx, vy, vz, x, y, z)
-    return np.stack((R, vR, vT, z, vz, phi), axis=1)
+    
+    if not isinstance(x, np.ndarray):
+        return np.array((R, vR, vT, z, vz, phi)).reshape((1,-1))
+    else:
+        return np.stack((R, vR, vT, z, vz, phi), axis=1)
 
 def cyl_to_rect(R, vR, vT, z, vz, phi):
     """
@@ -347,6 +351,10 @@ def cyl_to_rect(R, vR, vT, z, vz, phi):
     """
     x, y, z = bovy_coords.cyl_to_rect(R, phi, z)
     vx, vy, vz = bovy_coords.cyl_to_rect_vec(vR, vT, vz, phi)
-    return np.stack((x, y, z, vx, vy, vz), axis=1)
+
+    if not isinstance(x, np.ndarray):
+        return np.array((x, y, z, vx, vy, vz)).reshape((1,-1))
+    else:
+        return np.stack((x, y, z, vx, vy, vz), axis=1)
 
     
