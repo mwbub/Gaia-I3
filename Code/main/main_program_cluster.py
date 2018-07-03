@@ -15,10 +15,8 @@ import pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
 import os, sys
 # get the outer folder as the path
-outer_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-check_uniformity_path =  os.path.abspath(os.path.join(outer_path, 'check_uniformity_of_density'))
-sys.path.append(outer_path)
-sys.path.append(check_uniformity_path)
+sys.path.append('..')
+sys.path.append('../check_uniformity_of_density')
 # import relevant functions from different folders
 from check_uniformity_of_density.Integral_of_Motion import *
 from check_uniformity_of_density.Linear_Algebra import *
