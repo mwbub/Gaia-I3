@@ -14,6 +14,8 @@ import numpy as np
 import astropy.units as unit
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
 from galpy.util import bovy_coords
+import pylab as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def galactic_to_galactocentric(point):
     """
@@ -349,4 +351,81 @@ def cyl_to_rect(R, vR, vT, z, vz, phi):
     vx, vy, vz = bovy_coords.cyl_to_rect_vec(vR, vT, vz, phi)
     return np.stack((x, y, z, vx, vy, vz), axis=1)
 
+
+def kmeans_plot(samples, cluster, file_name):
+    """
+    NAME:
+        kmeans_plot
+
+    PURPOSE:
+        Given samples and cluster, plot them. Given file name, save the image.
+
+    INPUT:
+        samples = a numpy array storing samples
+        cluster = a numpy array storing cluster centers
+        file_name = a string
+
+    OUTPUT:
+        None
+
+    HISTORY:
+        2018-06-25 - Written - Samuel Wong
+    """
+    # create graph of kmeans projection in 2 dimension
+    fig = plt.figure(figsize=(8, 8))
+    # only plot projection of samples in x and y dimension
+    plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
+    plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
+    plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
+    plt.xlabel('x / 8 kpc', fontsize = 15)
+    plt.ylabel('y / 8 kpc', fontsize = 15)
+    # save figure
+    kmeans_figure_name = file_name + ', kmeans xy figure.jpg'
+    plt.savefig('main_program_results/' + kmeans_figure_name)
+    kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
+    plt.savefig('main_program_results/' + kmeans_figure_name)
+    plt.show()
     
+
+def dot_product_plot(max_dot_product, cluster, file_name):
+    """
+    NAME:
+        dot_product_plot
+
+    PURPOSE:
+        Given result of dot product and cluster, plot them. Given file name,
+        save the image.
+
+    INPUT:
+        max_dot_product = a numpy array storing the maximum dot product at each
+                          cluster center
+        cluster = a numpy array storing cluster centers
+        file_name = a string
+
+    OUTPUT:
+        None
+
+    HISTORY:
+        2018-06-25 - Written - Samuel Wong
+    """
+    # create graph of dot product
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    # get the maximum dot product at each cluster center
+    # filter out nan
+    cluster = cluster[~np.isnan(max_dot_product)]
+    max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
+    # scatter the cluster center x, y, and height is max dot product
+    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product, s = 10)
+    ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
+    ax.set_xlabel('x / 8 kpc')
+    ax.set_ylabel('y / 8 kpc')
+    ax.set_zlabel('maximum dot product')
+    # force the z limit to 0 and 1
+    ax.set_zlim(0, 1)
+    # save figure
+    dot_product_figure_name = file_name + ', max dot product figure.jpg'
+    plt.savefig('main_program_results/' + dot_product_figure_name)
+    dot_product_figure_name = file_name + ', max dot product figure.pdf'
+    plt.savefig('main_program_results/' + dot_product_figure_name)
+    plt.show()
