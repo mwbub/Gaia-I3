@@ -449,9 +449,9 @@ def color_plot_ij(max_dot_product, cluster, file_name, i, j):
     plt.title("Maximum Absolute Value of Dot Product in {}-{} Dimension".format(
             x_axis, y_axis))
     # save figure
-    color_figure_name = file_name + ', color dot product {}-{} figure.png'.format(
+    color_figure_name = 'color dot product {}-{} figure.png'.format(
             x_axis, y_axis)
-    plt.savefig('main_program_results/' + color_figure_name)
+    plt.savefig('main_program_results/' + file_name +'/'+ color_figure_name)
     plt.show()
     
 

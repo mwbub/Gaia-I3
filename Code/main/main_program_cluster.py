@@ -141,7 +141,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         custom samples are None. If they are, search for stars in Gaia and use
         KDE to generate density. If one of them is not None, use the custom
         density or custom samples (to generate density through KDE). Also,
-        generate appropriate file name.
+        generate appropriate file name and create a subfolder to save file.
 
     INPUT:
         custom_density = a function that takes 6 values in an array and outputs
@@ -194,6 +194,10 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov')
+        
+    # create a sub-subfolder to save results
+    if not os.path.exists('main_program_results/'+file_name):
+        os.mkdir('main_program_results/'+file_name)
         
     return samples, density, file_name
 
