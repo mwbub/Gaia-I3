@@ -45,10 +45,12 @@ So I changed both the Sample\_V\_On\_Set and the test module so that they averag
 I tested at what point sample V stops working by timing sample V on a series of input and plotted the result in notebook.
 
 \section{Michael's Accomplished Tasks}
-\subsection{Figured Out that We Want Kmeans, Not Voronoi}
-\subsection{Tested STD vs IQR vs Cluster Scale on Kmeans}
-\subsection{Kmeans MiniBatch}
-
+\subsection{Using KMeans as an optimal clustering algorithm}
+In analyzing varios clustering algorithms on Python's Machine Learning Library: Scikit-Learn, we chose KMeans as the best solution due to its fast runtime (linear in Big O), clustering style and the ability to choose the number of cluster centres. 
+\subsection{Tested STD vs IQR vs Cluster Scale on KMeans}
+Due to the fact that KMeans clusters spherically in Euclidean space, in higher dimensions (greater than 2), dimensions ($x, y, z, v_x, v_y, v_z$) with a greater range dominate the clustering process. This is clear for velocities (See Defining KMeans notebook). To remedy this, we experimented with dividing each velocity manually by a constant called Cluster Scale, or divided each dimension by its respective STD or IQR. This made clustering better empirically when displaying clusters in 2 3D plots of ($x, y, z$) and ($v_x, v_y, v_z$).
+\subsection{Minibatch KMeans}
+Minibatch KMeans is an optimized version of KMeans for larger sample sizes of greater dimensions. This variation runs regular KMeans in multiple smaller batches to reduce memory usage and uses previously generated cluster centres as the initialization for the following batches. Minibatch KMeans uses a gradient descent technique to find a well clustered centres after convergence is reached.
 \section{Mathew's Accomplished Tasks}
 \subsection{Wrote Search Local}
 \subsection{Changed Search Local Such that Spyder can Reload With Data Saved}
