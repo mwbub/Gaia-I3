@@ -450,7 +450,7 @@ def color_plot_ij(max_dot_product, cluster, file_name, i, j):
         None
 
     HISTORY:
-        2018-07-03 - Written - Samuel Wong
+        2018-07-03 - Written - Mathew Bubb, Samuel Wong
     """
     # filter out nan
     cluster = cluster[~np.isnan(max_dot_product)]
