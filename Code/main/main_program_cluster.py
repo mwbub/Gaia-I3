@@ -291,6 +291,7 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     kmeans_plot(samples, cluster, file_name)
     # create and save graph of dot product
     dot_product_plot(max_dot_product, cluster, file_name)
+    color_plot(max_dot_product, cluster, file_name)
         
     
 if __name__ == "__main__":

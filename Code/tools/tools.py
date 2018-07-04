@@ -453,8 +453,14 @@ def color_plot_ij(max_dot_product, cluster, file_name, i, j):
     plt.savefig('main_program_results/' + color_figure_name)
     plt.show()
     
+
 def get_axis_from_index(i):
     # create an list storing axis name in corresponding position
     axis = [['x', 'R_0'], ['y', 'R_0'], ['z', 'R_0'], ['vx', 'v_0'],
             ['vy', 'v_0'], ['vz', 'v_0']]
     return axis[i]
+
+def color_plot(max_dot_product, cluster, file_name):
+    for i in range(6):
+        for j in range(i + 1, 6):
+            color_plot_ij(max_dot_product, cluster, file_name)
