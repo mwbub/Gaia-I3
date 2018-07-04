@@ -289,7 +289,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     print('The average of the maximum absolute value of dot product is ', mean_of_max)
     print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
     # save result
-    np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
+    np.savez('main_program_results/' + file_name +'/'+ 'data', 
+             cluster = cluster, result = result)
     
     # create and save graph of kmeans projection in 2 dimension
     kmeans_plot(samples, cluster, file_name)
