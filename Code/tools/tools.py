@@ -372,13 +372,13 @@ def kmeans_plot(samples, cluster, file_name):
         2018-06-25 - Written - Samuel Wong
     """
     # create graph of kmeans projection in 2 dimension
-    fig = plt.figure(figsize=(8, 8))
+    fig = plt.figure(figsize=(8, 8), facecolor='white')
     # only plot projection of samples in x and y dimension
     plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
     plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
     plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
-    plt.xlabel('x / 8 kpc', fontsize = 15)
-    plt.ylabel('y / 8 kpc', fontsize = 15)
+    plt.xlabel('$x/R_0$', fontsize = 15)
+    plt.ylabel('$y/R_0$', fontsize = 15)
     # save figure
     kmeans_figure_name = 'kmeans xy figure.png'
     plt.savefig('main_program_results/' + file_name +'/'+ kmeans_figure_name)
@@ -407,7 +407,7 @@ def dot_product_plot(max_dot_product, cluster, file_name):
         2018-06-25 - Written - Samuel Wong
     """
     # create graph of dot product
-    fig = plt.figure(figsize=(8, 8))
+    fig = plt.figure(figsize=(8, 8), facecolor='white')
     ax = fig.add_subplot(111, projection='3d')
     # get the maximum dot product at each cluster center
     # filter out nan
@@ -416,8 +416,8 @@ def dot_product_plot(max_dot_product, cluster, file_name):
     # scatter the cluster center x, y, and height is max dot product
     ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product, s = 10)
     ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
-    ax.set_xlabel('x / 8 kpc')
-    ax.set_ylabel('y / 8 kpc')
+    ax.set_xlabel('$x/R_0$')
+    ax.set_ylabel('$y/R_0$')
     ax.set_zlabel('maximum dot product')
     # force the z limit to 0 and 1
     ax.set_zlim(0, 1)
@@ -462,6 +462,7 @@ def get_axis_from_index(i):
     return axis[i]
 
 def color_plot(max_dot_product, cluster, file_name):
+    # go through al combinations of axis projection and plot them
     for i in range(6):
         for j in range(i + 1, 6):
             color_plot_ij(max_dot_product, cluster, file_name, i, j)
