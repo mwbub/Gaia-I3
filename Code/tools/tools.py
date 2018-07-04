@@ -464,4 +464,4 @@ def get_axis_from_index(i):
 def color_plot(max_dot_product, cluster, file_name):
     for i in range(6):
         for j in range(i + 1, 6):
-            color_plot_ij(max_dot_product, cluster, file_name)
+            color_plot_ij(max_dot_product, cluster, file_name, i, j)
