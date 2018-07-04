@@ -380,7 +380,7 @@ def kmeans_plot(samples, cluster, file_name):
     plt.xlabel('x / 8 kpc', fontsize = 15)
     plt.ylabel('y / 8 kpc', fontsize = 15)
     # save figure
-    kmeans_figure_name = file_name + ', kmeans xy figure.jpg'
+    kmeans_figure_name = file_name + ', kmeans xy figure.png'
     plt.savefig('main_program_results/' + kmeans_figure_name)
     kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
     plt.savefig('main_program_results/' + kmeans_figure_name)
@@ -424,8 +424,41 @@ def dot_product_plot(max_dot_product, cluster, file_name):
     # force the z limit to 0 and 1
     ax.set_zlim(0, 1)
     # save figure
-    dot_product_figure_name = file_name + ', max dot product figure.jpg'
+    dot_product_figure_name = file_name + ', max dot product figure.png'
     plt.savefig('main_program_results/' + dot_product_figure_name)
     dot_product_figure_name = file_name + ', max dot product figure.pdf'
     plt.savefig('main_program_results/' + dot_product_figure_name)
     plt.show()
+    
+    
+def color_plot_ij(max_dot_product, cluster, file_name, i, j):
+    # filter out nan
+    cluster = cluster[~np.isnan(max_dot_product)]
+    max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
+    # create plot    
+    plt.figure(figsize=(10,8), facecolor='black')
+    plt.style.use("dark_background")
+    # scatter plot the cluster, with the 2 given projection axis
+    # we need to use the transpose to get all the components, instead of 
+    # 6 components for each star.
+    # set the color to the dot product
+    plt.scatter(*cluster.T[[i,j]], c=max_dot_product, marker='.', s=5, 
+                cmap='plasma', vmin=0, vmax=1)
+    plt.colorbar(label='Maximum Absolute Dot Product')
+    # get the axis name
+    x_axis, x_divisor = get_axis_from_index(i)
+    y_axis, y_divisor = get_axis_from_index(j)
+    plt.xlabel('${}/{}$'.format(x_axis, x_divisor))
+    plt.ylabel('${}/{}$'.format(y_axis, y_divisor))
+    plt.title("Maximum Absolute Value of Dot Product in {}-{} Dimension".format(
+            x_axis, y_axis))
+    # save figure
+    color_figure_name = file_name + ', color_max dot product figure.png'
+    plt.savefig('main_program_results/' + color_figure_name)
+    plt.show()
+    
+def get_axis_from_index(i):
+    # create an list storing axis name in corresponding position
+    axis = [['x', 'R_0'], ['y', 'R_0'], ['z', 'R_0'], ['vx', 'v_0'],
+            ['vy', 'v_0'], ['vz', 'v_0']]
+    return axis[i]
