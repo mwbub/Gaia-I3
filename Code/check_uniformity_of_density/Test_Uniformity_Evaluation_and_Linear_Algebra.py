@@ -58,7 +58,15 @@ def test_normalize_vector():
     print('original vector a = ', a)
     print('normalized vector b = ', b)
     print('b/a = ', b/a)
-    print('norm(b) = ', np.sum(b**2))    
+    print('norm(b) = ', np.sum(b**2))
+    
+def test_gradient():
+    print('point = ', point)
+    del_f = grad(f, 3)
+    del_f_x = del_f(point)
+    print('grad(point) = ', del_f_x)
+    print('point = ', point)
+    
 
 #test_orthonormality(W)
 print()
@@ -67,3 +75,5 @@ print()
 test_compatibility_with_integral_of_motion()
 print()
 test_normalize_vector()
+print()
+test_gradient()
