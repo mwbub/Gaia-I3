@@ -372,7 +372,8 @@ def kmeans_plot(samples, cluster, file_name):
         2018-06-25 - Written - Samuel Wong
     """
     # create graph of kmeans projection in 2 dimension
-    fig = plt.figure(figsize=(8, 8), facecolor='white')
+    fig = plt.figure(figsize=(8, 8), facecolor='black')
+    plt.style.use("dark_background")
     # only plot projection of samples in x and y dimension
     plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
     plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
@@ -407,7 +408,8 @@ def dot_product_plot(max_dot_product, cluster, file_name):
         2018-06-25 - Written - Samuel Wong
     """
     # create graph of dot product
-    fig = plt.figure(figsize=(8, 8), facecolor='white')
+    fig = plt.figure(figsize=(8, 8), facecolor='black')
+    plt.style.use("dark_background")
     ax = fig.add_subplot(111, projection='3d')
     # get the maximum dot product at each cluster center
     # filter out nan
