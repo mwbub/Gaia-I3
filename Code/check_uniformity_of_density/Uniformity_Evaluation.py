@@ -55,8 +55,8 @@ def partial_derivative(f, i):
 
         # define a function that treats all variables as constant except for the ith input
         def fixed_value_except_ith(x_i):
-            point[i] = x_i
-            return f(point)
+            new_point = np.concatenate((point[:i], [x_i], point[i+1:]))
+            return f(new_point)
 
         # now that we have the function treating all other variables as constants except for the ith one, we have a
         # normal 1 dimensional derivative; evaluate it at the ith coordinate of the point
