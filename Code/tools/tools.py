@@ -430,6 +430,28 @@ def dot_product_plot(max_dot_product, cluster, file_name):
     
     
 def color_plot_ij(max_dot_product, cluster, file_name, i, j):
+    """
+    NAME:
+        color_plot_ij
+
+    PURPOSE:
+        Given result of dot product and cluster, and the index of the two
+        projection axis, plot the scatter plot of the cluster, with the 
+        color of the point corresponding to maximum dot product value.
+        Save graph in appropriate folder.
+
+    INPUT:
+        max_dot_product = a numpy array storing the maximum dot product at each
+                          cluster center
+        cluster = a numpy array storing cluster centers
+        file_name = a string
+
+    OUTPUT:
+        None
+
+    HISTORY:
+        2018-07-03 - Written - Samuel Wong
+    """
     # filter out nan
     cluster = cluster[~np.isnan(max_dot_product)]
     max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
@@ -458,12 +480,53 @@ def color_plot_ij(max_dot_product, cluster, file_name, i, j):
     
 
 def get_axis_from_index(i):
+    """
+    NAME:
+        get_axis_from_index
+
+    PURPOSE:
+        Since there are 6 dimensions corresponding to x, y, z, vx, vy, vz,
+        this function takes an index from 0 to 5, and output a string
+        corresponding to the appropriate name of axis as well as a string
+        that represents either solar radius or solar velocity, as corresponding
+        to the axis name.
+
+    INPUT:
+        i = an integer from 0 to 5 inclusive
+
+    OUTPUT:
+        (axis_name, divisor)
+
+    HISTORY:
+        2018-07-03 - Written - Samuel Wong
+    """
     # create an list storing axis name in corresponding position
     axis = [['x', 'R_0'], ['y', 'R_0'], ['z', 'R_0'], ['vx', 'v_0'],
             ['vy', 'v_0'], ['vz', 'v_0']]
     return axis[i]
 
 def color_plot(max_dot_product, cluster, file_name):
+    """
+    NAME:
+        color_plot
+
+    PURPOSE:
+        Given result of dot product and cluster, plot all possible 2
+        dimensional projection scatter plot with color corresponding to dot 
+        product values. Save all the graph in the corresponding folder.
+
+    INPUT:
+        max_dot_product = a numpy array storing the maximum dot product at each
+                          cluster center
+        cluster = a numpy array storing cluster centers
+        file_name = a string
+
+    OUTPUT:
+        None
+
+    HISTORY:
+        2018-07-03 - Written - Samuel Wong
+    """
     # go through al combinations of axis projection and plot them
     for i in range(6):
         for j in range(i + 1, 6):
