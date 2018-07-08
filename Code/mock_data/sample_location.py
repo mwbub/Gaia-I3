@@ -39,14 +39,21 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     HISTORY:
         2018-07-08 - Written - Samuel Wong
     """
+    # initialize list to store (R,z) result
+    Rz_set = []
     # generate a random point in the cube [R_min, R_max]x[z_min, z_max]x[0,1]
     # this is effectively a random point in Rz space and a random trial
     # probability
     low =  (R_min, z_min, 0)
     high = (R_max, z_max, 1)
-    R, z, p_trial = np.random.uniform(low, high)
-    # calculate the actual probability at this point
-    p = df(R,z)
+    while len(Rz_set) < n:
+        R, z, p_trial = np.random.uniform(low, high)
+        # calculate the actual probability at this point
+        p = df(R,z)
+        # accept the point if trial is less than real probability; in other words,
+        # accept if the point is below the curve
+        if p_trial < p:
+            Rz_set.append((R,z))
     
     
     
