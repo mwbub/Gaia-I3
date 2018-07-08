@@ -46,6 +46,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     high = (R_max, z_max, 1)
     R, z, p_trial = np.random.uniform(low, high)
     # calculate the actual probability at this point
+    p = df(R,z)
     
     
     
