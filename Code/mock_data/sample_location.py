@@ -8,8 +8,9 @@ PURPOSE:
 HISTORY:
     2018-07-08 - Written - Samuel Wong
 """
+import numpy as np
 
-def sample_location(df, n, R_max, R_min, z_max, z_min, phi_max, phi_min):
+def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     """
     NAME:
         sample_location
@@ -38,3 +39,9 @@ def sample_location(df, n, R_max, R_min, z_max, z_min, phi_max, phi_min):
     HISTORY:
         2018-07-08 - Written - Samuel Wong
     """
+    #np.random.uniform(R_min)
+    
+    
+    
+    
+    
