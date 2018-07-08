@@ -54,7 +54,9 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
         # accept if the point is below the curve
         if p_trial < p:
             Rz_set.append((R,z))
-    
+    # convert to numpy array
+    Rz_set = np.array(Rz_set)
+    return Rz_set
     
     
     
