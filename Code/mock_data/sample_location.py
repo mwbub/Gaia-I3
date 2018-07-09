@@ -46,6 +46,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     # probability
     low =  (R_min, z_min, 0)
     high = (R_max, z_max, 1)
+    # repeat while not enough points are generated yet
     while len(Rz_set) < n:
         R, z, p_trial = np.random.uniform(low, high)
         # calculate the actual probability at this point
@@ -56,7 +57,10 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
             Rz_set.append((R,z))
     # convert to numpy array
     Rz_set = np.array(Rz_set)
-    return Rz_set
+    # get a unifrom distribution in phi
+    phi_set = np.reshape(np.random.uniform(phi_min, phi_max, n), (n, 1))
+    Rzphi_set = np.hstack((Rz_set, phi_set))
+    return Rzphi_set
     
     
     
