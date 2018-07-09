@@ -15,6 +15,7 @@ sys.path.append('..')
 from sample_location import sample_location
 import numpy as np
 import pylab as plt
+from mpl_toolkits.mplot3d import Axes3D
 import time as time_class
 #import qdf related things
 from galpy.potential import MWPotential2014
@@ -26,7 +27,7 @@ qdf= quasiisothermaldf(1./3.,0.2,0.1,1.,1.,pot=MWPotential2014,aA=aA,cutcounter=
 
 start = time_class.time()
 # sample R from 7.5 kpc to 8.5 kpc; sample z from -0.5 kpc to 0.5 kpc
-# let phi range 45 degree to both sides of the sun
+# let phi range from -arctan(0.5/8) to arctan(0.5/8)
 location = sample_location(qdf.density, 10000, 0.9375, 1.0625, -0.0625, 0.0625,
                            -0.0624, 0.0624)
 end = time_class.time()
