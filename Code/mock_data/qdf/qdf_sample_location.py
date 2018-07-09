@@ -28,7 +28,7 @@ start = time_class.time()
 # sample R from 7.5 kpc to 8.5 kpc; sample z from -0.5 kpc to 0.5 kpc
 # let phi range 45 degree to both sides of the sun
 location = sample_location(qdf.density, 10000, 0.9375, 1.0625, -0.0625, 0.0625,
-                           -np.pi/4, np.pi/4)
+                           -0.0624, 0.0624)
 end = time_class.time()
 np.save('qdf sample location', location)
 print('time =', end - start)
