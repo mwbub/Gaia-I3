@@ -1,11 +1,17 @@
 import numpy as np
 from sample_location import sample_location
 import pylab as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def df(R,z):
-    return np.abs(R*z)
+    return R**3
 
-Rzset = sample_location(df,1000, -1, 1, -1, 1, 0, 1)
-R = Rzset[:,0]
-z = Rzset[:,1]
-plt.scatter(R,z)
+location = sample_location(df,5000, 0, 1, -1, 1, 0, 2*np.pi)
+R = location[:, 0]
+z = location[:, 1]
+phi = location[:, 2]
+
+fig = plt.figure(figsize=(8, 8), facecolor='black')
+plt.style.use("dark_background")
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(R*np.cos(phi), R*np.sin(phi), z, s = 10)
