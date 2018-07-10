@@ -8,6 +8,7 @@ PURPOSE:
     
 HISTORY:
     2018-06-20 - Written - Samuel Wong
+    2018-07-20 - Changed to analytic gradient - Samuel Wong
 """
 import time as time_class
 import numpy as np
@@ -27,9 +28,6 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 
-# declare gradient functions for energy and momentum as global variables
-del_E = grad(Energy, 6)
-del_Lz = grad(L_z, 6)
 # define parameters for the search and KDE as global variables
 epsilon = 1.0
 v_scale = 0.1
