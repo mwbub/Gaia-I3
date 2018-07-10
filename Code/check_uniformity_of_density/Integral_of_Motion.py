@@ -3,7 +3,9 @@ NAME:
     Integral_of_Motion
 
 PURPOSE:
-    This module contains energy and angular momentum functions. It also contains cartesian to cylindrical conversion.
+    This module contains energy and angular momentum functions, as well as 
+    their gradients.
+    It also contains cartesian to cylindrical conversion.
 
 FUNCTIONS:
     Energy: Ths function takes the position and velocity of a star and returns its toal energy (per mass)
@@ -13,6 +15,7 @@ FUNCTIONS:
 
 HISTORY:
     2018-05-25 - Written - Samuel Wong
+    2018-07-10 - Added explicit gradient function - Samuel Wong
 """
 from galpy.potential import MWPotential2014
 from galpy.potential import evaluatePotentials
@@ -154,3 +157,24 @@ def L_z(coord):
     # evaluate the angular momentum
     result = R*vT
     return result
+
+def del_E(coord):
+    """
+    NAME:
+        Energy
+
+    PURPOSE:
+        Given 6 coordinates for the position and velocity of a star in
+        Cartesian coordinate, return the gradient vector of energy in Cartesian
+        form.
+        Assumes input and out put are in natrual unit.
+        
+    INPUT:
+        coord = array[(x, y, z, vx, vy, vz)]
+
+    OUTPUT:
+        del_E = gradient in Cartesian coordinate
+
+    HISTORY:
+        2018-07-10 - Written - Samuel Wong
+    """
