@@ -59,11 +59,18 @@ def test_energy_momentum_of_sun():
     print('my momentum = ', L_z(coord))
     print(o.L()[0][2] == L_z(coord))
     
-test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
-print()
-test_cylindrical_to_cartesian(1,2,3,4,5,6)
-print()
-test_energy_and_momentum(x, y, z, vx, vy, vz)
-print()
-test_energy_momentum_of_sun()
-
+def test_energy_gradient():
+    point = np.array([x, y, z, vx, vy, vz])
+    numeric_del_E = grad(Energy, 6)
+    print('numeric del E = ', numeric_del_E(point))
+    print('analytic del E =', del_E(point))
+    
+#test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+#print()
+#test_cylindrical_to_cartesian(1,2,3,4,5,6)
+#print()
+#test_energy_and_momentum(x, y, z, vx, vy, vz)
+#print()
+#test_energy_momentum_of_sun()
+#print()
+test_energy_gradient()
