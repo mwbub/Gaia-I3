@@ -161,10 +161,11 @@ def L_z(coord):
     result = R*vT
     return result
 
+
 def del_E(coord):
     """
     NAME:
-        Energy
+        del_E
 
     PURPOSE:
         Given 6 coordinates for the position and velocity of a star in
@@ -190,5 +191,31 @@ def del_E(coord):
     # return the gradient in Cartesian coordinate
     gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
                 -F_R*np.sin(phi)- F_phi*np.cos(phi), -F_z, vx, vy, vz]
+    return np.array(gradient)
+
+
+def del_Lz(coord):
+    """
+    NAME:
+        del_Lz
+
+    PURPOSE:
+        Given 6 coordinates for the position and velocity of a star in
+        Cartesian coordinate, return the gradient vector of z - angular
+        momentum in Cartesian form.
+        Assumes input and out put are in natrual unit.
+        
+    INPUT:
+        coord = array[(x, y, z, vx, vy, vz)]
+
+    OUTPUT:
+        del_Lz = gradient in Cartesian coordinate
+
+    HISTORY:
+        2018-07-10 - Written - Samuel Wong
+    """
+    x, y, z, vx, vy, vz = coord
+    # return the gradient in Cartesian coordinate
+    gradient = [vy, -vx, 0, -y, x, 0]
     return np.array(gradient)
     
