@@ -189,6 +189,6 @@ def del_E(coord):
     F_z= evaluatezforces(MWPotential2014, R, z, phi)
     # return the gradient in Cartesian coordinate
     gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
-                -F_R*np.sin(phi)- F_phi*np.cos(phi), F_z, vx, vy, vz]
+                -F_R*np.sin(phi)- F_phi*np.cos(phi), -F_z, vx, vy, vz]
     return np.array(gradient)
     
