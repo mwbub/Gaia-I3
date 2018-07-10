@@ -178,3 +178,14 @@ def del_E(coord):
     HISTORY:
         2018-07-10 - Written - Samuel Wong
     """
+    x, y, z, vx, vy, vz = coord
+    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    # get the force of the potential in cylindrical form
+    F_phi = MWPotential2014.phiforce(R, z, phi)
+    F_R = MWPotential2014.Rforce(R, z, phi)
+    F_z= MWPotential2014.zforce(R, z, phi)
+    # return the gradient in Cartesian coordinate
+    gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
+                -F_R*np.sin(phi)- F_phi*np.cos(phi), F_z, vx, vy, vz]
+    return np.array(gradient)
+    
