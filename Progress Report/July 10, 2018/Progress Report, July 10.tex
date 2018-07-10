@@ -91,6 +91,19 @@ $$ \nabla E =  \hat{x}(F_{\phi} \sin(\phi)- F_R \cos(\phi)) + \hat{y}(- F_R \sin
 In vector component form, 
 $$ \nabla E = [F_{\phi} \sin(\phi)- F_R \cos(\phi),- F_R \sin(\phi) -F_{\phi} \cos(\phi), - F_z ,v_x, v_y, v_z ] $$
 
+\subsubsection{Testing and Comparison with Numerical Derivative}
+I tested the analytic gradient function against numeric ones. The following is the printout of a test at a point:
+\begin{align*}
+\text{numeric} \nabla E &=  [0.05817276, 0.03358608, 0.13689572, 0.57735027, 0.57735027, 0.57735027]\\
+\text{analytic} \nabla E &= [0.05817278, 0.03358607, 0.13689572, 0.57735027, 0.57735027, 0.57735027]
+\end{align*}
+\begin{align*}
+ \text{numeric} \nabla L_z &=  [ 0.57735026, -0.57735027,  0.,         -1.00000001,  1.73205082,  0.        ] \\
+ \text{analytic} \nabla L_z &= [ 0.57735027, -0.57735027,  0.,         -1.,          1.73205081,  0.        ] 
+\end{align*}
+This shows that both my derivation and the numerical gradient are correct, which in turns is the same gradient function we are using for density. So this adds more confidence in the main program.
+
+
 \section{Ayush’s Accomplished Tasks}
 
 

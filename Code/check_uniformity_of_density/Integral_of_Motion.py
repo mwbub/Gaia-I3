@@ -3,7 +3,9 @@ NAME:
     Integral_of_Motion
 
 PURPOSE:
-    This module contains energy and angular momentum functions. It also contains cartesian to cylindrical conversion.
+    This module contains energy and angular momentum functions, as well as 
+    their gradients.
+    It also contains cartesian to cylindrical conversion.
 
 FUNCTIONS:
     Energy: Ths function takes the position and velocity of a star and returns its toal energy (per mass)
@@ -13,9 +15,13 @@ FUNCTIONS:
 
 HISTORY:
     2018-05-25 - Written - Samuel Wong
+    2018-07-10 - Added explicit gradient function - Samuel Wong
 """
 from galpy.potential import MWPotential2014
 from galpy.potential import evaluatePotentials
+from galpy.potential import evaluatephiforces
+from galpy.potential import evaluateRforces
+from galpy.potential import evaluatezforces
 import numpy as np
 
 
@@ -154,3 +160,62 @@ def L_z(coord):
     # evaluate the angular momentum
     result = R*vT
     return result
+
+
+def del_E(coord):
+    """
+    NAME:
+        del_E
+
+    PURPOSE:
+        Given 6 coordinates for the position and velocity of a star in
+        Cartesian coordinate, return the gradient vector of energy in Cartesian
+        form.
+        Assumes input and out put are in natrual unit.
+        
+    INPUT:
+        coord = array[(x, y, z, vx, vy, vz)]
+
+    OUTPUT:
+        del_E = gradient in Cartesian coordinate
+
+    HISTORY:
+        2018-07-10 - Written - Samuel Wong
+    """
+    x, y, z, vx, vy, vz = coord
+    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    # get the force of the potential in cylindrical form
+    F_phi = evaluatephiforces(MWPotential2014, R, z, phi)
+    F_R = evaluateRforces(MWPotential2014, R, z, phi)
+    F_z= evaluatezforces(MWPotential2014, R, z, phi)
+    # return the gradient in Cartesian coordinate
+    gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
+                -F_R*np.sin(phi)- F_phi*np.cos(phi), -F_z, vx, vy, vz]
+    return np.array(gradient)
+
+
+def del_Lz(coord):
+    """
+    NAME:
+        del_Lz
+
+    PURPOSE:
+        Given 6 coordinates for the position and velocity of a star in
+        Cartesian coordinate, return the gradient vector of z - angular
+        momentum in Cartesian form.
+        Assumes input and out put are in natrual unit.
+        
+    INPUT:
+        coord = array[(x, y, z, vx, vy, vz)]
+
+    OUTPUT:
+        del_Lz = gradient in Cartesian coordinate
+
+    HISTORY:
+        2018-07-10 - Written - Samuel Wong
+    """
+    x, y, z, vx, vy, vz = coord
+    # return the gradient in Cartesian coordinate
+    gradient = [vy, -vx, 0, -y, x, 0]
+    return np.array(gradient)
+    
