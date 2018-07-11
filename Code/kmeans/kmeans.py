@@ -12,6 +12,7 @@ HISTORY:
 
 import numpy as np
 from sklearn.cluster import MiniBatchKMeans
+from astropy.stats import median_absolute_deviation
 
 
 def kmeans(samples, n_clusters, batch_size): 
@@ -38,9 +39,10 @@ def kmeans(samples, n_clusters, batch_size):
     """
     
     kmeans = MiniBatchKMeans(n_clusters=n_clusters, batch_size=batch_size)
-    samples_std = np.nanstd(samples, axis=0)
-    kmeans.fit(samples/samples_std)
-    return kmeans.cluster_centers_*samples_std
+    samples_mad = median_absolute_deviation(samples, axis=0, ignore_nan=True)
+    print(samples_mad)
+    kmeans.fit(samples/samples_mad)
+    return kmeans.cluster_centers_*samples_mad
 
     
     
