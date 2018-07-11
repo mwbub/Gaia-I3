@@ -222,9 +222,9 @@ def get_cluster(samples):
         2018-06-25 - Written - Samuel Wong
     """
     # let batch size be 10% of the number of samples
-    batch_size = int(0.1 * np.shape(samples)[0])
+    batch_size = int(0.01 * np.shape(samples)[0])
     # let the number of cluster centers to be 1% of number of samples
-    cluster_number = int(0.01 * np.shape(samples)[0])
+    cluster_number = int(0.001 * np.shape(samples)[0])
     # use kmenas to generate a cluster of points
     cluster = kmeans(samples, cluster_number, batch_size)
     return cluster
