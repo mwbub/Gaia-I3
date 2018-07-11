@@ -40,7 +40,6 @@ def kmeans(samples, n_clusters, batch_size):
     
     kmeans = MiniBatchKMeans(n_clusters=n_clusters, batch_size=batch_size)
     samples_mad = median_absolute_deviation(samples, axis=0, ignore_nan=True)
-    print(samples_mad)
     kmeans.fit(samples/samples_mad)
     return kmeans.cluster_centers_*samples_mad
 
