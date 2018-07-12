@@ -37,7 +37,7 @@ class toomredf:
     def density_cyl(self, R, z, use_physical=None):
         r = R**2 + z**2
         theta = np.arcsin(R/r)
-        return self.density(self, r, theta, use_physical=use_physical)
+        return self.density(r, theta, use_physical=use_physical)
     
     def pvphi(self, vphi, use_physical=None):
         if use_physical is None:
