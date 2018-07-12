@@ -58,7 +58,7 @@ class toomredf:
         return np.exp(-(self.n+1)*vr**2)
     
     def pvtheta(self, vtheta, use_physical=None):
-        return self.p_vr(vtheta, use_physical=use_physical)
+        return self.pvr(vtheta, use_physical=use_physical)
     
     def _p(self, theta):
         return (1+np.cos(theta))**(self.n+1) + (1-np.cos(theta))**(self.n+1)
