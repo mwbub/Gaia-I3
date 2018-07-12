@@ -21,12 +21,22 @@
 
 
 \section{Samuel's Accomplished Tasks}
-\subsection{Fixed a Bug of Changing Point Value in Main}
-
+\subsection{Fixed a Bug of Changing Point Value in Gradient}
+I discovered, with Mathew, that the gradient function I wrote in the beginning has a small bug. It accidentally adds $10^{-8}$ to each component of the given point each time it is called. We fixed this mistake.
 \subsection{Confirmed Main Program Nan Come from Zero Gradient}
-
+After fixing this mistake, we printed out the gradient of density whenever the main program returns "Nan". We found that every time the gradient is $[0,0,0,0,0,0]$. This is caused by us trying to normalize the vector. This test is good since it shows us that "Nan" do not come from any suspicious source of bug in the code.
 \subsection{Wrote Sample Location for Mock Data}
+I wrote a function that takes a density function as well as region in physical space desired for samples and it samples stars. It uses brute force accept-reject method. It seems to work quite fast on an explicit density function. But for qdf, it seems to be doing 0.13 second per star. This function should also handle the Toomre density function Mathew is working on.
+\newpage
+\subsection{Tested qdf Sample V on Set}
+It seems that the KS statistics I have been using to test qdf sample V is not very good. It varies too much and depends too much on the number of points. So I decided to use another testing method, plotting the result using coloured scatter plot. The color represents vT that I sampled. I plotted sampled velocity using original function as well as the sampled velocity using my qdf sample v on set. I plotted them over each other (with dot size and shape different) and look for how well the two kinds of dots blend together through color. It seems to be working well.
+\begin{figure}
+  \includegraphics{sample v on set vs usual.png}
+  \caption{Sample V on Set Testing.}
+  \label{fig:sampleV}
+\end{figure}
 
+\newpage
 \subsection{Derived and Implemented Analytic Energy and Momentum Gradient}
 We have previously calculated $\nabla E$ and $\nabla L_z$ using numerical derivatives. We can do it better by finding the analytic expression for more accuracy.
 
@@ -103,6 +113,18 @@ I tested the analytic gradient function against numeric ones. The following is t
 \end{align*}
 This shows that both my derivation and the numerical gradient are correct, which in turns is the same gradient function we are using for density. So this adds more confidence in the main program.
 
+\subsection{New Proposal for Checking Uniformity of Density}
+I came up with a new way of checking the uniformity of density. Suppose there is  no $I_3$. Then we found the orthogonal complement of $\nabla E$ and $\nabla L_z$. Next we check whether $\nabla \rho$ is perpendicular to that complement. Since orthogonal complement of orthogonal complement is the original space, what we really want to check is whether $\nabla \rho$ is in the span of $\nabla E$ and $\nabla L_z$.
+
+One way to check this is using the projection. We first use Gram-Schmidt to find orthonormal basis for $\nabla E$ and $\nabla L_z$. Let's call the two orthonormal vectors $\vec{v_1}$ and $\vec{v_2}$. If $\nabla \rho$ is in the span of $\vec{v_1}$ and $\vec{v_2}$, then $$\nabla \rho = (\nabla \rho \cdot \vec{v_1}) \vec{v_1} + (\nabla \rho \cdot \vec{v_2}) \vec{v_2} $$
+
+Since this is never going to be exact, we can define the vector
+$$ \vec{u} = (\nabla \rho \cdot \vec{v_1}) \vec{v_1} + (\nabla \rho \cdot \vec{v_2}) \vec{v_2} $$
+
+Then we check how close this is to the original $\nabla \rho$. If we are going with the normalizing idea, we can normalize both and take their dot product:
+$$ |\hat{\nabla \rho}| \cdot |\hat{u}| $$
+Another method, proposed by Mathew, is that we can take the fractional length:
+$$ \frac{|\vec{u}|}{|\nabla \rho|} $$
 
 \section{Ayush’s Accomplished Tasks}
 
