@@ -23,7 +23,6 @@ def test_sample_location():
 
 def test_sample_velocity():
     v = sample_velocity(vdf, 3, 1000)
-    fig = plt.figure(figsize=(8, 8), facecolor='black')
     plt.style.use("dark_background")
     plt.hist(v)
     
