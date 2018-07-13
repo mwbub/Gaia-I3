@@ -3,6 +3,23 @@ from galpy.util.bovy_conversion import dens_in_msolpc3
 
 class toomredf:
     def __init__(self, n=1., ro=None, vo=None):
+        """
+        NAME:
+            toomredf
+            
+        PURPOSE:
+            an object implementing Toomre's 1982 distribution function
+            
+        INPUT:
+            n - power of the df
+            
+            ro - reference distance from the GC
+            
+            vo - circular velocity at ro
+            
+        OUPUT:
+            None
+        """
         self.n = n
         self.use_physical = False
         
@@ -19,12 +36,56 @@ class toomredf:
             self.use_physical = True
     
     def turn_physical_on(self):
+        """
+        NAME:
+            turn_physical_on
+            
+        PURPOSE:
+            activate input and output in physical units
+            
+        INPUT:
+            None
+            
+        OUTPUT:
+            None
+        """
         self.use_physical = True
     
     def turn_physical_off(self):
+        """
+        NAME:
+            turn_physical_off
+            
+        PURPOSE:
+            deactivate input and output in physical units
+            
+        INPUT:
+            None
+            
+        OUTPUT:
+            None
+        """
         self.use_physical = False
         
     def density(self, r, theta, use_physical=None):
+        """
+        NAME:
+            density
+            
+        PURPOSE:
+            evaluate the mass density of this DF at the spherical position
+            (r, theta)
+            
+        INPUT:
+            r - spherical radial position wrt the GC; natural units or kpc
+            
+            theta - angle measured from the z-axis; radians
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            mass density in natural units or solar masses per cubic parsec
+        """
         if use_physical is None:
             use_physical = self.use_physical
             
@@ -35,20 +96,69 @@ class toomredf:
         return result
     
     def density_cyl(self, R, z, use_physical=None):
+        """
+        NAME:
+            density_cyl
+            
+        PURPOSE:
+            evaluate the mass density of this DF at the cylindrical position
+            (R, z)
+            
+        INPUT:
+            R - cylindrical radial position wrt the GC; natural units or kpc
+            
+            z - cylindrical vertical position wrt the galactic plane; natural
+            units or kpc
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            mass density in natural units or solar masses per cubic parsec    
+        """
         r = np.sqrt(R**2 + z**2)
         theta = np.arcsin(R/r)
         return self.density(r, theta, use_physical=use_physical)
     
-    def pvphi(self, vphi, use_physical=None):
+    def pvT(self, vT, use_physical=None):
+        """
+        NAME:
+            pvT
+            
+        PURPOSE:
+            evaluate the marginalized vT probability
+            
+        INPUT:
+            vT - tangential velocity; natural units or km/s
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            p(vT)
+        """
         if use_physical is None:
             use_physical = self.use_physical
         
         if use_physical:
-            vphi = vphi/self.vo
+            vT = vT/self.vo
             
-        return vphi**(2*self.n)*np.exp(-(self.n+1)*vphi**2)
+        return vT**(2*self.n)*np.exp(-(self.n+1)*vT**2)
     
     def pvr(self, vr, use_physical=None):
+        """
+        NAME:
+            pvr
+            
+        PURPOSE:
+            evaluate the marginalized vr probability
+            
+        INPUT:
+            vr - spherical radial velocity; natural units or km/s
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            p(vr)
+        """
         if use_physical is None:
             use_physical = self.use_physical
             
@@ -58,6 +168,21 @@ class toomredf:
         return np.exp(-(self.n+1)*vr**2)
     
     def pvtheta(self, vtheta, use_physical=None):
+        """
+        NAME:
+            ptheta
+            
+        PURPOSE:
+            evaluate the marginalized vtheta probability
+            
+        INPUT:
+            vtheta - velocity in the direction of theta; natural units or km/s
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            p(vtheta)
+        """
         return self.pvr(vtheta, use_physical=use_physical)
     
     def _p(self, theta):
