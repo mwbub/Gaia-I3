@@ -20,8 +20,10 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
         coordinate, as well as number of samples desired, sample location.
         
     INPUT:
-        df = a density function that takes input in galactocentric Cartesian
-             coordinate and return the normalized density at that point
+        df = a density function that takes input in galactocentric Cylindrical
+             coordinate and return the normalized density at that point;
+             Assume it takes array in the form 
+             df(array([R,R,..]),array([z,z,...]))
              
         n = number of samples desired
         
@@ -38,6 +40,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
 
     HISTORY:
         2018-07-08 - Written - Samuel Wong
+        2018-07-13 - Modified so that df assumed to take arrays - Samuel Wong
     """
     # initialize list storing [[R,z], [R,z],..] result
     Rz_set = []
