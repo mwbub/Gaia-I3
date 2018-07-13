@@ -1,9 +1,10 @@
 """
 NAME:
-    sample location
+    sampling
 
 PURPOSE:
     A function that samples location under a given density function
+    A function that samples velocity under a given velocity distribution
     
 HISTORY:
     2018-07-08 - Written - Samuel Wong
