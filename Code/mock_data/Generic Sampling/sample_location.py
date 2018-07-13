@@ -39,23 +39,32 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     HISTORY:
         2018-07-08 - Written - Samuel Wong
     """
-    # initialize list to store (R,z) result
+    # initialize list storing [[R,z], [R,z],..] result
     Rz_set = []
-    # generate a random point in the cube [R_min, R_max]x[z_min, z_max]x[0,1]
-    # this is effectively a random point in Rz space and a random trial
+    # generate an array of random point in the cube:
+    #[R_min, R_max]x[z_min, z_max]x[0,1]
+    # this is effectively random points in Rz space and a random trial
     # probability
     low =  (R_min, z_min, 0)
     high = (R_max, z_max, 1)
     # repeat while not enough points are generated yet
     while len(Rz_set) < n:
-        R, z, p_trial = np.random.uniform(low, high)
-        # calculate the actual probability at this point
+        # number of points to generate is the number of points missing
+        nmore = n - len(Rz_set)
+        # generate randome points in cube
+        R_z_ptrial = np.random.uniform(low, high, size=(nmore, 3))
+        R, z, p_trial = [R_z_ptrial[:, i] for i in range(3)]
+        # calculate the actual probability at these points
         p = df(R,z)
-        # accept the point if trial is less than real probability; in other words,
+        # accept point if trial is less than real probability; in other words,
         # accept if the point is below the curve
-        if p_trial < p:
-            Rz_set.append((R,z))
-    # convert to numpy array
+        mask = p_trial < p
+        R_accept = R[mask]
+        z_accept = z[mask]
+        Rz_accept = np.dstack((R_accept, z_accept), axis = 1)
+        # add accepted points into stored list
+        Rz_set += Rz_accept.tolist()
+    # convert Rz set to array
     Rz_set = np.array(Rz_set)
     # get a unifrom distribution in phi
     phi_set = np.reshape(np.random.uniform(phi_min, phi_max, n), (n, 1))
