@@ -61,7 +61,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
         mask = p_trial < p
         R_accept = R[mask]
         z_accept = z[mask]
-        Rz_accept = np.dstack((R_accept, z_accept), axis = 1)
+        Rz_accept = np.stack((R_accept, z_accept), axis = 1)
         # add accepted points into stored list
         Rz_set += Rz_accept.tolist()
     # convert Rz set to array
