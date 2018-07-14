@@ -1,0 +1,44 @@
+\documentclass[12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+\title{Gaia $I_3$ Research Plan}
+\author{Sun Yiu Samuel Wong}
+\date{May 22, 2018}
+%\date{\parbox{\linewidth}{\centering
+  %May 18, 2018\endgraf\bigskip
+  %CTA200H}}
+\maketitle
+
+\section{Problem Definition}
+Given the initial position and velocity of a star, Newtonian mechanics predicts its future orbit. Since position and velocity are each in three dimensions, if we gather the position and velocity data for a lot of stars in the Milky Way, naively, we will expect to have points filling up a six dimensional space.
+
+However, physical constraints will reduce the number of dimensions the actual data occupy. Conservation of energy reduces the data to a five dimensional subspace. Also, because the Milky Way is symmetric around the z-axis, conservation of angular momentum around the z-axis further reduces the data to a four dimensional subspace.
+
+Surprisingly, past data shows that position and velocity of stars in the Milky Way in fact occupy a three dimensional subspace. Just like the way conserved energy and conserved angular momentum reduce the first two dimensions, there must be a third unknown conserved physical quantity, $I_3$, for the third dimension to vanish. This research project aims to use the newest data from the Gaia telescope to check that the orbits do indeed live in a three dimensional subspace.
+
+\section{General Research Plan}
+To check that the stars are in a three dimensional subspace, we will assume the orbits are in steady-state. Then the number density of stars in the three dimensional surface in the six dimensional space is uniform. If this turns out to be false, then we can conclude that either $I_3$ does not exist or that the steady-state assumption is false.
+
+\section{Initial Tasks}
+The initial tasks as planned on the meeting of May 22 is as follows.
+\subsection*{Writing a Cone Search Function in Six Dimension through Gaia}
+We want to write a python function that takes a point in the six dimensional space, $ p = (x_0, y_0, z_0, v_{x0}, v_{y0}, v_{z0})$ as well as a number $\epsilon$, and return all the stars that are in $B_\epsilon(p)$, the six dimensional ball centred at $p$, that are in the Gaia catalogue with radial velocity.
+\subsection*{Kernel Density Estimates}
+We want to write a function that takes a collection of points in the six dimensional space, uses the cone search function from last section to find the number density close to that orbit. Then the function will use a KDE to create a smooth-out histogram function. So this step produces a final function that send six dimensional coordinate to density.
+\subsection*{Find the Six Fastest Directions of Increase}
+Given any six dimensional function, find the direction of fastest increase. Then find the five other directions that are orthogonal to it. Next rank the six by the rate at which they increase. Return the six unit vectors in the order of rate of increase.
+ 
+\end{document}

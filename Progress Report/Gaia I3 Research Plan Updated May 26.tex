@@ -1,0 +1,86 @@
+\documentclass[12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+\title{Gaia $I_3$ Research Plan (Updated: May 26)}
+\author{Sun Yiu Samuel Wong}
+\date{May 26, 2018}
+\maketitle
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{assumption}{Assumption}
+\newtheorem*{hypothesis}{Hypothesis}
+
+\section{Problem Definition}
+Given the initial position and velocity of a star, Newtonian mechanics predicts its future orbit. Since position and velocity are each in three dimensions, if we gather the position and velocity data for a lot of stars in the Milky Way, we will expect to have points filling up a six dimensional space.
+
+However, physical constraints will reduce the number of dimensions each orbit occupies. Conservation of energy reduces each orbit to a five dimensional subspace. Also, because the Milky Way is symmetric around the z-axis, conservation of angular momentum around the z-axis further reduces the data to a four dimensional subspace.
+
+Surprisingly, past data shows that position and velocity of an orbit in the Milky Way in fact occupy a three dimensional subspace. Just like the way conserved energy and conserved angular momentum reduce the first two dimensions, there must be a third unknown conserved physical quantity, $I_3$, for the third dimension to vanish. This research project aims to use the newest data from the Gaia telescope to check that each orbit does indeed live in a three dimensional subspace.
+
+\section{General Research Plan}
+We start with the following mathematical theorem about direction of change: 
+
+\begin{theorem}
+Given a differentiable scalar field $F: \mathbb{R}^n \to \mathbb{R}$, a point  $x \in \mathbb{R}^n$, and a vector $\vec{w}$ centred at $x$, $F$ is not changing locally at $x$ along the direction of $\vec{w}$ if 
+$$ \vec{\nabla F(x)} \cdot \vec{w} = 0$$
+\end{theorem}
+Next, we will use the following theorem about steady-state orbit:
+\begin{theorem}
+If the galaxy is in a steady state, then the number density of stars in a surface characterizing an orbit is uniform.
+\end{theorem}
+We will then assume the following well-established statements:
+\begin{assumption}
+The Milky Way is in a steady state.
+\end{assumption}
+\begin{assumption}
+In general, the number density of stars in different orbits are different.
+\end{assumption}
+Finally, we will assume the hypothesis:
+\begin{hypothesis}
+For each orbit, there are only two integral of motion (or conserved quantity), namely, $E$ and $L_z$. In other words, there is no $I_3$.
+\end{hypothesis}
+
+Then we will look at the data from Gaia. For a given orbit, $a$, which is a point in the six dimensional phase space, we first apply conservation of energy. Calculate the subspace at which energy is constant. By Theorem 1, this subspace is the set of all vectors that satisfy the equation
+\begin{equation}
+\vec{\nabla E(a)} \cdot \vec{v} = 0
+\end{equation}  
+This subspace has five dimensions. Similarly, we apply the conservation of angular momentum by taking the subspace at which $L_z$ is constant.
+\begin{equation} 
+\vec{\nabla L_z(a)} \cdot \vec{v} = 0 
+\end{equation}
+The set of all vectors satisfying both equation 1 and 2 comprise of a four dimensional subspace, $W$, spanned by some orthonormal basis $\vec{w_1},\vec{w_2},\vec{w_3},\vec{w_4} $.
+
+Now, if $I_3$ does not exist, then energy and angular momentum completely characterize the orbit, and the orbit will make up this four dimensional subspace. By Theorem 2 (and Assumption 1), the density, $\rho$ is uniform on $W$. In other words,
+\begin{equation}
+\vec{\nabla \rho(a)} \cdot \vec{w_i} = 0 \hspace{1 cm} i = 1, 2, 3, 4 
+\end{equation}
+
+If this turns out to be true in the Gaia data, and combining with Assumption 2, which rules out the case that we are merely looking at multiple orbits that happen to have the same density, then we can conclude that $W$ is indeed a four dimensional subspace representing a single orbit. This confirms that only energy and angular momentum are conserved, and so $I_3$ does not exist. 
+
+Otherwise, either we disprove the hypothesis or one of the assumptions is wrong.
+
+\section{Initial Tasks}
+The initial tasks are modified on May 23 to be as follows.
+\subsection{Writing a Cone Search Function in Six Dimension through Gaia (By Mathew)}
+We want to write a python function that takes a point in the six dimensional space, $ a = (x_0, y_0, z_0, v_{x0}, v_{y0}, v_{z0})$ as well as a number $\epsilon$, and return all the stars that are in $B_\epsilon(a)$, the six dimensional ball centred at $a$, that are in the Gaia catalogue with radial velocity.
+\subsection{Kernel Density Estimates (By Ayush and Michael)}
+We want to write a function that takes a collection of points in the six dimensional space, uses the cone search function from last section to find the number density close to that orbit. Then the function will use a KDE to create a smooth-out histogram function. So this step produces a final function that send six dimensional coordinate to density.
+\subsection{Check the Uniformity of a Function along Orthogonal Complement Subspace (By Samuel)}
+We want to write a function that takes any differentiable function, a vector subspace, and calculate whether the function is uniform along the orthogonal complement of that subspace. We also want to write a function that calculate the gradient of a given differentiable function. Then we want to write a function for energy and angular momentum. 
+\subsection{Putting Everything Together}
+Apply the uniformity check by using energy and angular momentum function to find the subspace in which they are constant and also the orthogonal complement of that space. Then use step 3.1 and 3.2 to get the density function and check whether it is uniform along the orthogonal complement.
+ 
+\end{document}
