@@ -210,6 +210,21 @@ class toomredf:
             
         return np.stack((vT, vr, vtheta), axis=1)
     
+    def samplePos(self, r_range, theta_range, phi_range, size=1, 
+                  use_physical=None):
+        if use_physical is None:
+            use_physical = self.use_physical
+            
+        max_density = self.density(r_range[0], np.pi/2, use_physical=False)
+        density = lambda r, theta: self.density(r, theta, use_physical=False)
+        samples = sample_location(density, size, *r_range, *theta_range, 
+                                  *phi_range, max_density)
+        
+        if use_physical:
+            samples[:,0] *= self.ro
+            
+        return samples
+    
     def _p(self, theta):
         return (1+np.cos(theta))**(self.n+1) + (1-np.cos(theta))**(self.n+1)
     
