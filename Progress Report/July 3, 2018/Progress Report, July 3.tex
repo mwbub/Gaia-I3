@@ -1,0 +1,41 @@
+\documentclass[12pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+\title{Progress Report: (Week of July 3)}
+\author{Samuel Wong}
+\date{July 3, 2018}
+\maketitle
+
+\section{Presentation Preparation}
+This week, the team spent significant amount of time preparing for the mid-summer presentation. See the powerpoint in this folder.
+
+\section{Samuel's Accomplished Tasks}
+\subsection{Rewrote SampleV on Set on Galpy}
+During meeting with Jo last week, I learned that Ayush and I misinterpreted what Jo wanted us to do with sampleV. We thought we should write a function that interpolate the result of sampleV, but that doesn't work. What we really need to do is go into Galpy and change sampleV.
+
+This week I made the necessary changes and it turned out our previous work mostly survived. I first changed the original qdf sample V to take an extra optional argument of max vT. The optimization of this value is what is slowing the program down. I defaulted it to None. In this case, the program optimize it as usual. But if it is given, it uses the given one.
+
+Next, I wrote a sampleV on Set that takes a set of Rz coordinates, generate a grid, and optimize vT on the grid. Then I interpolate the vT at desired positions, and sampleV there using the interpolated vT as the optional argument.
+
+Not only did most of the code survived, the method of KS statistics test also did.
+\subsection{Realized the Eigenvalue Method Does Not Work}
+Last meeting, after I proposed to find the rank of the matrix $(\nabla \rho, \nabla E, \nabla L_z)$, Jo said the correct answer should be checking how close the eigenvalue of this matrix is to zero. But after thinking very hard about it and discussing it with Mathew, I found out that this concept is wrong since it is a 3 by 6 matrix, and eigenvalue is not defined for non-square matrix.
+
+\section{Ayush’s Accomplished Tasks}
+\section{Michael's Accomplished Tasks}
+\section{Mathew's Accomplished Tasks}
+
+\end{document}
