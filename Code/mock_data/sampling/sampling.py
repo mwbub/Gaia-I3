@@ -11,7 +11,7 @@ HISTORY:
 """
 import numpy as np
 
-def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
+def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max):
     """
     NAME:
         sample_location
@@ -33,6 +33,8 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
         z_max, z_min = maximum and minimum height (in natural units)
         
         phi_max, phi_min = maximum and minimum angle (in radian)
+        
+        df_max = maximum value of the dsitribution function
 
     OUTPUT:
         A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
@@ -46,11 +48,10 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     # initialize list storing [[R,z], [R,z],..] result
     Rz_set = []
     # generate an array of random point in the cube:
-    #[R_min, R_max]x[z_min, z_max]x[0,1]
-    # this is effectively random points in Rz space and a random trial
-    # probability
+    #[R_min, R_max]x[z_min, z_max]x[0,df_max]
+    # this is effectively random points in Rz space and a random trial height
     low =  (R_min, z_min, 0)
-    high = (R_max, z_max, 1)
+    high = (R_max, z_max, df_max)
     # repeat while not enough points are generated yet
     while len(Rz_set) < n:
         # number of points to generate is the number of points missing
@@ -75,7 +76,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max):
     Rzphi_set = np.hstack((Rz_set, phi_set))
     return Rzphi_set
     
-def sample_velocity(df, v_max, n):
+def sample_velocity(df, v_max, n, df_max):
     """
     NAME:
         sample_location
@@ -91,6 +92,8 @@ def sample_velocity(df, v_max, n):
         v_max = maximum velocity allowed
         
         n = number of samples desired
+        
+        df_max = maximum value of the dsitribution function
 
     OUTPUT:
         a numpy array containing a list of n velocities 
@@ -102,7 +105,7 @@ def sample_velocity(df, v_max, n):
     v_set = []
     # generate an array of random point in the cube: [0, v_max]x[0,1]
     low =  (0, 0)
-    high = (v_max, 1)
+    high = (v_max, df_max)
     # repeat while not enough points are generated yet
     while len(v_set) < n:
         # number of points to generate is the number of points missing
