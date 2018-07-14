@@ -1,5 +1,9 @@
+import sys
+sys.path.append('..')
+
 import numpy as np
 from galpy.util.bovy_conversion import dens_in_msolpc3
+from sampling.sampling import sample_location, sample_velocity
 
 class toomredf:
     def __init__(self, n=1., ro=None, vo=None):
@@ -184,6 +188,27 @@ class toomredf:
             p(vtheta)
         """
         return self.pvr(vtheta, use_physical=use_physical)
+    
+    
+    def sampleV(self, size=1, use_physical=None):
+        if use_physical is None:
+            use_physical = self.use_physical
+            
+        sigma = 1/np.sqrt(2*self.n+2)
+        maxvT = np.sqrt(self.n/(self.n+1))
+        maxpvT = self.pvT(maxvT, use_physical=False)
+        
+        pvT = lambda v: self.pvT(v, use_physical=False)
+        vT = sample_velocity(pvT, maxvT + 6*sigma, size, maxpvT)
+        vr = np.random.normal(scale=sigma, size=size)
+        vtheta = np.random.normal(scale=sigma, size=size)
+        
+        if use_physical:
+            vT *= self.vo
+            vr *= self.vo
+            vtheta *= self.vo
+            
+        return np.stack((vT, vr, vtheta), axis=1)
     
     def _p(self, theta):
         return (1+np.cos(theta))**(self.n+1) + (1-np.cos(theta))**(self.n+1)
