@@ -36,7 +36,7 @@ v_scale = 0.1
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
-def evaluate_uniformity_from_point(a, density):
+def evaluate_uniformity_from_point(a, density, Energy_grad_fn, Lz_grad_fn):
     """
     NAME:
         evaluate_uniformity_from_point
@@ -51,7 +51,12 @@ def evaluate_uniformity_from_point(a, density):
     INPUT:
         a = the point in phase space with six coordinates in galactocentric
             Cartesian with natural units
+            
         density = a differentiable density function
+        
+        Energy_grad_fn = energy gradient function
+        
+        Lz_grad_fn = angular momentum gradient function
 
     OUTPUT:
         directional_derivatives = a numpy array containing the directional
@@ -60,10 +65,11 @@ def evaluate_uniformity_from_point(a, density):
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
+        2018-07-15 - Added gradient functions as input - Samuel Wong
     """
     # get the gradient of energy and momentum of the search star
-    del_E_a = del_E(a)
-    del_Lz_a = del_Lz(a)
+    del_E_a = Energy_grad_fn(a)
+    del_Lz_a = Lz_grad_fn(a)
     # create matrix of the space spanned by direction of changing energy and momentum
     V = np.array([del_E_a, del_Lz_a])
     # get the 4 dimensional orthogonal complement of del E and del Lz
@@ -272,12 +278,21 @@ def main(custom_density = None, search_method = "local", custom_samples = None,
             custom_density, search_method, custom_samples)    
     cluster = get_cluster(samples)
     
+    # set the gradient function of energy and L_z based on specified method
+    if gradient_method == "analytic":
+        Energy_grad_fn = del_E
+        Lz_grad_fn = del_Lz
+    elif gradient_method == "numeric":
+        Energy_grad_fn = grad(Energy, 6)	
+        Lz_grad_fn = grad(L_z, 6)
+    
     # initialize an array of directional derivative for each point
     result = np.empty((np.shape(cluster)[0], 4))
     # evaluate uniformity for each point in cluster
     start = time_class.time()
     for (i, point) in enumerate(cluster):
-        result[i] = evaluate_uniformity_from_point(point, density)
+        result[i] = evaluate_uniformity_from_point(point, density, 
+              Energy_grad_fn, Lz_grad_fn)
         print('At point {}, dot products are {}'.format(point, result[i]))
         print()
     inter_time = time_class.time() - start
