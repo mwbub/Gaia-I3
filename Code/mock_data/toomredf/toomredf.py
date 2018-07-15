@@ -233,6 +233,25 @@ class toomredf:
             
         return samples
     
+    def samplePos_cyl(self, R_range, z_range, phi_range, size=1, 
+                      use_physical=None):
+        if use_physical is None:
+            use_physical = self.use_physical
+            
+        if use_physical:
+            R_range = [val/self.ro for val in R_range]
+            
+        density = lambda R, z: self.density_cyl(R, z, use_physical=False)
+        max_density = density(R_range[0], 0)
+        
+        samples = sample_location(density, size, *R_range, *z_range, *phi_range, 
+                                  max_density)
+        
+        if use_physical:
+            samples[:,:2] *= self.ro
+            
+        return samples
+    
     def sample(self, r_range, theta_range, phi_range, size=1, 
                use_physical=None):
         velocities = self.sampleV(size=size, use_physical=use_physical)
