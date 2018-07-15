@@ -1,17 +1,22 @@
 import sys
 sys.path.append('..')
 
-from toomredf import toomredf
-from sampling.sampling import sample_location
-
+import os
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-from matplotlib.colors import LogNorm
+from toomredf import toomredf
 
-df = toomredf(n=4.)
-minR = 0.1
-maxR = 3
-minz = -2
-maxz = 2
-maxrho = df.density_cyl(minR, 0)
+def sample(n, R_range, z_range, phi_range, size=1, use_physical=True):
+    filename = 'data/({})({}-{})({}-{})({}-{})({})({}).npy'.format(n, *R_range, 
+                *z_range, *phi_range, size, use_physical)
+    if os.path.exists(filename):
+        return np.load(filename)
+    
+    df = toomredf(n)
+    samples = df.sample_cyl(R_range, z_range, phi_range, size=size, 
+                            use_physical=use_physical)
+    
+    if not os.path.exists('data'):
+        os.mkdir('data')
+    np.save(filename, samples)
+    
+    return samples

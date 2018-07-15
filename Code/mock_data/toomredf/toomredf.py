@@ -314,6 +314,7 @@ class toomredf:
             
         if use_physical:
             R_range = [val/self.ro for val in R_range]
+            z_range = [val/self.ro for val in z_range]
             
         density = lambda R, z: self.density_cyl(R, z, use_physical=False)
         max_density = density(R_range[0], 0)
