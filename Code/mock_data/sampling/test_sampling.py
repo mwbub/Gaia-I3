@@ -67,4 +67,4 @@ test_sample_location(df1,1000000, 0, 1, -1, 1, 0, 2*np.pi, 2, 0.163, 0.577)
 test_sample_location(df2, 1000000, 0, 1, -1, 1, 0, 2*np.pi, 3, 0.236, 0.775)
 test_sample_velocity(vdf = vdf1, v_max = 80, n= 100000, vdf_max= 1.99, std =0.2)
 test_sample_location_interpolate(df2, 1000000, 0, 1, -1, 1, 0, 2*np.pi, 3, 0.236, 0.775)
-    
+test_sample_location_interpolate(df1,1000000, 0, 1, -1, 1, 0, 2*np.pi, 2, 0.163, 0.577)
