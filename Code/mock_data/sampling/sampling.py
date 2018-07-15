@@ -4,10 +4,13 @@ NAME:
 
 PURPOSE:
     A function that samples location under a given density function
+    A function that samples location under a given density function and using
+    interpolation for faster performance
     A function that samples velocity under a given velocity distribution
     
 HISTORY:
     2018-07-08 - Written - Samuel Wong
+    2018-07-14 - Added interpolation sampling - Samuel Wong
 """
 import numpy as np
 
