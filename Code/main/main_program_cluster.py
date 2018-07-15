@@ -319,4 +319,5 @@ def main(custom_density = None, search_method = "local", custom_samples = None,
         
     
 if __name__ == "__main__":
-    main(custom_density = None, search_method = "local", custom_samples = None)
+    main(custom_density = None, search_method = "local", custom_samples = None,
+         gradient_method = "analytic")
