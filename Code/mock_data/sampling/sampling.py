@@ -4,12 +4,16 @@ NAME:
 
 PURPOSE:
     A function that samples location under a given density function
+    A function that samples location under a given density function and using
+    interpolation for faster performance
     A function that samples velocity under a given velocity distribution
     
 HISTORY:
     2018-07-08 - Written - Samuel Wong
+    2018-07-14 - Added interpolation sampling - Samuel Wong
 """
 import numpy as np
+from scipy import interpolate
 
 def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max):
     """
@@ -75,6 +79,77 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max)
     phi_set = np.reshape(np.random.uniform(phi_min, phi_max, n), (n, 1))
     Rzphi_set = np.hstack((Rz_set, phi_set))
     return Rzphi_set
+
+
+def sample_location_interpolate(df, n, R_min, R_max, z_min, z_max, phi_min,
+                                phi_max, df_max, pixel_R, pixel_z):
+    """
+    NAME:
+        sample_location_interpolate
+
+    PURPOSE:
+        Given a density function and the maximum and minimum in cylindrical 
+        coordinate, as well as number of samples desired, sample location using
+        interpolation.
+        
+    INPUT:
+        df = a density function that takes input in galactocentric Cylindrical
+             coordinate and return the normalized density at that point;
+             Assume it takes array in the form 
+             df(array([R,R,..]),array([z,z,...]))
+             
+        n = number of samples desired
+        
+        R_max, R_min = maximum and minimum radius (in natural units)
+        
+        z_max, z_min = maximum and minimum height (in natural units)
+        
+        phi_max, phi_min = maximum and minimum angle (in radian)
+        
+        df_max = maximum value of the dsitribution function
+        
+        pixel_R, pixel_z = the distance in R and z when making grid for
+                           interpolation
+
+    OUTPUT:
+        A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
+        components.
+
+
+    HISTORY:
+        2018-07-14 - Written - Samuel Wong
+    """
+    # calculate the number of spacing in each direction
+    R_number = int((R_max - R_min)/pixel_R)
+    z_number = int((z_max - z_min)/pixel_z)
+    #create the linspace in each direction according to the specified number
+    #of points in each axis
+    R_linspace = np.linspace(R_min, R_max, R_number)
+    z_linspace = np.linspace(z_min, z_max, z_number)
+    # mesh and create the grid
+    Rv, zv = np.meshgrid(R_linspace, z_linspace)
+    #get grid
+    grid = np.dstack((Rv, zv))
+    #initialize grid values.
+    #grid is a 3 dimensional array since it stores pairs of values, but 
+    #grid values are 2 dimensinal array
+    grid_df = np.empty((grid.shape[0], grid.shape[1]))
+    #find df value on the grid
+    for i in range(z_number):
+        for j in range(R_number):
+            R, z = grid[i][j]
+            grid_df[i][j] = df(R,z)
+    # generate interpolation object
+    ip_df = interpolate.RectBivariateSpline(z_linspace, R_linspace,
+                                                grid_df)
+    # since the interpolation object takes (z,R) coordinate, define a 
+    #wrapper around the interpoaltion evaluation function
+    def evaluate_ip(R, z):
+        return ip_df.ev(z, R)
+    # call the normal sampling location function and pass the interpolation
+    # evaluation as df
+    return sample_location(evaluate_ip, n, R_min, R_max, z_min, z_max, phi_min,
+                                phi_max, df_max)
     
 def sample_velocity(df, v_max, n, df_max):
     """
