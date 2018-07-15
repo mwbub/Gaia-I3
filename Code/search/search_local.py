@@ -124,6 +124,9 @@ def search_phase_space(u0, v0, w0, U0, V0, W0, epsilon, v_scale,
         consisting of stars within a distance of epsilon from the point
         (u0, v0, w0, U0, V0, W0)
     """
+    import warnings
+    warnings.filterwarnings('ignore')
+    
     # load the Gaia data if not already loaded or if the parallax_cut setting
     # of this search does not match the _PARALLAX_CUT of the loaded data
     if not _GAIA_LOADED or parallax_cut != _PARALLAX_CUT:
