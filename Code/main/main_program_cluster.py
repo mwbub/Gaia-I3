@@ -36,7 +36,7 @@ v_scale = 0.1
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
-def evaluate_uniformity_from_point(a, density):
+def evaluate_uniformity_from_point(a, density, Energy_grad_fn, Lz_grad_fn):
     """
     NAME:
         evaluate_uniformity_from_point
@@ -51,7 +51,12 @@ def evaluate_uniformity_from_point(a, density):
     INPUT:
         a = the point in phase space with six coordinates in galactocentric
             Cartesian with natural units
+            
         density = a differentiable density function
+        
+        Energy_grad_fn = energy gradient function
+        
+        Lz_grad_fn = angular momentum gradient function
 
     OUTPUT:
         directional_derivatives = a numpy array containing the directional
@@ -60,10 +65,11 @@ def evaluate_uniformity_from_point(a, density):
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
+        2018-07-15 - Added gradient functions as input - Samuel Wong
     """
     # get the gradient of energy and momentum of the search star
-    del_E_a = del_E(a)
-    del_Lz_a = del_Lz(a)
+    del_E_a = Energy_grad_fn(a)
+    del_Lz_a = Lz_grad_fn(a)
     # create matrix of the space spanned by direction of changing energy and momentum
     V = np.array([del_E_a, del_Lz_a])
     # get the 4 dimensional orthogonal complement of del E and del Lz
@@ -221,16 +227,17 @@ def get_cluster(samples):
     HISTORY:
         2018-06-25 - Written - Samuel Wong
     """
-    # let batch size be 10% of the number of samples
+    # let batch size be 1% of the number of samples
     batch_size = int(0.01 * np.shape(samples)[0])
-    # let the number of cluster centers to be 1% of number of samples
+    # let the number of cluster centers to be 0.1% of number of samples
     cluster_number = int(0.001 * np.shape(samples)[0])
     # use kmenas to generate a cluster of points
     cluster = kmeans(samples, cluster_number, batch_size)
     return cluster
 
 
-def main(custom_density = None, search_method = "local", custom_samples = None):
+def main(custom_density = None, search_method = "local", custom_samples = None,
+         gradient_method = "analytic"):
     """
     NAME:
         main
@@ -257,23 +264,35 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         custom_samples = an N by 6 array that represents the custom samples, 
                         with each component representing (x,y,z,vx,vy,vz),
                         respectively. They are in physical units.
+        gradient_method = "analytic" or "numeric", referring to how gradient
+                          of energy and L_z are generated
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
         2018-06-22 - Added Figure
+        2018-07-15 - Added choice of gradient method
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples)    
     cluster = get_cluster(samples)
+    
+    # set the gradient function of energy and L_z based on specified method
+    if gradient_method == "analytic":
+        Energy_grad_fn = del_E
+        Lz_grad_fn = del_Lz
+    elif gradient_method == "numeric":
+        Energy_grad_fn = grad(Energy, 6)	
+        Lz_grad_fn = grad(L_z, 6)
     
     # initialize an array of directional derivative for each point
     result = np.empty((np.shape(cluster)[0], 4))
     # evaluate uniformity for each point in cluster
     start = time_class.time()
     for (i, point) in enumerate(cluster):
-        result[i] = evaluate_uniformity_from_point(point, density)
+        result[i] = evaluate_uniformity_from_point(point, density, 
+              Energy_grad_fn, Lz_grad_fn)
         print('At point {}, dot products are {}'.format(point, result[i]))
         print()
     inter_time = time_class.time() - start
@@ -300,4 +319,5 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         
     
 if __name__ == "__main__":
-    main(custom_density = None, search_method = "local", custom_samples = None)
+    main(custom_density = None, search_method = "local", custom_samples = None,
+         gradient_method = "analytic")
