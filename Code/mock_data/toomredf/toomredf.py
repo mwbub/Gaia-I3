@@ -17,9 +17,11 @@ class toomredf:
         INPUT:
             n - power of the df
             
-            ro - reference distance from the GC
+            ro - reference distance from the GC; turns ON physical input and 
+            output if provided
             
-            vo - circular velocity at ro
+            vo - circular velocity at ro; turns ON physical input and output if
+            provided
             
         OUPUT:
             None
@@ -189,16 +191,15 @@ class toomredf:
         """
         return self.pvr(vtheta, use_physical=use_physical)
     
-    
     def sampleV(self, size=1, use_physical=None):
         if use_physical is None:
             use_physical = self.use_physical
             
         sigma = 1/np.sqrt(2*self.n+2)
         maxvT = np.sqrt(self.n/(self.n+1))
-        maxpvT = self.pvT(maxvT, use_physical=False)
-        
         pvT = lambda v: self.pvT(v, use_physical=False)
+        maxpvT = pvT(maxvT)
+
         vT = sample_velocity(pvT, maxvT + 6*sigma, size, maxpvT)
         vr = np.random.normal(scale=sigma, size=size)
         vtheta = np.random.normal(scale=sigma, size=size)
@@ -215,8 +216,12 @@ class toomredf:
         if use_physical is None:
             use_physical = self.use_physical
             
-        max_density = self.density(r_range[0], np.pi/2, use_physical=False)
+        if use_physical:
+            r_range = [val/self.ro for val in r_range]
+            
         density = lambda r, theta: self.density(r, theta, use_physical=False)
+        max_density = density(r_range[0], np.pi/2)
+        
         samples = sample_location(density, size, *r_range, *theta_range, 
                                   *phi_range, max_density)
         
@@ -224,6 +229,13 @@ class toomredf:
             samples[:,0] *= self.ro
             
         return samples
+    
+    def sample(self, r_range, theta_range, phi_range, size=1, 
+               use_physical=None):
+        velocities = self.sampleV(size=size, use_physical=use_physical)
+        positions = self.samplePos(r_range, phi_range, theta_range, size=size, 
+                                   use_physical=use_physical)
+        return np.concatenate((positions, velocities), axis=1)
     
     def _p(self, theta):
         return (1+np.cos(theta))**(self.n+1) + (1-np.cos(theta))**(self.n+1)
