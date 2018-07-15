@@ -209,7 +209,10 @@ class toomredf:
             vr *= self.vo
             vtheta *= self.vo
             
-        return np.stack((vT, vr, vtheta), axis=1)
+        return np.stack((vr, vtheta, vT), axis=1)
+    
+    def sampleV_cyl(self, size=1, use_physical=None):
+        return self.sampleV(size=size, use_physical=use_physical)
     
     def samplePos(self, r_range, theta_range, phi_range, size=1, 
                   use_physical=None):
@@ -233,7 +236,7 @@ class toomredf:
     def sample(self, r_range, theta_range, phi_range, size=1, 
                use_physical=None):
         velocities = self.sampleV(size=size, use_physical=use_physical)
-        positions = self.samplePos(r_range, phi_range, theta_range, size=size, 
+        positions = self.samplePos(r_range, theta_range, phi_range, size=size, 
                                    use_physical=use_physical)
         return np.concatenate((positions, velocities), axis=1)
     
