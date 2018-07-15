@@ -259,6 +259,13 @@ class toomredf:
                                    use_physical=use_physical)
         return np.concatenate((positions, velocities), axis=1)
     
+    def sample_cyl(self, R_range, z_range, phi_range, size=1,
+                   use_physical=None):
+        vR, vz, vT = self.sampleV_cyl(size=size, use_physical=use_physical).T
+        R, z, phi = self.samplePos_cyl(R_range, z_range, phi_range, size=size,
+                                       use_physical=use_physical)
+        return np.stack((R, vR, vT, z, vz, phi), axis=1)
+        
     def _p(self, theta):
         return (1+np.cos(theta))**(self.n+1) + (1-np.cos(theta))**(self.n+1)
     
