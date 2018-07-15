@@ -230,7 +230,8 @@ def get_cluster(samples):
     return cluster
 
 
-def main(custom_density = None, search_method = "local", custom_samples = None):
+def main(custom_density = None, search_method = "local", custom_samples = None,
+         gradient_method = "analytic"):
     """
     NAME:
         main
@@ -257,12 +258,15 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         custom_samples = an N by 6 array that represents the custom samples, 
                         with each component representing (x,y,z,vx,vy,vz),
                         respectively. They are in physical units.
+        gradient_method = "analytic" or "numeric", referring to how gradient
+                          of energy and L_z are generated
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
         2018-06-22 - Added Figure
+        2018-07-15 - Added choice of gradient method
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples)    
