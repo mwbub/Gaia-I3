@@ -263,7 +263,7 @@ class toomredf:
                    use_physical=None):
         vR, vz, vT = self.sampleV_cyl(size=size, use_physical=use_physical).T
         R, z, phi = self.samplePos_cyl(R_range, z_range, phi_range, size=size,
-                                       use_physical=use_physical)
+                                       use_physical=use_physical).T
         return np.stack((R, vR, vT, z, vz, phi), axis=1)
         
     def _p(self, theta):
