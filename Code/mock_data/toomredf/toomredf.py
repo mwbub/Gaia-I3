@@ -192,6 +192,21 @@ class toomredf:
         return self.pvr(vtheta, use_physical=use_physical)
     
     def sampleV(self, size=1, use_physical=None):
+        """
+        NAME:
+            sampleV
+            
+        PURPOSE:
+            sample velocities in spherical coordinates
+            
+        INPUT:
+            size - number of samples
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            vr, vtheta, vT in natural units or km/s
+        """
         if use_physical is None:
             use_physical = self.use_physical
             
@@ -212,10 +227,47 @@ class toomredf:
         return np.stack((vr, vtheta, vT), axis=1)
     
     def sampleV_cyl(self, size=1, use_physical=None):
+        """
+        NAME:
+            sampleV_cyl
+            
+        PURPOSE:
+            sample velocities in cylindrical coordinates
+            
+        INPUT:
+            size - number of samples
+            
+            use_physical - boolean override of the current physical unit setting
+            
+        OUTPUT:
+            vR, vz, vT in natural units or km/s
+        """
         return self.sampleV(size=size, use_physical=use_physical)
     
     def samplePos(self, r_range, theta_range, phi_range, size=1, 
                   use_physical=None):
+        """
+        NAME:
+            samplePos
+            
+        PURPOSE:
+            sample positions in spherical coordinates
+            
+        INPUT:
+            r_range - spherical radial range in which to sample stars; natural
+            units or kpc
+            
+            theta_range - range of thetas in which to sample; radians
+            
+            phi_range - phi range over which to distribute the samples; radians
+            
+            size - number of samples
+            
+            use_physical - boolean override of the current physical unit setting
+        
+        OUTPUT:
+            r, theta, phi
+        """
         if use_physical is None:
             use_physical = self.use_physical
             
@@ -235,6 +287,28 @@ class toomredf:
     
     def samplePos_cyl(self, R_range, z_range, phi_range, size=1, 
                       use_physical=None):
+        """
+        NAME:
+            samplePos_cyl
+            
+        PURPOSE:
+            sample positions in cylindrical coordinates
+            
+        INPUT:
+            R_range - cylindrical radial range in which to sample stars; natural
+            units or kpc
+            
+            z_range - vertical range in which to sample; natural units or kpc
+            
+            phi_range - phi range over which to distribute the samples; radians
+            
+            size - number of samples
+            
+            use_physical - boolean override of the current physical unit setting
+        
+        OUTPUT:
+            R, z, phi
+        """
         if use_physical is None:
             use_physical = self.use_physical
             
@@ -254,13 +328,57 @@ class toomredf:
     
     def sample(self, r_range, theta_range, phi_range, size=1, 
                use_physical=None):
-        velocities = self.sampleV(size=size, use_physical=use_physical)
-        positions = self.samplePos(r_range, theta_range, phi_range, size=size, 
-                                   use_physical=use_physical)
-        return np.concatenate((positions, velocities), axis=1)
+        """
+        NAME:
+            sample
+            
+        PURPOSE:
+            sample positions and velocities in spherical coordinates
+            
+        INPUT:
+            r_range - spherical radial range in which to sample stars; natural
+            units or kpc
+            
+            theta_range - range of thetas in which to sample; radians
+            
+            phi_range - phi range over which to distribute the samples; radians
+            
+            size - number of samples
+            
+            use_physical - boolean override of the current physical unit setting
+        
+        OUTPUT:
+            r, vr, vT, theta, vtheta, phi
+        """
+        vr, vtheta, vT = self.sampleV(size=size, use_physical=use_physical).T
+        r, theta, phi = self.samplePos(r_range, theta_range, phi_range, 
+                                       size=size, use_physical=use_physical).T
+        return np.stack((r, vr, vT, theta, vtheta, phi), axis=1)
     
     def sample_cyl(self, R_range, z_range, phi_range, size=1,
                    use_physical=None):
+        """
+        NAME:
+            sample_cyl
+            
+        PURPOSE:
+            sample positions and velocities in cylindrical coordinates
+            
+        INPUT:
+            R_range - cylindrical radial range in which to sample stars; natural
+            units or kpc
+            
+            z_range - vertical range in which to sample; natural units or kpc
+            
+            phi_range - phi range over which to distribute the samples; radians
+            
+            size - number of samples
+            
+            use_physical - boolean override of the current physical unit setting
+        
+        OUTPUT:
+            R, vR, vT, z, vz, phi
+        """
         vR, vz, vT = self.sampleV_cyl(size=size, use_physical=use_physical).T
         R, z, phi = self.samplePos_cyl(R_range, z_range, phi_range, size=size,
                                        use_physical=use_physical).T
