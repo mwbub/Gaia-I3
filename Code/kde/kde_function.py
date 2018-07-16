@@ -24,7 +24,7 @@ def generate_KDE(inputs, ker):
                                used for sampling data.
                                
     HISTORY:
-        2018-06-25 - Updated - Ayush Pandhi
+        2018-07-15 - Updated - Ayush Pandhi
     """
     #Scaling velocities with z-score
     inputs_std = np.nanstd(inputs, axis=0)
@@ -61,7 +61,7 @@ def generate_KDE(inputs, ker):
             dens (ndarray) = A 1xQ array of density values for Q data points.
                                
         HISTORY:
-            2018-06-25 - Updated - Ayush Pandhi
+            2018-07-15 - Updated - Ayush Pandhi
         """
         #To correct the type of information from other functions into acceptable input
         samples = np.array([samples])
