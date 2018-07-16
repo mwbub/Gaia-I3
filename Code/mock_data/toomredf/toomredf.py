@@ -21,11 +21,11 @@ class toomredf:
         INPUT:
             n - power of the df
             
-            ro - reference distance from the GC; turns ON physical input and 
-            output if provided
+            ro - reference distance from the GC in kpc; turns ON physical input 
+            and output if provided; default = 8 kpc
             
-            vo - circular velocity at ro; turns ON physical input and output if
-            provided
+            vo - circular velocity at ro in km/s; turns ON physical input and 
+            output if provided; default = 220 km/s
             
         OUPUT:
             None
