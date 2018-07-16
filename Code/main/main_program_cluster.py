@@ -122,8 +122,7 @@ def search_for_samples(search_method):
     # if user is using all of catalogue, record this fact and epsilon and
     # v_scale in file name
     if search_method == "all of local":
-        file_name = 'epsilon = {}, v_scale = {}, full sample'.format(
-            epsilon, v_scale)
+        file_name = 'full sample'
     # if actual search was done, record search star as well
     else:
         file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
