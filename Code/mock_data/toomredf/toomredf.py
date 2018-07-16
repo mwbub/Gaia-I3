@@ -57,6 +57,8 @@ class toomredf:
         INPUT:
             R, vR, vT, z, vz - galactocentric cylindrical coordinates; natural
             units or kpc and km/s
+            
+            use_physical - boolean override of the physical input/output setting
 
         OUTPUT:
            value of DF
@@ -126,7 +128,7 @@ class toomredf:
             
             theta - angle measured from the z-axis; radians
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             mass density in natural units or solar masses per cubic parsec
@@ -155,7 +157,7 @@ class toomredf:
             z - cylindrical vertical position wrt the galactic plane; natural
             units or kpc
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             mass density in natural units or solar masses per cubic parsec    
@@ -175,7 +177,7 @@ class toomredf:
         INPUT:
             vT - tangential velocity; natural units or km/s
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             p(vT)
@@ -199,7 +201,7 @@ class toomredf:
         INPUT:
             vr - spherical radial velocity; natural units or km/s
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             p(vr)
@@ -223,7 +225,7 @@ class toomredf:
         INPUT:
             vtheta - velocity in the direction of theta; natural units or km/s
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             p(vtheta)
@@ -241,7 +243,7 @@ class toomredf:
         INPUT:
             size - number of samples
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             vr, vtheta, vT in natural units or km/s
@@ -276,7 +278,7 @@ class toomredf:
         INPUT:
             size - number of samples
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
             
         OUTPUT:
             vR, vz, vT in natural units or km/s
@@ -302,7 +304,7 @@ class toomredf:
             
             size - number of samples
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
         
         OUTPUT:
             r, theta, phi
@@ -343,7 +345,7 @@ class toomredf:
             
             size - number of samples
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
         
         OUTPUT:
             R, z, phi
@@ -385,7 +387,7 @@ class toomredf:
             
             size - number of samples
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
         
         OUTPUT:
             r, vr, vT, theta, vtheta, phi
@@ -414,7 +416,7 @@ class toomredf:
             
             size - number of samples
             
-            use_physical - boolean override of the current physical unit setting
+            use_physical - boolean override of the physical input/output setting
         
         OUTPUT:
             R, vR, vT, z, vz, phi
