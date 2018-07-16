@@ -8,6 +8,7 @@ PURPOSE:
     
 HISTORY:
     2018-06-20 - Written - Samuel Wong
+    2018-07-20 - Changed to analytic gradient - Samuel Wong
 """
 import time as time_class
 import numpy as np
@@ -15,12 +16,10 @@ import pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
 import os, sys
 # get the outer folder as the path
-outer_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-check_uniformity_path =  os.path.abspath(os.path.join(outer_path, 'check_uniformity_of_density'))
-sys.path.append(outer_path)
-sys.path.append(check_uniformity_path)
+sys.path.append('..')
+sys.path.append('../check_uniformity_of_density')
 # import relevant functions from different folders
-from check_uniformity_of_density.Integral_of_Motion_psp import *
+from check_uniformity_of_density.Integral_of_Motion_toomre import *
 from check_uniformity_of_density.Linear_Algebra import *
 from check_uniformity_of_density.Uniformity_Evaluation import *
 from search import search_online
@@ -29,18 +28,15 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 
-# declare gradient functions for energy and momentum as global variables
-del_E = grad(Energy, 6)
-del_Lz = grad(L_z, 6)
 # define parameters for the search and KDE as global variables
-epsilon = 0.5
+epsilon = 1.0
 v_scale = 0.1
 
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
-def evaluate_uniformity_from_point(a, density):
+def evaluate_uniformity_from_point(a, density, Energy_grad_fn, Lz_grad_fn):
     """
     NAME:
         evaluate_uniformity_from_point
@@ -55,7 +51,12 @@ def evaluate_uniformity_from_point(a, density):
     INPUT:
         a = the point in phase space with six coordinates in galactocentric
             Cartesian with natural units
+            
         density = a differentiable density function
+        
+        Energy_grad_fn = energy gradient function
+        
+        Lz_grad_fn = angular momentum gradient function
 
     OUTPUT:
         directional_derivatives = a numpy array containing the directional
@@ -64,10 +65,11 @@ def evaluate_uniformity_from_point(a, density):
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
+        2018-07-15 - Added gradient functions as input - Samuel Wong
     """
     # get the gradient of energy and momentum of the search star
-    del_E_a = del_E(a)
-    del_Lz_a = del_Lz(a)
+    del_E_a = Energy_grad_fn(a)
+    del_Lz_a = Lz_grad_fn(a)
     # create matrix of the space spanned by direction of changing energy and momentum
     V = np.array([del_E_a, del_Lz_a])
     # get the 4 dimensional orthogonal complement of del E and del Lz
@@ -132,80 +134,6 @@ def search_for_samples(search_method):
     return samples, file_name
 
 
-def kmeans_plot(samples, cluster, file_name):
-    """
-    NAME:
-        kmeans_plot
-
-    PURPOSE:
-        Given samples and cluster, plot them. Given file name, save the image.
-
-    INPUT:
-        samples = a numpy array storing samples
-        cluster = a numpy array storing cluster centers
-        file_name = a string
-
-    OUTPUT:
-        None
-
-    HISTORY:
-        2018-06-25 - Written - Samuel Wong
-    """
-    # create graph of kmeans projection in 2 dimension
-    fig = plt.figure(figsize=(8, 8))
-    # only plot projection of samples in x and y dimension
-    plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
-    plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
-    plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
-    plt.xlabel('x / 8 kpc', fontsize = 15)
-    plt.ylabel('y / 8 kpc', fontsize = 15)
-    # save figure
-    kmeans_figure_name = file_name + ', kmeans xy figure.jpg'
-    kmeans_figure_name = file_name + ', kmeans xy figure.pdf'
-    plt.savefig('main_program_results/' + kmeans_figure_name)
-    plt.show()
-    
-    
-def dot_product_plot(result, cluster, file_name):
-    """
-    NAME:
-        dot_product_plot
-
-    PURPOSE:
-        Given result of dot product and cluster, plot them. Given file name,
-        save the image.
-
-    INPUT:
-        result = a numpy array storing dot product result
-        cluster = a numpy array storing cluster centers
-        file_name = a string
-
-    OUTPUT:
-        None
-
-    HISTORY:
-        2018-06-25 - Written - Samuel Wong
-    """
-    # create graph of dot product
-    fig = plt.figure(figsize=(8, 8))
-    ax = fig.add_subplot(111, projection='3d')
-    # get the maximum dot product at each cluster center
-    # change all nan to 0 in result for graphing purpose
-    result2 = np.nan_to_num(result)
-    max_dot_product2 = np.max(np.absolute(result2), axis = 1)
-    # scatter the cluster center x, y, and height is max dot product
-    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product2, s = 1)
-    ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
-    ax.set_xlabel('x / 8 kpc')
-    ax.set_ylabel('y / 8 kpc')
-    ax.set_zlabel('maximum dot product')
-    # save figure
-    dot_product_figure_name = file_name + ', max dot product figure.jpg'
-    dot_product_figure_name = file_name + ', max dot product figure.pdf'
-    plt.savefig('main_program_results/' + dot_product_figure_name)
-    plt.show()
-
-
 def get_samples_density_filename(custom_density, search_method, custom_samples):
     """
     NAME:
@@ -217,7 +145,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         custom samples are None. If they are, search for stars in Gaia and use
         KDE to generate density. If one of them is not None, use the custom
         density or custom samples (to generate density through KDE). Also,
-        generate appropriate file name.
+        generate appropriate file name and create a subfolder to save file.
 
     INPUT:
         custom_density = a function that takes 6 values in an array and outputs
@@ -271,6 +199,10 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         # use the samples and a KDE learning method to generate a density function
         density = generate_KDE(samples, 'epanechnikov')
         
+    # create a sub-subfolder to save results
+    if not os.path.exists('main_program_results/'+file_name):
+        os.mkdir('main_program_results/'+file_name)
+        
     return samples, density, file_name
 
 
@@ -295,16 +227,17 @@ def get_cluster(samples):
     HISTORY:
         2018-06-25 - Written - Samuel Wong
     """
-    # let batch size be 10% of the number of samples
-    batch_size = int(0.1 * np.shape(samples)[0])
-    # let the number of cluster centers to be 1% of number of samples
-    cluster_number = int(0.01 * np.shape(samples)[0])
+    # let batch size be 1% of the number of samples
+    batch_size = int(0.01 * np.shape(samples)[0])
+    # let the number of cluster centers to be 0.1% of number of samples
+    cluster_number = int(0.001 * np.shape(samples)[0])
     # use kmenas to generate a cluster of points
     cluster = kmeans(samples, cluster_number, batch_size)
     return cluster
 
 
-def main(custom_density = None, search_method = "local", custom_samples = None):
+def main(custom_density = None, search_method = "local", custom_samples = None,
+         gradient_method = "analytic"):
     """
     NAME:
         main
@@ -331,23 +264,35 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
         custom_samples = an N by 6 array that represents the custom samples, 
                         with each component representing (x,y,z,vx,vy,vz),
                         respectively. They are in physical units.
+        gradient_method = "analytic" or "numeric", referring to how gradient
+                          of energy and L_z are generated
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
         2018-06-22 - Added Figure
+        2018-07-15 - Added choice of gradient method
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples)    
     cluster = get_cluster(samples)
+    
+    # set the gradient function of energy and L_z based on specified method
+    if gradient_method == "analytic":
+        Energy_grad_fn = del_E
+        Lz_grad_fn = del_Lz
+    elif gradient_method == "numeric":
+        Energy_grad_fn = grad(Energy, 6)	
+        Lz_grad_fn = grad(L_z, 6)
     
     # initialize an array of directional derivative for each point
     result = np.empty((np.shape(cluster)[0], 4))
     # evaluate uniformity for each point in cluster
     start = time_class.time()
     for (i, point) in enumerate(cluster):
-        result[i] = evaluate_uniformity_from_point(point, density)
+        result[i] = evaluate_uniformity_from_point(point, density, 
+              Energy_grad_fn, Lz_grad_fn)
         print('At point {}, dot products are {}'.format(point, result[i]))
         print()
     inter_time = time_class.time() - start
@@ -361,13 +306,18 @@ def main(custom_density = None, search_method = "local", custom_samples = None):
     print('The average of the maximum absolute value of dot product is ', mean_of_max)
     print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
     # save result
-    np.savez('main_program_results/' + file_name, cluster = cluster, result = result)
+    np.savez('main_program_results/' + file_name +'/'+ 'data', 
+             cluster = cluster, result = result)
     
     # create and save graph of kmeans projection in 2 dimension
     kmeans_plot(samples, cluster, file_name)
     # create and save graph of dot product
-    dot_product_plot(result, cluster, file_name)
+    dot_product_plot(max_dot_product, cluster, file_name)
+    #create and save graph of dot product in color scatter plot in all 
+    # 2 dimensional projection angles.
+    color_plot(max_dot_product, cluster, file_name)
         
     
 if __name__ == "__main__":
-    main(custom_density = None, search_method = "local", custom_samples = None)
+    main(custom_density = None, search_method = "local", custom_samples = None,
+         gradient_method = "analytic")
