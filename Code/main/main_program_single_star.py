@@ -119,7 +119,7 @@ def main(custom_density = None, search_method = "online"):
         # cartesian from this point on
         samples = to_natural_units(samples)
         # use the samples and a KDE learning method to generate a density function
-        density = generate_KDE(samples, 'epanechnikov', v_scale)
+        density = generate_KDE(samples, 'epanechnikov')
     else:
         density = custom_density # use the custom density function
     
