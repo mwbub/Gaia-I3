@@ -466,8 +466,11 @@ class ToomrePotential(Potential):
            
         INPUT:
            R - Galactocentric cylindrical radius
+           
            z - vertical height
+           
            phi - azimuth
+           
            t - time
            
         OUTPUT:
