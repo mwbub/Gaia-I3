@@ -4,15 +4,19 @@ sys.path.append('..')
 import numpy as np
 from galpy.util.bovy_conversion import dens_in_msolpc3
 from sampling.sampling import sample_location, sample_velocity
+from galpy.potential_src.Potential import Potential
 
 class toomredf:
+    """
+    Class implementing Toomre's 1982 distribution function
+    """
     def __init__(self, n=1., ro=None, vo=None):
         """
         NAME:
-            toomredf
+            __init__
             
         PURPOSE:
-            an object implementing Toomre's 1982 distribution function
+            initialize a toomredf instance
             
         INPUT:
             n - power of the df
@@ -27,6 +31,7 @@ class toomredf:
             None
         """
         self.n = n
+        self.pot = ToomrePotential(n=n)
         self.use_physical = False
         
         if ro is None:
@@ -40,6 +45,40 @@ class toomredf:
         else:
             self.vo = vo
             self.use_physical = True
+            
+    def __call__(self, R, vR, vT, z, vz, use_physical=None):
+        """
+        NAME:
+           __call__
+           
+        PURPOSE:
+           return the DF
+           
+        INPUT:
+            R, vR, vT, z, vz - galactocentric cylindrical coordinates; natural
+            units or kpc and km/s
+
+        OUTPUT:
+           value of DF
+        """
+        if use_physical is None:
+            use_physical = self.use_physical
+            
+        if use_physical:
+            R = R/self.ro
+            z = z/self.ro
+            vR = vR/self.vo
+            vT = vT/self.vo
+            vz = vz/self.vo
+            
+        lz = R*vT
+        E = 0.5*(vR**2 + vT**2 + vz**2) + self.pot(R,z)
+        sigma2 = 1/(2*self.n+2)
+        
+        if use_physical:
+            lz *= self.ro*self.vo
+        
+        return lz**(2*self.n)*np.exp(-E/sigma2)
     
     def turn_physical_on(self):
         """
@@ -391,3 +430,53 @@ class toomredf:
     def _S(self, theta):
         return 4*(self.n+1)*np.sin(theta)**(2*self.n)/self._p(theta)**2
     
+class ToomrePotential(Potential):
+    """
+    Potential for use with toomredf
+    """
+    def __init__(self, n=1., ro=None, vo=None):
+        """
+        NAME:
+            __init__
+            
+        PURPOSE:
+            initialize a ToomrePotential instance
+            
+        INPUT:
+            n - power of the distribution function
+            
+            ro=, vo= distance and velocity scales for translation into internal 
+            units (default from configuration file)
+            
+        OUTPUT:
+            None
+        """
+        super().__init__(ro=ro, vo=vo)
+        self.n = 1
+        
+    def _evaluate(self, R, z, phi=0., t=0.):
+        """
+        NAME:
+           _evaluate
+           
+        PURPOSE:
+           evaluate the potential at R,z
+           
+        INPUT:
+           R - Galactocentric cylindrical radius
+           z - vertical height
+           phi - azimuth
+           t - time
+           
+        OUTPUT:
+           Phi(R,z)
+        """
+        r = np.sqrt(R**2 + z**2)
+        theta = np.arcsin(R/r)
+        return np.log(r) + self._P(theta)
+        
+    def _P(self, theta):
+        return np.log(self._p(theta)/2)/(self.n+1)
+    
+    def _p(self, theta):
+        return (1+np.cos(theta))**(self.n+1) + (1-np.cos(theta))**(self.n+1)
