@@ -39,6 +39,7 @@ end = time_class.time()
 np.save('qdf sample location', location)
 print('time =', end - start)
 
+
 # sample velocity
 # get the R, z and phi colume
 R = location[:, 0]
