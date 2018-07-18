@@ -161,41 +161,25 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
 
     HISTORY:
         2018-06-25 - Written - Samuel Wong
-    """
-    # if a custom density is given, set it to the density, and then search
-    # for samples to evaluate on
-    if custom_density != None:
-        density = custom_density # use the custom density function
-        # get the name of density for naming purpose
-        name_of_density = input('Name of custom density function: ')
-        samples, file_name = search_for_samples(search_method)
-        # at this point, everything should have physical units
-        # Turn all data to natrual units; working with natural unit, galactocentric,
-        # cartesian from this point on
-        samples = to_natural_units(samples)
-        # modify the file name by adding the name of custom density
-        file_name = name_of_density + file_name
-    # if custom samples are given, use those to generate density function
-    elif np.any(custom_samples != None):
-        # since custom samples are used, ask user for the name of the file
-        # before running
+    """   
+    # use custom samples or search for samples in Gaia
+    if custom_samples is not None:
         file_name = input('Name of file to be saved: ')
         samples = custom_samples
-        # at this point, everything should have physical units
-        # Turn all data to natrual units; working with natural unit, galactocentric,
-        # cartesian from this point on
-        samples = to_natural_units(samples)
-        # use the samples and a KDE learning method to generate a density function
-        density = generate_KDE(samples, 'epanechnikov')
-    # if neither custom density nor custom samples are given, then it is the
-    # usual case of searching for stars and put them through KDE
     else:
-        samples, file_name = search_for_samples(search_method)
-        # at this point, everything should have physical units
-        # Turn all data to natrual units; working with natural unit, galactocentric,
-        # cartesian from this point on
-        samples = to_natural_units(samples)
-        # use the samples and a KDE learning method to generate a density function
+        samples, file_name = search_for_samples(search_method) 
+        
+    # at this point, everything should have physical units
+    # turn all data to natrual units; working with natural unit, galactocentric,
+    # cartesian from this point on
+    samples = to_natural_units(samples)
+        
+    # use a custom density or generate a density using a KDE
+    if custom_density is not None:
+        density = custom_density
+        name_of_density = input('Name of custom density function: ')
+        file_name = name_of_density + ' ' + file_name
+    else:
         density = generate_KDE(samples, 'epanechnikov')
         
     # create a sub-subfolder to save results
