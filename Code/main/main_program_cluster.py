@@ -220,7 +220,7 @@ def get_cluster(samples):
 
 
 def main(custom_density = None, search_method = "local", custom_samples = None,
-         gradient_method = "analytic"):
+         gradient_method = "analytic", custom_centres=None):
     """
     NAME:
         main
@@ -249,6 +249,9 @@ def main(custom_density = None, search_method = "local", custom_samples = None,
                         respectively. They are in physical units.
         gradient_method = "analytic" or "numeric", referring to how gradient
                           of energy and L_z are generated
+        custom_centres = a custom array of cluster centres at which to evaluate
+                         uniformity; if None, will use kmeans clustering to get
+                         the cluster centres
 
     HISTORY:
         2018-06-20 - Written - Samuel Wong
@@ -259,7 +262,12 @@ def main(custom_density = None, search_method = "local", custom_samples = None,
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples)    
-    cluster = get_cluster(samples)
+    
+    # use kmeans to get cluster centres or use custom centres
+    if custom_centres is not None:
+        cluster = custom_centres
+    else:
+        cluster = get_cluster(samples)
     
     # set the gradient function of energy and L_z based on specified method
     if gradient_method == "analytic":
