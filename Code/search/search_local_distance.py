@@ -89,5 +89,6 @@ def get_entire_catalogue(parallax_cut=True):
     # of this search does not match the _PARALLAX_CUT of the loaded data
     if not _GAIA_LOADED or parallax_cut != _PARALLAX_CUT:
         load_gaiarv(parallax_cut=parallax_cut)
-        
-    return np.stack((_DISTANCE, _DISTANCE_ERROR), axis = 1)
+    
+    samples = np.stack((_DISTANCE, _DISTANCE_ERROR), axis = 1)
+    return samples.data
