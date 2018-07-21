@@ -1,12 +1,10 @@
 """ 
-Filename: search_local.py
-Author: Mathew Bub
-Last Revision Date: 2018-06-11
+Filename: search_local_distance.py
+Author: Samuel Wong
+Last Revision Date: 2018-07-21
 
-This module contains the search_phase_space function, which searches the 
-Gaia archive for stars close to a given point in phase space, using a galactic 
-coordinate frame. This version of the module uses a local downloaded copy of
-the Gaia DR2 RV catalogue.
+This module contains modifies the usual search_local so that it only returns
+distance and distance error.
 """
 import sys
 sys.path.append('..')
@@ -71,19 +69,15 @@ def get_entire_catalogue(parallax_cut=True):
         get_entire_catalogue
         
     PURPOSE:
-        return the entire Gaia DR2 catalogue in galactocentric rectangular
-        coordinates for use in generating a KDE
+        return the entire Gaia DR2 catalogue with only distance and distance
+        error
         
     INPUT:
         parallax_cut - if True, will perform a cut for stars with parallax
         errors < 20% (optional; default = True)
         
-        return_frame - coordinate frame of the output; can be either
-        'galactocentric' or 'galactic' (optional; default = 'galactocentric')
-        
     OUTPUT:
-        Nx6 array of rectangular phase space coordinates of the form 
-        (x, y, z, vx, vy, vz) in [kpc, kpc, kpc, km/s, km/s, km/s]
+        Nx2 array of star distance in kpc and error in kpc
     """
     # load the Gaia data if not already loaded or if the parallax_cut setting
     # of this search does not match the _PARALLAX_CUT of the loaded data
