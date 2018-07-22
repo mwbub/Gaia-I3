@@ -78,3 +78,26 @@ def normalize_vector(v):
     v = v.normalized()
     v = np.array(v.T)
     return v[0]
+
+def dot_product(a, b):
+    """
+    NAME:
+        dot_product
+
+    PURPOSE:
+        Given two 2D numpy array, <a> and <b>, where each row represent a
+        vector and they both are lists of the same number of vectors, return 
+        a list of dot product of corresponding rows.
+
+    INPUT:
+        a, b = (m by n) numpy array representing m vectors, each of n
+                dimensions
+
+    OUTPUT:
+        1D numpy array of shape (n,), with each component being a dot product
+
+    HISTORY:
+        2018-07-2 - Written - Samuel Wong
+    """
+    
+    
