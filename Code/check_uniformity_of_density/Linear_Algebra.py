@@ -79,6 +79,7 @@ def normalize_vector(v):
     v = np.array(v.T)
     return v[0]
 
+
 def dot_product(a, b):
     """
     NAME:
@@ -87,7 +88,8 @@ def dot_product(a, b):
     PURPOSE:
         Given two 2D numpy array, <a> and <b>, where each row represent a
         vector and they both are lists of the same number of vectors, return 
-        a list of dot product of corresponding rows.
+        a list of dot product of corresponding rows. Behave like normal dot
+        product if given 1D arrays.
 
     INPUT:
         a, b = (m by n) numpy array representing m vectors, each of n
@@ -99,7 +101,11 @@ def dot_product(a, b):
     HISTORY:
         2018-07-22 - Written - Samuel Wong
     """
-    # multiply two matrix compoenet-wise
-    product = np.multiply(a,b)
-    # add up the columns
-    return np.sum(product, axis = 1)
+    if a.ndim == 1:
+        return np.dot(a,b)
+    else:
+        # multiply two matrix compoenet-wise
+        product = np.multiply(a,b)
+        # add up the columns
+        return np.sum(product, axis = 1)
+
