@@ -97,7 +97,9 @@ def dot_product(a, b):
         1D numpy array of shape (n,), with each component being a dot product
 
     HISTORY:
-        2018-07-2 - Written - Samuel Wong
+        2018-07-22 - Written - Samuel Wong
     """
-    
-    
+    # multiply two matrix compoenet-wise
+    product = np.multiply(a,b)
+    # add up the columns
+    return np.sum(product, axis = 1)
