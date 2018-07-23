@@ -437,52 +437,67 @@ def dot_product_plot(max_dot_product, cluster, file_name):
     plt.show()
     
     
-def color_plot_ij(max_dot_product, cluster, file_name, i, j):
+def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
     """
     NAME:
         color_plot_ij
 
     PURPOSE:
-        Given result of dot product and cluster, and the index of the two
+        Given result and cluster, and the index of the two
         projection axis, plot the scatter plot of the cluster, with the 
-        color of the point corresponding to maximum dot product value.
+        color of the point corresponding to result value. Title depends on
+        the uniformity method.
         Save graph in appropriate folder.
 
     INPUT:
-        max_dot_product = a numpy array storing the maximum dot product at each
-                          cluster center
+        result = a numpy array storing the result at each cluster center
         cluster = a numpy array storing cluster centers
         file_name = a string
+        uniformity_method = "projection" or "dot product"
 
     OUTPUT:
         None
 
     HISTORY:
         2018-07-03 - Written - Mathew Bubb, Samuel Wong
+        2018-07-23 - Added uniformity method - Samuel Wong
     """
     # filter out nan
-    cluster = cluster[~np.isnan(max_dot_product)]
-    max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
+    cluster = cluster[~np.isnan(result)]
+    result = result[~np.isnan(result)]
     # create plot    
     plt.figure(figsize=(10,8), facecolor='black')
     plt.style.use("dark_background")
     # scatter plot the cluster, with the 2 given projection axis
     # we need to use the transpose to get all the components, instead of 
     # 6 components for each star.
-    # set the color to the dot product
-    plt.scatter(*cluster.T[[i,j]], c=max_dot_product, marker='.', s=5, 
+    # set the color to the result
+    plt.scatter(*cluster.T[[i,j]], c=result, marker='.', s=5, 
                 cmap='plasma', vmin=0, vmax=1)
-    plt.colorbar(label='Maximum Absolute Dot Product')
+    if uniformity_method == "dot product":
+        plt.colorbar(label='Maximum Absolute Dot Product')
+    elif uniformity_method == "projection":
+        plt.colorbar(label='Fractional Length of Projection')
     # get the axis name
     x_axis, x_divisor = get_axis_from_index(i)
     y_axis, y_divisor = get_axis_from_index(j)
     plt.xlabel('${}/{}$'.format(x_axis, x_divisor))
     plt.ylabel('${}/{}$'.format(y_axis, y_divisor))
-    plt.title("Maximum Absolute Value of Dot Product in {}-{} Dimension".format(
-            x_axis, y_axis))
+    if uniformity_method == "dot product":
+        plt.title("Maximum Absolute Value of Dot Product in {}-{} Dimension".format(
+        x_axis, y_axis))
+    elif uniformity_method == "projection":
+        plt.title("Fractional Length of Projection in {}-{} Dimension".format(
+        x_axis, y_axis))
+
     # save figure
-    color_figure_name = 'color dot product {}-{} figure.png'.format(
-            x_axis, y_axis)
+    if uniformity_method == "dot product":
+        color_figure_name = 'color dot product {}-{} figure.png'.format(
+                x_axis, y_axis)
+    elif uniformity_method == "projection":
+        color_figure_name = 'color projection {}-{} figure.png'.format(
+                x_axis, y_axis)
+
     plt.savefig('main_program_results/' + file_name +'/'+ color_figure_name)
     plt.show()
     
@@ -513,29 +528,30 @@ def get_axis_from_index(i):
             ['vy', 'v_0'], ['vz', 'v_0']]
     return axis[i]
 
-def color_plot(max_dot_product, cluster, file_name):
+def color_plot(result, cluster, file_name, uniformity_method):
     """
     NAME:
         color_plot
 
     PURPOSE:
-        Given result of dot product and cluster, plot all possible 2
-        dimensional projection scatter plot with color corresponding to dot 
-        product values. Save all the graph in the corresponding folder.
+        Given result and cluster, plot all possible 2 dimensional projection
+        scatter plot with color corresponding to result values. Save all the 
+        graph in the corresponding folder.
 
     INPUT:
-        max_dot_product = a numpy array storing the maximum dot product at each
-                          cluster center
+        result = a numpy array storing the result at each cluster center
         cluster = a numpy array storing cluster centers
         file_name = a string
+        uniformity_method = "projection" or "dot product"
 
     OUTPUT:
         None
 
     HISTORY:
         2018-07-03 - Written - Samuel Wong
+        2018-07-23 - Added uniformity method - Samuel Wong
     """
     # go through al combinations of axis projection and plot them
     for i in range(6):
         for j in range(i + 1, 6):
-            color_plot_ij(max_dot_product, cluster, file_name, i, j)
+            color_plot_ij(result, cluster, file_name, uniformity_method i, j)
