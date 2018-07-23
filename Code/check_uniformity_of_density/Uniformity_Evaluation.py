@@ -169,7 +169,7 @@ def evaluate_uniformity(f, x, W):
 def evaluate_uniformity_projection(points, f, v1, v2):
     p = grad_multi(f, points)
     e1, e2 = Gram_Schmidt_two(v1, v2)
-    p_projection = orthgonal_projection(p, e1, e2)
+    p_projection = orthogonal_projection(p, e1, e2)
     return LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
     
     
