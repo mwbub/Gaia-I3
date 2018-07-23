@@ -280,36 +280,60 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         Energy_grad_fn = grad(Energy, 6)	
         Lz_grad_fn = grad(L_z, 6)
     
-    # initialize an array of directional derivative for each point
-    result = np.empty((np.shape(cluster)[0], 4))
-    # evaluate uniformity for each point in cluster
-    start = time_class.time()
-    for (i, point) in enumerate(cluster):
-        result[i] = evaluate_uniformity_from_point(point, density, 
-              Energy_grad_fn, Lz_grad_fn)
-        print('At point {}, dot products are {}'.format(point, result[i]))
-        print()
-    inter_time = time_class.time() - start
-    print('time per star =', inter_time/np.shape(cluster)[0])
-    # output summary information
-    # report the average and standard deviation of the maximum 
-    # dot product in absolute value, ignoring nan values
-    max_dot_product = np.nanmax(np.absolute(result), axis = 1)
-    mean_of_max = np.nanmean(max_dot_product)
-    std_of_max = np.nanstd(max_dot_product, ddof = 1)
-    print('The average of the maximum absolute value of dot product is ', mean_of_max)
-    print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
-    # save result
-    np.savez('main_program_results/' + file_name +'/'+ 'data', 
-             cluster = cluster, result = result)
-    
-    # create and save graph of kmeans projection in 2 dimension
-    kmeans_plot(samples, cluster, file_name)
-    # create and save graph of dot product
-    dot_product_plot(max_dot_product, cluster, file_name)
-    #create and save graph of dot product in color scatter plot in all 
-    # 2 dimensional projection angles.
-    color_plot(max_dot_product, cluster, file_name)
+    if uniformity_method == "dot product":
+        # initialize an array of directional derivative for each point
+        result = np.empty((np.shape(cluster)[0], 4))
+        # evaluate uniformity for each point in cluster
+        start = time_class.time()
+        for (i, point) in enumerate(cluster):
+            result[i] = evaluate_uniformity_from_point(point, density, 
+                  Energy_grad_fn, Lz_grad_fn)
+            print('At point {}, dot products are {}'.format(point, result[i]))
+            print()
+        inter_time = time_class.time() - start
+        print('time per star =', inter_time/np.shape(cluster)[0])
+        # output summary information
+        # report the average and standard deviation of the maximum 
+        # dot product in absolute value, ignoring nan values
+        max_dot_product = np.nanmax(np.absolute(result), axis = 1)
+        mean_of_max = np.nanmean(max_dot_product)
+        std_of_max = np.nanstd(max_dot_product, ddof = 1)
+        print('The average of the maximum absolute value of dot product is ', mean_of_max)
+        print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
+        # save result
+        np.savez('main_program_results/' + file_name +'/'+ 'data', 
+                 cluster = cluster, result = result)
+        
+        # create and save graph of kmeans projection in 2 dimension
+        kmeans_plot(samples, cluster, file_name)
+        # create and save graph of dot product
+        dot_product_plot(max_dot_product, cluster, file_name)
+        #create and save graph of dot product in color scatter plot in all 
+        # 2 dimensional projection angles.
+        color_plot(max_dot_product, cluster, file_name)
+    elif uniformity_method == "projection":
+        start = time_class.time()
+        result= evaluate_uniformity_projection(cluster, density, del_E(points), 
+                                       del_Lz(points))
+        inter_time = time_class.time() - start
+        print('time per star =', inter_time/np.shape(cluster)[0])
+        
+        # output summary information
+        # report the average and standard deviation of the projection,
+        # ignoring nan values
+        mean_projection = np.nanmean(result)
+        std_projection = np.nanstd(result, ddof = 1)
+        print('The average of the projection is ', mean_projection)
+        print('The standard deviation of the projection is ', std_projection)
+        # save result
+        np.savez('main_program_results/' + file_name +'/'+ 'projection data', 
+                 cluster = cluster, result = result)
+        
+        # create and save graph of kmeans projection in 2 dimension
+        kmeans_plot(samples, cluster, file_name)
+        #create and save graph of color scatter plot in all 
+        # 2 dimensional projection angles.
+        color_plot(result, cluster, file_name, uniformity_method)
         
     
 if __name__ == "__main__":
