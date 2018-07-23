@@ -192,7 +192,7 @@ def Gram_Schmidt_two(v1, v2):
     
 
 def orthogonal_projection(p, e1, e2):
-        """
+    """
     NAME:
         orthogonal_projection
 
@@ -203,6 +203,7 @@ def orthogonal_projection(p, e1, e2):
         e1, e2 = (m by n) numpy array representing m unit vectors, each of n
                 dimensions. For each row, the vectors in v1 and v2 are
                 corresponding vectors.
+        p = (m by n) numpy array
 
     OUTPUT:
         a list of n orthogonal projections
