@@ -111,6 +111,25 @@ def grad(f, n):
 
 
 def grad_multi(f, points, dx = 1e-8):
+    """
+    NAME:
+        grad_multi
+
+    PURPOSE:
+        Calculate the numerical value of gradient for an array of points, using
+        a function that is able to take an array of points
+
+    INPUT:
+        f = a differentiable function that an array of points, each with n
+            dimensions
+        points = (m,n) array, representing m points, each with n dimensions
+
+    OUTPUT:
+        (m,n) array, each row being a gradient
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
     n = np.shape(points)[1]
     increment = dx*np.identity(n)
     df = []
