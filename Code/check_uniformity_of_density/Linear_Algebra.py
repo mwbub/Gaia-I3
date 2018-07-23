@@ -135,3 +135,33 @@ def projection(v, u):
     return (coefficient.T)*u
     
 
+def Gram_Schmidt_two(v1, v2):
+    """
+    NAME:
+        Gram_Schmidt_two
+
+    PURPOSE:
+        Return the Gram Schmidt orthonormal vectors for the two dimensional
+        case. Given <v1> and <v2>, return two orthonormal vectors spanning 
+        the same space. <v1> and <v2> can also be a list of corresponding 
+        vectors, in which case a list of othonormal basis are returned.
+
+    INPUT:
+        v1, v2 = (m by n) numpy array representing m vectors, each of n
+                dimensions. For each row, the vectors in v1 and v2 are
+                corresponding vectors.
+
+    OUTPUT:
+        e1, e2 = (m,n) array representing the projection. For each row, the
+                the vectors in e1 and e2 are corresponding vectors.
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    
+    
+    
+    
+    
+    
+    
