@@ -158,6 +158,11 @@ def Gram_Schmidt_two(v1, v2):
     HISTORY:
         2018-07-22 - Written - Samuel Wong
     """
+    u1 = v1
+    u2 = v2 - projection(v2, u1)
+    e1 = normalized(u1)
+    e2 = normalized(u2)
+    return e1, e2
     
     
     
