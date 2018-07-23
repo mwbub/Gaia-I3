@@ -134,7 +134,7 @@ def dot_product(a, b):
         # multiply two matrix compoenet-wise
         product = np.multiply(a,b)
         # add up the columns
-        return np.sum(product, axis = 1)
+        return np.atleast_2d(np.sum(product, axis = 1))
     
     
 def projection(v, u):
@@ -190,3 +190,6 @@ def Gram_Schmidt_two(v1, v2):
     e2 = normalize(u2)
     return e1, e2
     
+
+#def orthogonal_projection(p, e1, e2):
+    #return dot_product(p, e1)*e1 + dot_product(p, e2)*e2
