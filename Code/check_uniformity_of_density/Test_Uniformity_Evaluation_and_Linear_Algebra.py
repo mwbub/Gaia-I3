@@ -10,6 +10,10 @@ def f(array):
     z = array[2]
     return 2*x*y + 3*y*z + z**2
 
+def g(array):
+    x, y, z = array.T
+    return 2*x*y + 3*y*z + z**2
+
 # global variables
 point = np.array([1., 1., 2.])
 gradient = np.array([2., 8., 7.])
@@ -67,13 +71,51 @@ def test_gradient():
     print('grad(point) = ', del_f_x)
     print('point = ', point)
     
+def test_grad_multi():
+    points = np.array([[1., 1., 2.],[2., 4., 6.]])
+    print('points = ', points)
+    print('grad(points) = ', grad_multi(g, points))
+
+def test_Gram_Schmidt_two():
+    v1 = np.array([[0,0,4.7],[1,0,0]])
+    v2 = np.array([[1,2,3],[0,1,0]])
+    e1, e2 = Gram_Schmidt_two(v1,v2)
+    print('e1 =', e1)
+    print('e2 =', e2)
+    print('result from sympy:')
+    print(GramSchmidt([Matrix([0,0,4.7]), Matrix([1,2,3])], True))
+    print(GramSchmidt([Matrix([1,0,0]), Matrix([0,1,0])], True))
+    
+def test_Gram_Schmidt_two_1D():
+    v1 = np.array([0,0,4.7])
+    v2 = np.array([1,2,3])
+    e1, e2 = Gram_Schmidt_two(v1,v2)
+    print('e1 =', e1)
+    print('e2 =', e2)
+    print('result from sympy:')
+    print(GramSchmidt([Matrix([0,0,4.7]), Matrix([1,2,3])], True))
+    
+
+def test_uniformity_evaluation_projection():
+    points = np.array([[1., 1., 2.],[2., 4., 6.]])
+    v1 = np.array([[4, -1, 0], [0, 1, -22/24]])
+    v2 = np.array([[0, 7/8, -1], [-1, 0, 8/24]])
+    print(evaluate_uniformity_projection(points, g, v1, v2))
+    print("exact answer =", [0,0])
 
 #test_orthonormality(W)
-print()
-test_evaluate_uniformity_and_orthogonal_complement(f, point, W)
-print()
-test_compatibility_with_integral_of_motion()
-print()
-test_normalize_vector()
-print()
-test_gradient()
+#print()
+#test_evaluate_uniformity_and_orthogonal_complement(f, point, W)
+#print()
+#test_compatibility_with_integral_of_motion()
+#print()
+#test_normalize_vector()
+#print()
+#test_gradient()
+#test_Gram_Schmidt_two()
+#print()
+#test_Gram_Schmidt_two_1D()
+#print()
+test_grad_multi()
+#print()
+#test_uniformity_evaluation_projection()

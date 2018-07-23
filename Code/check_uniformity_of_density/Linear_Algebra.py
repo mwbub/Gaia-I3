@@ -14,6 +14,7 @@ HISTORY:
 """
 import numpy as np
 from sympy import Matrix, GramSchmidt
+from numpy import linalg as LA
 
 
 def orthogonal_complement(V):
@@ -78,3 +79,136 @@ def normalize_vector(v):
     v = v.normalized()
     v = np.array(v.T)
     return v[0]
+
+
+def normalize(v):
+    """
+    NAME:
+        normalize
+
+    PURPOSE:
+        Return the normalized vector. If <v> is a list of vectors, return a
+        list of normalized vectors.
+
+    INPUT:
+        v = (m by n) numpy array representing m vectors, each of n
+                dimensions.
+
+    OUTPUT:
+        (m,n) array, normalized in each row.
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    if v.ndim == 1:
+        return np.atleast_2d(v/LA.norm(v))
+    else:
+        length = np.atleast_2d(LA.norm(v, axis = 1))
+        return v/(length.T)
+        
+
+def dot_product(a, b):
+    """
+    NAME:
+        dot_product
+
+    PURPOSE:
+        Given two 2D numpy array, <a> and <b>, where each row represent a
+        vector and they both are lists of the same number of vectors, return 
+        a list of dot product of corresponding rows. Behave like normal dot
+        product if given 1D arrays.
+
+    INPUT:
+        a, b = (m by n) numpy array representing m vectors, each of n
+                dimensions
+
+    OUTPUT:
+        a vertical array of height n, with each component being a dot product
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    if a.ndim == 1:
+        return np.atleast_2d(np.dot(a,b)).T
+    else:
+        # multiply two matrix compoenet-wise
+        product = np.multiply(a,b)
+        # add up the columns
+        return np.atleast_2d(np.sum(product, axis = 1)).T
+    
+    
+def projection(v, u):
+    """
+    NAME:
+        projection
+
+    PURPOSE:
+        Return the projection of <v> onto <u>, where <v> and <u> can be list of
+        vectors and return list of projections.
+
+    INPUT:
+        v, u = (m by n) numpy array representing m vectors, each of n
+                dimensions
+
+    OUTPUT:
+        (m,n) array representing the projection
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    # get the coefficient in front of each vectors in u
+    coefficient = dot_product(v,u)/dot_product(u,u)
+    # multiply the coefficient to u
+    return coefficient*u
+    
+
+def Gram_Schmidt_two(v1, v2):
+    """
+    NAME:
+        Gram_Schmidt_two
+
+    PURPOSE:
+        Return the Gram Schmidt orthonormal vectors for the two dimensional
+        case. Given <v1> and <v2>, return two orthonormal vectors spanning 
+        the same space. <v1> and <v2> can also be a list of corresponding 
+        vectors, in which case a list of othonormal basis are returned.
+
+    INPUT:
+        v1, v2 = (m by n) numpy array representing m vectors, each of n
+                dimensions. For each row, the vectors in v1 and v2 are
+                corresponding vectors.
+
+    OUTPUT:
+        e1, e2 = (m,n) array representing the projection. For each row, the
+                the vectors in e1 and e2 are corresponding vectors.
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    u2 = v2 - projection(v2, v1)
+    e1 = normalize(v1)
+    e2 = normalize(u2)
+    return e1, e2
+    
+
+def orthogonal_projection(p, e1, e2):
+    """
+    NAME:
+        orthogonal_projection
+
+    PURPOSE:
+        Return the orthogonal projection in 2 dimensions.
+
+    INPUT:
+        e1, e2 = (m by n) numpy array representing m unit vectors, each of n
+                dimensions. For each row, the vectors in v1 and v2 are
+                corresponding vectors.
+        p = (m by n) numpy array
+
+    OUTPUT:
+        a list of n orthogonal projections
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    return dot_product(p, e1)*e1 + dot_product(p, e2)*e2

@@ -28,7 +28,8 @@ HISTORY:
 """
 import numpy as np
 from scipy.misc import derivative
-from Linear_Algebra import normalize_vector
+from Linear_Algebra import *
+from numpy import linalg as LA
 
 
 def partial_derivative(f, i):
@@ -109,6 +110,34 @@ def grad(f, n):
     return combined_function
 
 
+def grad_multi(f, points, dx = 1e-8):
+    """
+    NAME:
+        grad_multi
+
+    PURPOSE:
+        Calculate the numerical value of gradient for an array of points, using
+        a function that is able to take an array of points
+
+    INPUT:
+        f = a differentiable function that takes an array of points, each with n
+            dimensions
+        points = (m,n) array, representing m points, each with n dimensions
+
+    OUTPUT:
+        (m,n) array, each row being a gradient
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    n = np.shape(points)[1]
+    increment = dx*np.identity(n)
+    df = []
+    for row in increment:
+        df.append((f(points + row) - f(points))/dx)
+    return np.array(df).T
+
+
 def evaluate_uniformity(f, x, W):
     """
     NAME:
@@ -154,3 +183,34 @@ def evaluate_uniformity(f, x, W):
     for i in range(m):
         directional_derivatives[i] = np.dot(del_f_x, W[i])
     return directional_derivatives
+
+
+def evaluate_uniformity_projection(points, f, v1, v2):
+    """
+    NAME:
+        evaluate_uniformity_projection
+
+    PURPOSE:
+        Calculate the ratio of length of the projection of grad(f)(points)
+        on to the space spanned by v1 and v2. A result close to 1 means
+        the function is uniform along v1 and v2.
+
+    INPUT:
+        f = a differentiable function that takes an array of points, each with n
+            dimensions
+        points = (m,n) array, representing m points, each with n dimensions
+
+    OUTPUT:
+        array of shape (m,), each component represents a fractional length for
+        corresponding point
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    p = grad_multi(f, points)
+    e1, e2 = Gram_Schmidt_two(v1, v2)
+    p_projection = orthogonal_projection(p, e1, e2)
+    return LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
+    
+    
+       
