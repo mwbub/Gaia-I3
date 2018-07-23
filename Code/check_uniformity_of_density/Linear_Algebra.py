@@ -192,4 +192,22 @@ def Gram_Schmidt_two(v1, v2):
     
 
 def orthogonal_projection(p, e1, e2):
+        """
+    NAME:
+        orthogonal_projection
+
+    PURPOSE:
+        Return the orthogonal projection in 2 dimensions.
+
+    INPUT:
+        e1, e2 = (m by n) numpy array representing m unit vectors, each of n
+                dimensions. For each row, the vectors in v1 and v2 are
+                corresponding vectors.
+
+    OUTPUT:
+        a list of n orthogonal projections
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
     return dot_product(p, e1)*e1 + dot_product(p, e2)*e2
