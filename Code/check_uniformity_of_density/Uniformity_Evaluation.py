@@ -120,7 +120,7 @@ def grad_multi(f, points, dx = 1e-8):
         a function that is able to take an array of points
 
     INPUT:
-        f = a differentiable function that an array of points, each with n
+        f = a differentiable function that takes an array of points, each with n
             dimensions
         points = (m,n) array, representing m points, each with n dimensions
 
@@ -186,6 +186,27 @@ def evaluate_uniformity(f, x, W):
 
 
 def evaluate_uniformity_projection(points, f, v1, v2):
+    """
+    NAME:
+        evaluate_uniformity_projection
+
+    PURPOSE:
+        Calculate the ratio of length of the projection of grad(f)(points)
+        on to the space spanned by v1 and v2. A result close to 1 means
+        the function is uniform along v1 and v2.
+
+    INPUT:
+        f = a differentiable function that takes an array of points, each with n
+            dimensions
+        points = (m,n) array, representing m points, each with n dimensions
+
+    OUTPUT:
+        array of shape (m,), each component represents a fractional length for
+        corresponding point
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
     p = grad_multi(f, points)
     e1, e2 = Gram_Schmidt_two(v1, v2)
     p_projection = orthogonal_projection(p, e1, e2)
