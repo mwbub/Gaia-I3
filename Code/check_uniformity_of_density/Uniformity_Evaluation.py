@@ -28,7 +28,8 @@ HISTORY:
 """
 import numpy as np
 from scipy.misc import derivative
-from Linear_Algebra import normalize_vector
+from Linear_Algebra import *
+from numpy import linalg as LA
 
 
 def partial_derivative(f, i):
@@ -154,3 +155,15 @@ def evaluate_uniformity(f, x, W):
     for i in range(m):
         directional_derivatives[i] = np.dot(del_f_x, W[i])
     return directional_derivatives
+
+
+def evaluate_uniformity_projection(points, f, v1, v2):
+    p = grad_multi(f, points)
+    e1, e2 = Gram_Schmidt_two(v1, v2)
+    p_projection = orthgonal_projection(p, e1, e2)
+    return LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
+    
+    
+    
+    
+    
