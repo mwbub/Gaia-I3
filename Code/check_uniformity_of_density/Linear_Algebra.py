@@ -14,6 +14,7 @@ HISTORY:
 """
 import numpy as np
 from sympy import Matrix, GramSchmidt
+from numpy import linalg as LA
 
 
 def orthogonal_complement(V):
@@ -79,6 +80,32 @@ def normalize_vector(v):
     v = np.array(v.T)
     return v[0]
 
+
+def normalize(v):
+    """
+    NAME:
+        normalize
+
+    PURPOSE:
+        Return the normalized vector. If <v> is a list of vectors, return a
+        list of normalized vectors.
+
+    INPUT:
+        v = (m by n) numpy array representing m vectors, each of n
+                dimensions.
+
+    OUTPUT:
+        (m,n) array, normalized in each row.
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    if v.ndim == 1:
+        return v/LA.norm(v)
+    else:
+        length = np.atleast_2d(LA.norm(v, axis = 1))
+        return v/(length.T)
+        
 
 def dot_product(a, b):
     """
@@ -158,10 +185,9 @@ def Gram_Schmidt_two(v1, v2):
     HISTORY:
         2018-07-22 - Written - Samuel Wong
     """
-    u1 = v1
-    u2 = v2 - projection(v2, u1)
-    e1 = normalized(u1)
-    e2 = normalized(u2)
+    u2 = v2 - projection(v2, v1)
+    e1 = normalize(v1)
+    e2 = normalize(u2)
     return e1, e2
     
     
