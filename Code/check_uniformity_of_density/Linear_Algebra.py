@@ -108,4 +108,30 @@ def dot_product(a, b):
         product = np.multiply(a,b)
         # add up the columns
         return np.sum(product, axis = 1)
+    
+    
+def projection(v, u):
+    """
+    NAME:
+        projection
+
+    PURPOSE:
+        Return the projection of <v> onto <u>, where <v> and <u> can be list of
+        vectors and return list of projections.
+
+    INPUT:
+        v, u = (m by n) numpy array representing m vectors, each of n
+                dimensions
+
+    OUTPUT:
+        (m,n) array representing the projection
+
+    HISTORY:
+        2018-07-22 - Written - Samuel Wong
+    """
+    # get the coefficient in front of each vectors in u
+    coefficient = np.atleast_2d(dot_product(v,u)/dot_product(u,u))
+    # multiply the coefficient to u
+    return (coefficient.T)*u
+    
 
