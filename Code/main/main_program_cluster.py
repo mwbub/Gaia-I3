@@ -219,36 +219,39 @@ def get_cluster(samples):
     return cluster
 
 
-def main(custom_density = None, search_method = "local", custom_samples = None,
-         gradient_method = "analytic", custom_centres=None):
+def main(uniformity_method = "projection", gradient_method = "analytic",
+         search_method = "local", custom_density = None, custom_samples = None,
+          custom_centres=None):
     """
     NAME:
         main
 
     PURPOSE:
         Call on all modules to evaluate uniformity of density on a cluster of 
-        points provided by kmeans. Allows the user to specify search method to
-        generate sample stars around a point in phase space. Also, allows user
-        to give custom density function, but since no points are given for a
-        custom density, this program only evaluates uniformity at a point when
-        custom density is given. Also, allows user to give custom sample stars.
-        Output figures of results, including kmeans and dot product scatter
-        plot.
+        points provided by kmeans (or using custom centres). Allows user to 
+        choose between using dot product or projection method to evaluate
+        uniformity. Allows the user to specify search method to to get the data
+        from Gaia (either locally or online; and either everything, or an
+        epsillon ball around Sun). Also, allows user to give custom density
+        function or custom samples. Output figures of results, including kmeans
+        and dot product scatter plot.
 
     INPUT:
+        uniformity_method = "projection" or "dot product", referring to how
+                            uniformity of density is evaluated
+        gradient_method = "analytic" or "numeric", referring to how gradient
+                            of energy and L_z are generated
+        search_method = search the gaia catalogue online ("online"),
+                        locally on a downloaded file ('local'), or use the
+                        the entire downloaded gaia rv file ('all of local')
         custom_density = a customized density functiont that takes an array
                          of 6 numbers representing the coordinate and return
                          the density; if this input is None, then the code
                          will use a search method to get data from Gaia catalogue
                          and use KDE to genereate a density function
-        search_method = search the gaia catalogue online ("online"),
-                        locally on a downloaded file ('local'), or use the
-                        the entire downloaded gaia rv file ('all of local')
         custom_samples = an N by 6 array that represents the custom samples, 
                         with each component representing (x,y,z,vx,vy,vz),
                         respectively. They are in physical units.
-        gradient_method = "analytic" or "numeric", referring to how gradient
-                          of energy and L_z are generated
         custom_centres = a custom array of cluster centres at which to evaluate
                          uniformity; if None, will use kmeans clustering to get
                          the cluster centres
@@ -257,8 +260,8 @@ def main(custom_density = None, search_method = "local", custom_samples = None,
         2018-06-20 - Written - Samuel Wong
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
-        2018-06-22 - Added Figure
-        2018-07-15 - Added choice of gradient method
+        2018-06-22 - Added Figure - Samuel Wong
+        2018-07-15 - Added choice of gradient method - Samuel Wong
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples)    
