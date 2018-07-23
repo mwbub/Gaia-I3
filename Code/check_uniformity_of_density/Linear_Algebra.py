@@ -123,18 +123,18 @@ def dot_product(a, b):
                 dimensions
 
     OUTPUT:
-        1D numpy array of shape (n,), with each component being a dot product
+        a vertical array of height n, with each component being a dot product
 
     HISTORY:
         2018-07-22 - Written - Samuel Wong
     """
     if a.ndim == 1:
-        return np.atleast_2d(np.dot(a,b))
+        return np.atleast_2d(np.dot(a,b)).T
     else:
         # multiply two matrix compoenet-wise
         product = np.multiply(a,b)
         # add up the columns
-        return np.atleast_2d(np.sum(product, axis = 1))
+        return np.atleast_2d(np.sum(product, axis = 1)).T
     
     
 def projection(v, u):
@@ -157,9 +157,9 @@ def projection(v, u):
         2018-07-22 - Written - Samuel Wong
     """
     # get the coefficient in front of each vectors in u
-    coefficient = np.atleast_2d(dot_product(v,u)/dot_product(u,u))
+    coefficient = dot_product(v,u)/dot_product(u,u)
     # multiply the coefficient to u
-    return (coefficient.T)*u
+    return coefficient*u
     
 
 def Gram_Schmidt_two(v1, v2):
@@ -191,5 +191,5 @@ def Gram_Schmidt_two(v1, v2):
     return e1, e2
     
 
-#def orthogonal_projection(p, e1, e2):
-    #return dot_product(p, e1)*e1 + dot_product(p, e2)*e2
+def orthogonal_projection(p, e1, e2):
+    return dot_product(p, e1)*e1 + dot_product(p, e2)*e2
