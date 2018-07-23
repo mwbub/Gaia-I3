@@ -95,6 +95,6 @@ def test_Gram_Schmidt_two_1D():
 #test_normalize_vector()
 #print()
 #test_gradient()
-#test_Gram_Schmidt_two()
+test_Gram_Schmidt_two()
 #print()
-#test_Gram_Schmidt_two_1D()
+test_Gram_Schmidt_two_1D()
