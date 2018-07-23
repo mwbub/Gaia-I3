@@ -101,7 +101,7 @@ def normalize(v):
         2018-07-22 - Written - Samuel Wong
     """
     if v.ndim == 1:
-        return v/LA.norm(v)
+        return np.atleast_2d(v/LA.norm(v))
     else:
         length = np.atleast_2d(LA.norm(v, axis = 1))
         return v/(length.T)
@@ -129,7 +129,7 @@ def dot_product(a, b):
         2018-07-22 - Written - Samuel Wong
     """
     if a.ndim == 1:
-        return np.dot(a,b)
+        return np.atleast_2d(np.dot(a,b))
     else:
         # multiply two matrix compoenet-wise
         product = np.multiply(a,b)
@@ -189,10 +189,4 @@ def Gram_Schmidt_two(v1, v2):
     e1 = normalize(v1)
     e2 = normalize(u2)
     return e1, e2
-    
-    
-    
-    
-    
-    
     
