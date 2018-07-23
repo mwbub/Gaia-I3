@@ -10,6 +10,10 @@ def f(array):
     z = array[2]
     return 2*x*y + 3*y*z + z**2
 
+def g(array):
+    x, y, z = array.T
+    return 2*x*y + 3*y*z + z**2
+
 # global variables
 point = np.array([1., 1., 2.])
 gradient = np.array([2., 8., 7.])
@@ -67,6 +71,12 @@ def test_gradient():
     print('grad(point) = ', del_f_x)
     print('point = ', point)
     
+def test_grad_multi():
+    point2 = np.atleast_2d(point)
+    print('point = ', point2)
+    print('grad(point) = ', grad_multi(g, point2))
+
+    
 def test_Gram_Schmidt_two():
     v1 = np.array([[0,0,4.7],[1,0,0]])
     v2 = np.array([[1,2,3],[0,1,0]])
@@ -93,8 +103,10 @@ def test_Gram_Schmidt_two_1D():
 #test_compatibility_with_integral_of_motion()
 #print()
 #test_normalize_vector()
+print()
+test_gradient()
+#test_Gram_Schmidt_two()
 #print()
-#test_gradient()
-test_Gram_Schmidt_two()
-#print()
-test_Gram_Schmidt_two_1D()
+#test_Gram_Schmidt_two_1D()
+print()
+test_grad_multi()

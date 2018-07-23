@@ -111,17 +111,12 @@ def grad(f, n):
 
 
 def grad_multi(f, points, dx = 1e-8):
-    m,n = np.shape(points)
-    print("m =",m)
-    print("n=",n)
+    n = np.shape(points)[1]
     increment = dx*np.identity(n)
-    print("increment =", increment)
     df = []
     for row in increment:
-        print(df)
         df.append((f(points + row) - f(points))/dx)
     return np.array(df).T
-    
 
 
 def evaluate_uniformity(f, x, W):
