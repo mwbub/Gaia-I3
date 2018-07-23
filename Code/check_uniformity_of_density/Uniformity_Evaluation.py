@@ -110,6 +110,20 @@ def grad(f, n):
     return combined_function
 
 
+def grad_multi(f, points, dx = 1e-8):
+    m,n = np.shape(points)
+    print("m =",m)
+    print("n=",n)
+    increment = dx*np.identity(n)
+    print("increment =", increment)
+    df = []
+    for row in increment:
+        print(df)
+        df.append((f(points + row) - f(points))/dx)
+    return np.array(df).T
+    
+
+
 def evaluate_uniformity(f, x, W):
     """
     NAME:
@@ -164,6 +178,4 @@ def evaluate_uniformity_projection(points, f, v1, v2):
     return LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
     
     
-    
-    
-    
+       
