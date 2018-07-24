@@ -185,7 +185,7 @@ def del_E(coord):
     x, y, z, vx, vy, vz = coord
     R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
     # get the force of the potential in cylindrical form
-    F_phi = evaluatephiforces(MWPotential2014, R, z, phi)
+    F_phi = evaluatephiforces(MWPotential2014, R, z, phi)/R
     F_R = evaluateRforces(MWPotential2014, R, z, phi)
     F_z= evaluatezforces(MWPotential2014, R, z, phi)
     # return the gradient in Cartesian coordinate
