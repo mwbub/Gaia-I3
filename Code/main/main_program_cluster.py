@@ -313,8 +313,8 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         color_plot(max_dot_product, cluster, file_name)
     elif uniformity_method == "projection":
         start = time_class.time()
-        result= evaluate_uniformity_projection(cluster, density, del_E(points), 
-                                       del_Lz(points))
+        result= evaluate_uniformity_projection(cluster, density, del_E(cluster), 
+                                       del_Lz(cluster))
         inter_time = time_class.time() - start
         print('time per star =', inter_time/np.shape(cluster)[0])
         
