@@ -29,7 +29,7 @@ from kmeans.kmeans import *
 from tools.tools import *
 
 # define parameters for the search and KDE as global variables
-epsilon = 1.0
+epsilon = 0.5
 v_scale = 0.1
 
 # create a subfolder to save results
@@ -318,6 +318,9 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         inter_time = time_class.time() - start
         print('time per star =', inter_time/np.shape(cluster)[0])
         
+        for (i, point) in enumerate(cluster):
+            print('At point {}, projection is {}'.format(point, result[i]))
+            print()
         # output summary information
         # report the average and standard deviation of the projection,
         # ignoring nan values
@@ -338,4 +341,4 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     
 if __name__ == "__main__":
     main(custom_density = None, search_method = "local", custom_samples = None,
-         gradient_method = "analytic")
+         gradient_method = "analytic", uniformity_method = "projection")
