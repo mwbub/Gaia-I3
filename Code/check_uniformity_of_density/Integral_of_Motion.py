@@ -17,12 +17,15 @@ HISTORY:
     2018-05-25 - Written - Samuel Wong
     2018-07-10 - Added explicit gradient function - Samuel Wong
 """
+import sys
+sys.path.append("..")
 from galpy.potential import MWPotential2014
 from galpy.potential import evaluatePotentials
 from galpy.potential import evaluatephiforces
 from galpy.potential import evaluateRforces
 from galpy.potential import evaluatezforces
 import numpy as np
+from tools.tools import rect_to_cyl, cyl_to_rect
 
 
 def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
@@ -168,22 +171,25 @@ def del_E(coord):
         del_E
 
     PURPOSE:
-        Given 6 coordinates for the position and velocity of a star in
-        Cartesian coordinate, return the gradient vector of energy in Cartesian
-        form.
+        Given (m,6) array for a list of the position and velocity of stars in
+        Cartesian coordinate, return the gradient vectors of energy in Cartesian
+        form, in the corresponding row order.
         Assumes input and out put are in natrual unit.
         
     INPUT:
-        coord = array[(x, y, z, vx, vy, vz)]
+        coord = array([[x, y, z, vx, vy, vz], ...])
+                where each row represents the coordinate of a star
 
     OUTPUT:
         del_E = gradient in Cartesian coordinate
+                where each row represents the gradient of a star
 
     HISTORY:
         2018-07-10 - Written - Samuel Wong
+        2018-07-24 - Changed to an array of points - Samuel Wong
     """
-    x, y, z, vx, vy, vz = coord
-    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    x, y, z, vx, vy, vz = coord.T
+    R, vR, vT, z, vz, phi = rect_to_cyl(x, y, z, vx, vy, vz)
     # get the force of the potential in cylindrical form
     F_phi = evaluatephiforces(MWPotential2014, R, z, phi)/R
     F_R = evaluateRforces(MWPotential2014, R, z, phi)
@@ -191,7 +197,7 @@ def del_E(coord):
     # return the gradient in Cartesian coordinate
     gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
                 -F_R*np.sin(phi)- F_phi*np.cos(phi), -F_z, vx, vy, vz]
-    return np.array(gradient)
+    return np.array(gradient).T
 
 
 def del_Lz(coord):
