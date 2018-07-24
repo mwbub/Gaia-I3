@@ -189,7 +189,6 @@ def del_E(coord):
         2018-07-24 - Changed to an array of points - Samuel Wong
     """
     x, y, z, vx, vy, vz = coord.T
-    print(rect_to_cyl(x, y, z, vx, vy, vz))
     R, vR, vT, z, vz, phi = rect_to_cyl(x, y, z, vx, vy, vz).T
     # get the force of the potential in cylindrical form
     F_phi = evaluatephiforces(MWPotential2014, R, z, phi)/R
@@ -207,9 +206,9 @@ def del_Lz(coord):
         del_Lz
 
     PURPOSE:
-        Given 6 coordinates for the position and velocity of a star in
-        Cartesian coordinate, return the gradient vector of z - angular
-        momentum in Cartesian form.
+        Given (m,6) array for a list of the position and velocity of stars in
+        Cartesian coordinate, return the gradient vectors of L_z in Cartesian
+        form, in the corresponding row order.
         Assumes input and out put are in natrual unit.
         
     INPUT:
@@ -221,8 +220,9 @@ def del_Lz(coord):
     HISTORY:
         2018-07-10 - Written - Samuel Wong
     """
-    x, y, z, vx, vy, vz = coord
+    x, y, z, vx, vy, vz = coord.T
+    m = np.size(x) # get the number of stars
     # return the gradient in Cartesian coordinate
-    gradient = [vy, -vx, 0, -y, x, 0]
-    return np.array(gradient)
+    gradient = [vy, -vx, np.zeros(m), -y, x, np.zeros(m)]
+    return np.array(gradient).T
     
