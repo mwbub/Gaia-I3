@@ -554,4 +554,4 @@ def color_plot(result, cluster, file_name, uniformity_method):
     # go through al combinations of axis projection and plot them
     for i in range(6):
         for j in range(i + 1, 6):
-            color_plot_ij(result, cluster, file_name, uniformity_method i, j)
+            color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
