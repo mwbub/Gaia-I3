@@ -186,9 +186,9 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
         density = generate_KDE(samples, 'epanechnikov')
         
     # create a sub-subfolder to save results
-    if not os.path.exists('main_program_results/'+file_name + ', ' + 
+    if not os.path.exists('main_program_results/'+file_name + '/' + 
                           uniformity_method):
-        os.mkdir('main_program_results/' + file_name + ', ' + 
+        os.mkdir('main_program_results/' + file_name + '/' + 
                  uniformity_method)
         
     return samples, density, file_name
