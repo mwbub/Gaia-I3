@@ -219,6 +219,7 @@ def del_Lz(coord):
 
     HISTORY:
         2018-07-10 - Written - Samuel Wong
+        2018-07-24 - Changed to an array of points - Samuel Wong
     """
     x, y, z, vx, vy, vz = coord.T
     m = np.size(x) # get the number of stars

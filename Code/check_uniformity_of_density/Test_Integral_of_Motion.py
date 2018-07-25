@@ -4,6 +4,7 @@ from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDiff
 import astropy.units as u
 from galpy.orbit import Orbit
 from galpy.potential import MWPotential2014
+from Uniformity_Evaluation import grad
 
 # global variables
 # for the position, I took an example from online, the answer is (2, pi/6, 4)
@@ -60,16 +61,22 @@ def test_energy_momentum_of_sun():
     print(o.L()[0][2] == L_z(coord))
     
 def test_analytic_energy_gradient():
-    point = np.array([x, y, z, vx, vy, vz])
+    point1 = np.array([x, y, z, vx, vy, vz])
+    point2 = np.array([x*1.1, y*1.2, z*1.3, vx*1.4, vy*1.5, vz*1.6])
+    points = np.array([point1, point2])
     numeric_del_E = grad(Energy, 6)
-    print('numeric del E = ', numeric_del_E(point))
-    print('analytic del E =', del_E(point))
+    print('numeric del E 1 = ', numeric_del_E(point1))
+    print('numeric del E 2 = ', numeric_del_E(point2))
+    print('analytic del E =', del_E(points))
     
 def test_analytic_momentum_gradient():
-    point = np.array([x, y, z, vx, vy, vz])
+    point1 = np.array([x, y, z, vx, vy, vz])
+    point2 = np.array([x*1.1, y*1.2, z*1.3, vx*1.4, vy*1.5, vz*1.6])
+    points = np.array([point1, point2])
     numeric_del_Lz = grad(L_z, 6)
-    print('numeric del L_z = ', numeric_del_Lz(point))
-    print('analytic del L_z =', del_Lz(point))
+    print('numeric del L_z 1 = ', numeric_del_Lz(point1))
+    print('numeric del L_z 2 = ', numeric_del_Lz(point2))
+    print('analytic del L_z =', del_Lz(points))
     
 #test_cartesian_to_cylindrical(x, y, z, vx, vy, vz)
 #print()
