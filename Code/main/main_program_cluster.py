@@ -316,7 +316,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         dot_product_plot(max_dot_product, cluster, file_name)
         #create and save graph of dot product in color scatter plot in all 
         # 2 dimensional projection angles.
-        color_plot(max_dot_product, cluster, file_name)
+        color_plot(max_dot_product, cluster, file_name, uniformity_method)
     elif uniformity_method == "projection":
         start = time_class.time()
         result= evaluate_uniformity_projection(cluster, density, del_E(cluster), 
