@@ -30,7 +30,7 @@ from tools.tools import *
 
 # define parameters for the search and KDE as global variables
 epsilon = 0.5
-v_scale = 0.1
+v_scale = 0
 
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
