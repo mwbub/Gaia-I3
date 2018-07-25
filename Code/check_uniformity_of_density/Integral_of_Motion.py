@@ -111,16 +111,10 @@ def Energy(coord):
         Assumes input and out put are in natrual unit.
         
     INPUT:
-        coord = (x, y, z, vx, vy, vz) = a numpy array of coordinate where:
-        x =  x coordinate
-        y = y coordinate
-        z = z coordinate
-        vx = velocity in x
-        vy = velocity in y
-        vz = velocity in z
+        coord= a numpy array of coordinate
 
     OUTPUT:
-        energy = total energy per mass
+        energy = a list of total energy per mass
 
     HISTORY:
         2018-05-25 - Written - Samuel Wong
@@ -140,31 +134,25 @@ def L_z(coord):
         L_z
 
     PURPOSE:
-        Given 6 coordinates for the position and velocity of a star in Cartesian coordinate, return angular
-         momentum around z-axis per mass.
-         Assumes input and out put are in natrual unit.
-
+        Given an array of 6 coordinates for the position and velocity of stars 
+        in Cartesian coordinate, return a list of L_z per mass.
+        Assumes input and out put are in natrual unit.
+        
     INPUT:
-        coord = (x, y, z, vx, vy, vz) = a numpy array of coordinate where:
-        x =  x coordinate
-        y = y coordinate
-        z = z coordinate
-        vx = velocity in x
-        vy = velocity in y
-        vz = velocity in z
+        coord= a numpy array of coordinate
 
     OUTPUT:
-        L_z = angular momentum around z-axis per mass
+        L_z = a list of total L_z per mass
 
     HISTORY:
         2018-05-25 - Written - Samuel Wong
+        2018-07-24 - Changed to an array of points - Samuel Wong
     """
-    x, y, z, vx, vy, vz = coord
+    x, y, z, vx, vy, vz = coord.T
     # convert to cylindrical coordinate
-    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    R, vR, vT, z, vz, phi = rect_to_cyl(x, y, z, vx, vy, vz).T
     # evaluate the angular momentum
-    result = R*vT
-    return result
+    return R*vT
 
 
 def del_E(coord):
