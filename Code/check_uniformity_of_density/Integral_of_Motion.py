@@ -106,7 +106,8 @@ def Energy(coord):
         Energy
 
     PURPOSE:
-        Given 6 coordinates for the position and velocity of a star in Cartesian coordinate, return energy per mass
+        Given an array of 6 coordinates for the position and velocity of stars 
+        in Cartesian coordinate, return a list of energy per mass.
         Assumes input and out put are in natrual unit.
         
     INPUT:
@@ -123,9 +124,10 @@ def Energy(coord):
 
     HISTORY:
         2018-05-25 - Written - Samuel Wong
+        2018-07-24 - Changed to an array of points - Samuel Wong
     """
-    x, y, z, vx, vy, vz = coord
-    R, phi, z, vR, vT, vz = cartesian_to_cylindrical(x, y, z, vx, vy, vz)
+    x, y, z, vx, vy, vz = coord.T
+    R = np.sqrt(x**2 + y**2)
     potential = evaluatePotentials(MWPotential2014, R, z)
     kinetic = (vx**2 + vy**2 + vz**2)/2.
     energy = kinetic + potential
