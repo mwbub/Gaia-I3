@@ -125,8 +125,9 @@ def search_for_samples(search_method):
         file_name = 'full sample'
     # if actual search was done, record search star as well
     else:
-        file_name = 'epsilon = {}, v_scale = {}, star galactocentric = {}'.format(
-                epsilon, v_scale, np.array_str(point_galactocentric))
+        file_name = ('epsilon = {}, v_scale = {}, star galactocentric = '
+                     '[{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}]'
+                     ).format(epsilon, v_scale, *point_galactocentric)
     # remove any line with \n in the title
     file_name = file_name.replace('\n','')
     
