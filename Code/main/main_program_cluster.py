@@ -133,7 +133,8 @@ def search_for_samples(search_method):
     return samples, file_name
 
 
-def get_samples_density_filename(custom_density, search_method, custom_samples):
+def get_samples_density_filename(custom_density, search_method, custom_samples,
+                                 uniformity_method):
     """
     NAME:
         get_samples_density_filename
@@ -152,6 +153,8 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         search_method = one of "online", "local", "all of local"
         custom_samples = an N by 6 arrays in physical units representing 6
                          dimensional star coordinate; can also be None
+        uniformity_method = "projection" or "dot product", referring to how
+                            uniformity of density is evaluated
 
     OUTPUT:
         samples = either custom or searched
@@ -183,8 +186,10 @@ def get_samples_density_filename(custom_density, search_method, custom_samples):
         density = generate_KDE(samples, 'epanechnikov')
         
     # create a sub-subfolder to save results
-    if not os.path.exists('main_program_results/'+file_name):
-        os.mkdir('main_program_results/'+file_name)
+    if not os.path.exists('main_program_results/'+file_name + ', ' + 
+                          uniformity_method):
+        os.mkdir('main_program_results/' + file_name + ', ' + 
+                 uniformity_method)
         
     return samples, density, file_name
 
@@ -264,7 +269,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         2018-07-15 - Added choice of gradient method - Samuel Wong
     """        
     samples, density, file_name = get_samples_density_filename(
-            custom_density, search_method, custom_samples)    
+            custom_density, search_method, custom_samples, uniformity_method)    
     
     # use kmeans to get cluster centres or use custom centres
     if custom_centres is not None:
