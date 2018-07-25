@@ -133,8 +133,9 @@ def grad_multi(f, points, dx = 1e-8):
     n = np.shape(points)[1]
     increment = dx*np.identity(n)
     df = []
+    f_points = f(points)
     for row in increment:
-        df.append((f(points + row) - f(points))/dx)
+        df.append((f(points + row) - f_points)/dx)
     return np.array(df).T
 
 
@@ -212,5 +213,3 @@ def evaluate_uniformity_projection(points, f, v1, v2):
     p_projection = orthogonal_projection(p, e1, e2)
     return LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
     
-    
-       
