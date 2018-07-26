@@ -90,7 +90,7 @@ def search_for_samples(search_method, uniformity_method):
                      ).format(epsilon, v_scale, *point_galactocentric)
     # remove any line with \n in the title
     file_name = file_name.replace('\n','')
-    file_name = file_name + '/' + uniformity_method
+    file_name = file_name + '/' + uniformity_method + '/'
     return samples, file_name
 
 
