@@ -131,7 +131,8 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
         file_name = input('Name of file to be saved: ')
         samples = custom_samples
     else:
-        samples, file_name = search_for_samples(search_method) 
+        samples, file_name = search_for_samples(search_method,
+                                                uniformity_method) 
         
     # at this point, everything should have physical units
     # turn all data to natrual units; working with natural unit, galactocentric,
