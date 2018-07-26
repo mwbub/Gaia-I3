@@ -223,6 +223,7 @@ def evaluate_uniformity_dot(f, points, v1, v2):
     
     dot = dot_product(four_f, W)
     dot = np.reshape(dot, (m, 4))
+    dot = dot.astype('float64')
     return dot
 
 def evaluate_uniformity_projection(points, f, v1, v2):
