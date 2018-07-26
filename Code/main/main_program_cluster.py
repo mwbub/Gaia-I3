@@ -181,7 +181,7 @@ def get_cluster(samples):
     return cluster
 
 
-def summary_save(result, uniformity_method):
+def summary_save(result, cluster, file_name, uniformity_method):
     if uniformity_method == "dot product":
         max_dot_product = np.nanmax(np.absolute(result), axis = 1)
         mean_of_max = np.nanmean(max_dot_product)
@@ -199,6 +199,7 @@ def summary_save(result, uniformity_method):
         print('The standard deviation of the projection is ', std_projection)
         np.savez('main_program_results/' + file_name +'/'+ 'projection data', 
                  cluster = cluster, result = result)
+
 
 def main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
@@ -266,7 +267,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     inter_time = time_class.time() - start
     print('time per star =', inter_time/np.shape(cluster)[0])
     
-    summary_save(result, uniformity_method)        
+    summary_save(result, cluster, file_name, uniformity_method)        
     kmeans_plot(samples, cluster, file_name)
     color_plot(result, cluster, file_name, uniformity_method)
        
