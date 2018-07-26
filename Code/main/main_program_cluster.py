@@ -153,7 +153,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
     return samples, density, file_name
 
 
-def get_cluster(samples):
+def get_cluster(samples, custom_centres):
     """
     NAME:
         get_cluster
@@ -165,6 +165,10 @@ def get_cluster(samples):
     INPUT:
         samples = a numpy arrays containing 6 dimensional coordinates in
                   galactocentric Cartesian form with natural units
+                  
+        custom_centres = a custom array of cluster centres at which to evaluate
+                 uniformity; if None, will use kmeans clustering to get
+                 the cluster centres
 
     OUTPUT:
         cluster = a numpy arrays containing 6 dimensional coordinates in
@@ -174,12 +178,15 @@ def get_cluster(samples):
     HISTORY:
         2018-06-25 - Written - Samuel Wong
     """
-    # let batch size be 1% of the number of samples
-    batch_size = int(0.01 * np.shape(samples)[0])
-    # let the number of cluster centers to be 0.1% of number of samples
-    cluster_number = int(0.001 * np.shape(samples)[0])
-    # use kmenas to generate a cluster of points
-    cluster = kmeans(samples, cluster_number, batch_size)
+    if custom_centres is not None:
+        cluster = custom_centres
+    else:
+        # let batch size be 1% of the number of samples
+        batch_size = int(0.01 * np.shape(samples)[0])
+        # let the number of cluster centers to be 0.1% of number of samples
+        cluster_number = int(0.001 * np.shape(samples)[0])
+        # use kmenas to generate a cluster of points
+        cluster = kmeans(samples, cluster_number, batch_size)
     return cluster
 
 
@@ -258,13 +265,9 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         2018-07-15 - Added choice of gradient method - Samuel Wong
     """        
     samples, density, file_name = get_samples_density_filename(
-            custom_density, search_method, custom_samples, uniformity_method)    
+            custom_density, search_method, custom_samples, uniformity_method)
     
-    # use kmeans to get cluster centres or use custom centres
-    if custom_centres is not None:
-        cluster = custom_centres
-    else:
-        cluster = get_cluster(samples)
+    cluster = get_cluster(samples, custom_centres)
     
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(cluster, 
                                                           gradient_method)
