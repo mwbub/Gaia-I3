@@ -9,6 +9,8 @@ PURPOSE:
 HISTORY:
     2018-06-20 - Written - Samuel Wong
     2018-07-20 - Changed to analytic gradient - Samuel Wong
+    2018-07-26 - Changed everything to using arrays and added projection
+                 method - Samuel Wong
 """
 import time as time_class
 import numpy as np
