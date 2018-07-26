@@ -37,7 +37,7 @@ if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
 
-def search_for_samples(search_method):
+def search_for_samples(search_method, uniformity_method):
     """
     NAME:
         search_for_samples
@@ -52,6 +52,9 @@ def search_for_samples(search_method):
     INPUT:
         search_method = a string that is either "online", "local", or
                         "all of local"
+                        
+        uniformity_method = "projection" or "dot product", referring to how
+                            uniformity of density is evaluated
 
     OUTPUT:
         samples = a numpy arrays containing 6 dimensional coordinates in
@@ -87,6 +90,7 @@ def search_for_samples(search_method):
                      ).format(epsilon, v_scale, *point_galactocentric)
     # remove any line with \n in the title
     file_name = file_name.replace('\n','')
+    file_name = file_name + '/' + uniformity_method
     return samples, file_name
 
 
@@ -143,10 +147,8 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
         density = generate_KDE(samples, 'epanechnikov')
         
     # create a sub-subfolder to save results
-    if not os.path.exists('main_program_results/'+file_name + '/' + 
-                          uniformity_method):
-        os.mkdir('main_program_results/' + file_name + '/' + 
-                 uniformity_method)
+    if not os.path.exists('main_program_results/'+file_name):
+        os.mkdir('main_program_results/' + file_name)
         
     return samples, density, file_name
 
