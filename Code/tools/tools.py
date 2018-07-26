@@ -462,6 +462,9 @@ def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
         2018-07-03 - Written - Mathew Bubb, Samuel Wong
         2018-07-23 - Added uniformity method - Samuel Wong
     """
+    # only work with the largest dot product, if that it is the input
+    if uniformity_method == "dot product":
+        result = np.nanmax(np.absolute(result), axis = 1)
     # filter out nan
     cluster = cluster[~np.isnan(result)]
     result = result[~np.isnan(result)]
