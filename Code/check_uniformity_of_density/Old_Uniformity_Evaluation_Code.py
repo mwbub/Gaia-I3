@@ -3,6 +3,50 @@ from scipy.misc import derivative
 from Linear_Algebra import *
 from numpy import linalg as LA
 
+
+def evaluate_uniformity_from_point(a, density, Energy_grad_fn, Lz_grad_fn):
+    """
+    NAME:
+        evaluate_uniformity_from_point
+
+    PURPOSE:
+        Given a density function and a point, find the gradient of energy
+        and angular momentum and the density at the point, and find the normalize
+        dot products between the gradient of density and four orthonormal basis
+        vectors of the orthgonal complement of the gradient of energy and
+        angular momentum.
+
+    INPUT:
+        a = the point in phase space with six coordinates in galactocentric
+            Cartesian with natural units
+            
+        density = a differentiable density function
+        
+        Energy_grad_fn = energy gradient function
+        
+        Lz_grad_fn = angular momentum gradient function
+
+    OUTPUT:
+        directional_derivatives = a numpy array containing the directional
+                                  derivative of density along each direction
+                                  of the basis vectors generating the subspace
+
+    HISTORY:
+        2018-06-20 - Written - Samuel Wong
+        2018-07-15 - Added gradient functions as input - Samuel Wong
+    """
+    # get the gradient of energy and momentum of the search star
+    del_E_a = Energy_grad_fn(a)
+    del_Lz_a = Lz_grad_fn(a)
+    # create matrix of the space spanned by direction of changing energy and momentum
+    V = np.array([del_E_a, del_Lz_a])
+    # get the 4 dimensional orthogonal complement of del E and del Lz
+    W = orthogonal_complement(V)
+    # evaluate if density is changing along the subspace 
+    # check to see if they are all 0; if so, it is not changing
+    directional_derivatives = evaluate_uniformity(density, a, W)
+    return directional_derivatives
+
 def partial_derivative(f, i):
     """
     NAME:

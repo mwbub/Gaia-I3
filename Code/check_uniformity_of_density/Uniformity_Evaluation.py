@@ -4,6 +4,7 @@ NAME:
 
 HISTORY:
     2018-05-24 - Written - Samuel Wong
+    2018-07-26 - Changed everything so that they use array - Samuel Wong
 """
 import numpy as np
 from Linear_Algebra import *
