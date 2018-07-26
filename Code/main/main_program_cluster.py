@@ -183,6 +183,16 @@ def get_cluster(samples):
     return cluster
 
 
+def get_Energy_Lz_gradient(cluster, gradient_method):
+    if gradient_method == "analytic":
+        Energy_gradient = del_E(cluster)
+        Lz_gradient = del_Lz(cluster)
+    elif gradient_method == "numeric":
+        Energy_gradient = grad_multi(Energy, cluster)
+        Lz_gradient = grad_multi(L_z, cluster)
+    return Energy_gradient, Lz_gradient
+
+
 def summary_save(result, cluster, file_name, uniformity_method):
     if uniformity_method == "dot product":
         max_dot_product = np.nanmax(np.absolute(result), axis = 1)
@@ -256,12 +266,8 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     else:
         cluster = get_cluster(samples)
     
-    if gradient_method == "analytic":
-        Energy_gradient = del_E(cluster)
-        Lz_gradient = del_Lz(cluster)
-    elif gradient_method == "numeric":
-        Energy_gradient = grad_multi(Energy, cluster)
-        Lz_gradient = grad_multi(L_z, cluster)
+    Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(cluster, 
+                                                          gradient_method)
         
     start = time_class.time()
     result = evaluate_uniformity(density, cluster, Energy_gradient,
@@ -273,8 +279,9 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     kmeans_plot(samples, cluster, file_name)
     color_plot(result, cluster, file_name, uniformity_method)
        
-"""    
+  
 if __name__ == "__main__":
     main(custom_density = None, search_method = "local", custom_samples = None,
          gradient_method = "analytic", uniformity_method = "projection")
-"""
+    
+    
