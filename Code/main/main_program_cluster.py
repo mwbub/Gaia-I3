@@ -37,7 +37,7 @@ if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
 
-def search_for_samples(search_method, uniformity_method):
+def search_for_samples(search_method):
     """
     NAME:
         search_for_samples
@@ -52,9 +52,6 @@ def search_for_samples(search_method, uniformity_method):
     INPUT:
         search_method = a string that is either "online", "local", or
                         "all of local"
-                        
-        uniformity_method = "projection" or "dot product", referring to how
-                            uniformity of density is evaluated
 
     OUTPUT:
         samples = a numpy arrays containing 6 dimensional coordinates in
@@ -90,7 +87,6 @@ def search_for_samples(search_method, uniformity_method):
                      ).format(epsilon, v_scale, *point_galactocentric)
     # remove any line with \n in the title
     file_name = file_name.replace('\n','')
-    file_name = file_name + '/' + uniformity_method + '/'
     return samples, file_name
 
 
@@ -131,8 +127,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
         file_name = input('Name of file to be saved: ')
         samples = custom_samples
     else:
-        samples, file_name = search_for_samples(search_method,
-                                                uniformity_method) 
+        samples, file_name = search_for_samples(search_method) 
         
     # at this point, everything should have physical units
     # turn all data to natrual units; working with natural unit, galactocentric,
@@ -147,7 +142,13 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
     else:
         density = generate_KDE(samples, 'epanechnikov')
         
-    # create a sub-subfolder to save results
+    # create a sub-folder to save results wihout further specification of 
+    # uniformity method
+    if not os.path.exists('main_program_results/'+file_name):
+        os.mkdir('main_program_results/' + file_name)
+    # add uniformity sub folder to file name
+    file_name = file_name + '/' + uniformity_method + '/'
+    # add a directory a level deeper
     if not os.path.exists('main_program_results/'+file_name):
         os.mkdir('main_program_results/' + file_name)
         
