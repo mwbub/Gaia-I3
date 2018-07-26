@@ -319,7 +319,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         color_plot(max_dot_product, cluster, file_name, uniformity_method)
     elif uniformity_method == "projection":
         start = time_class.time()
-        result= evaluate_uniformity_projection(cluster, density, del_E(cluster), 
+        result= evaluate_uniformity_projection(density, cluster, del_E(cluster), 
                                        del_Lz(cluster))
         inter_time = time_class.time() - start
         print('time per star =', inter_time/np.shape(cluster)[0])
@@ -343,8 +343,9 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         #create and save graph of color scatter plot in all 
         # 2 dimensional projection angles.
         color_plot(result, cluster, file_name, uniformity_method)
-        
-    
+       
+"""    
 if __name__ == "__main__":
     main(custom_density = None, search_method = "local", custom_samples = None,
          gradient_method = "analytic", uniformity_method = "projection")
+"""

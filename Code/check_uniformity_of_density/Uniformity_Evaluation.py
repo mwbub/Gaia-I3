@@ -244,7 +244,7 @@ def evaluate_uniformity_dot(f, points, v1, v2):
     dot = dot.astype('float64') # change data type from sympy back to float
     return dot
 
-def evaluate_uniformity_projection(points, f, v1, v2):
+def evaluate_uniformity_projection(f, points, v1, v2):
     """
     NAME:
         evaluate_uniformity_projection
@@ -255,8 +255,8 @@ def evaluate_uniformity_projection(points, f, v1, v2):
         the function is uniform along v1 and v2.
 
     INPUT:
-        f = a differentiable function that takes an array of points, each with n
-            dimensions
+        f = a differentiable function that takes an array of points, each with
+            n dimensions
         points = (m,n) array, representing m points, each with n dimensions
 
     OUTPUT:
