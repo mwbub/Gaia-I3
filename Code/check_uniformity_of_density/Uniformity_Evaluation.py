@@ -211,16 +211,15 @@ def evaluate_uniformity_dot(f, points, v1, v2):
             W.append(comp)
     W = np.array(W)
     W = np.reshape(W, (4*m, 6))
-    print('W = ', W)
     
     del_f_points = normalize(grad_multi(f, points))
     del_f_points2 = np.copy(del_f_points)
     del_f_points3 = np.copy(del_f_points)
     del_f_points4 = np.copy(del_f_points)
     
-    four_f = np.stack((del_f_points, del_f_points2, del_f_points3, del_f_points4), axis =1)
+    four_f = np.stack((del_f_points, del_f_points2, del_f_points3,
+                       del_f_points4), axis =1)
     four_f = np.reshape(four_f, np.shape(W))
-    print('four_f = ',four_f)
     
     dot = dot_product(four_f, W)
     dot = np.reshape(dot, (m, 4))
