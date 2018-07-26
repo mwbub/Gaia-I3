@@ -278,13 +278,13 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     else:
         cluster = get_cluster(samples)
     
-    # set the gradient function of energy and L_z based on specified method
     if gradient_method == "analytic":
-        Energy_grad_fn = del_E
-        Lz_grad_fn = del_Lz
+        Energy_gradient = del_E(cluster)
+        Lz_gradient = del_Lz(cluster)
     elif gradient_method == "numeric":
-        Energy_grad_fn = grad(Energy, 6)	
-        Lz_grad_fn = grad(L_z, 6)
+        Energy_gradient = grad_multi(Energy, cluster)
+        Lz_gradient = grad_multi(L_z, cluster)
+
     
     if uniformity_method == "dot product":
         # initialize an array of directional derivative for each point
