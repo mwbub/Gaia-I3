@@ -36,49 +36,6 @@ v_scale = 0
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
-def evaluate_uniformity_from_point(a, density, Energy_grad_fn, Lz_grad_fn):
-    """
-    NAME:
-        evaluate_uniformity_from_point
-
-    PURPOSE:
-        Given a density function and a point, find the gradient of energy
-        and angular momentum and the density at the point, and find the normalize
-        dot products between the gradient of density and four orthonormal basis
-        vectors of the orthgonal complement of the gradient of energy and
-        angular momentum.
-
-    INPUT:
-        a = the point in phase space with six coordinates in galactocentric
-            Cartesian with natural units
-            
-        density = a differentiable density function
-        
-        Energy_grad_fn = energy gradient function
-        
-        Lz_grad_fn = angular momentum gradient function
-
-    OUTPUT:
-        directional_derivatives = a numpy array containing the directional
-                                  derivative of density along each direction
-                                  of the basis vectors generating the subspace
-
-    HISTORY:
-        2018-06-20 - Written - Samuel Wong
-        2018-07-15 - Added gradient functions as input - Samuel Wong
-    """
-    # get the gradient of energy and momentum of the search star
-    del_E_a = Energy_grad_fn(a)
-    del_Lz_a = Lz_grad_fn(a)
-    # create matrix of the space spanned by direction of changing energy and momentum
-    V = np.array([del_E_a, del_Lz_a])
-    # get the 4 dimensional orthogonal complement of del E and del Lz
-    W = orthogonal_complement(V)
-    # evaluate if density is changing along the subspace 
-    # check to see if they are all 0; if so, it is not changing
-    directional_derivatives = evaluate_uniformity(density, a, W)
-    return directional_derivatives
-
 
 def search_for_samples(search_method):
     """
@@ -130,7 +87,6 @@ def search_for_samples(search_method):
                      ).format(epsilon, v_scale, *point_galactocentric)
     # remove any line with \n in the title
     file_name = file_name.replace('\n','')
-    
     return samples, file_name
 
 
@@ -225,6 +181,25 @@ def get_cluster(samples):
     return cluster
 
 
+def summary_save(result, uniformity_method):
+    if uniformity_method == "dot product":
+        max_dot_product = np.nanmax(np.absolute(result), axis = 1)
+        mean_of_max = np.nanmean(max_dot_product)
+        std_of_max = np.nanstd(max_dot_product, ddof = 1)
+        print('The average of the maximum absolute value of dot product is ',
+              mean_of_max)
+        print('The standard deviation of the maximum absolute value \
+              of dot product is ', std_of_max)
+        np.savez('main_program_results/' + file_name +'/'+ 'data', 
+                 cluster = cluster, result = result)
+    elif uniformity_method == "projection":
+        mean_projection = np.nanmean(result)
+        std_projection = np.nanstd(result, ddof = 1)
+        print('The average of the projection is ', mean_projection)
+        print('The standard deviation of the projection is ', std_projection)
+        np.savez('main_program_results/' + file_name +'/'+ 'projection data', 
+                 cluster = cluster, result = result)
+
 def main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
           custom_centres=None):
@@ -284,65 +259,16 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     elif gradient_method == "numeric":
         Energy_gradient = grad_multi(Energy, cluster)
         Lz_gradient = grad_multi(L_z, cluster)
-
+        
+    start = time_class.time()
+    result = evaluate_uniformity(density, cluster, Energy_gradient,
+                                 Lz_gradient, uniformity_method)
+    inter_time = time_class.time() - start
+    print('time per star =', inter_time/np.shape(cluster)[0])
     
-    if uniformity_method == "dot product":
-        # initialize an array of directional derivative for each point
-        result = np.empty((np.shape(cluster)[0], 4))
-        # evaluate uniformity for each point in cluster
-        start = time_class.time()
-        for (i, point) in enumerate(cluster):
-            result[i] = evaluate_uniformity_from_point(point, density, 
-                  Energy_grad_fn, Lz_grad_fn)
-            print('At point {}, dot products are {}'.format(point, result[i]))
-            print()
-        inter_time = time_class.time() - start
-        print('time per star =', inter_time/np.shape(cluster)[0])
-        # output summary information
-        # report the average and standard deviation of the maximum 
-        # dot product in absolute value, ignoring nan values
-        max_dot_product = np.nanmax(np.absolute(result), axis = 1)
-        mean_of_max = np.nanmean(max_dot_product)
-        std_of_max = np.nanstd(max_dot_product, ddof = 1)
-        print('The average of the maximum absolute value of dot product is ', mean_of_max)
-        print('The standard deviation of the maximum absolute value of dot product is ', std_of_max)
-        # save result
-        np.savez('main_program_results/' + file_name +'/'+ 'data', 
-                 cluster = cluster, result = result)
-        
-        # create and save graph of kmeans projection in 2 dimension
-        kmeans_plot(samples, cluster, file_name)
-        # create and save graph of dot product
-        dot_product_plot(max_dot_product, cluster, file_name)
-        #create and save graph of dot product in color scatter plot in all 
-        # 2 dimensional projection angles.
-        color_plot(max_dot_product, cluster, file_name, uniformity_method)
-    elif uniformity_method == "projection":
-        start = time_class.time()
-        result= evaluate_uniformity_projection(density, cluster, del_E(cluster), 
-                                       del_Lz(cluster))
-        inter_time = time_class.time() - start
-        print('time per star =', inter_time/np.shape(cluster)[0])
-        
-        for (i, point) in enumerate(cluster):
-            print('At point {}, projection is {}'.format(point, result[i]))
-            print()
-        # output summary information
-        # report the average and standard deviation of the projection,
-        # ignoring nan values
-        mean_projection = np.nanmean(result)
-        std_projection = np.nanstd(result, ddof = 1)
-        print('The average of the projection is ', mean_projection)
-        print('The standard deviation of the projection is ', std_projection)
-        # save result
-        np.savez('main_program_results/' + file_name +'/'+ 'projection data', 
-                 cluster = cluster, result = result)
-        
-        # create and save graph of kmeans projection in 2 dimension
-        kmeans_plot(samples, cluster, file_name)
-        #create and save graph of color scatter plot in all 
-        # 2 dimensional projection angles.
-        color_plot(result, cluster, file_name, uniformity_method)
+    summary_save(result, uniformity_method)        
+    kmeans_plot(samples, cluster, file_name)
+    color_plot(result, cluster, file_name, uniformity_method)
        
 """    
 if __name__ == "__main__":
