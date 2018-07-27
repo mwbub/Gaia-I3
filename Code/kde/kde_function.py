@@ -63,9 +63,6 @@ def generate_KDE(inputs, ker):
         HISTORY:
             2018-07-15 - Updated - Ayush Pandhi
         """
-        #To correct the type of information from other functions into acceptable input
-        #samples = np.array([samples])
-        
         #Scaling samples with standard deviation
         samples = (samples - inputs_mean)/inputs_std
         
