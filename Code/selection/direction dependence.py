@@ -36,7 +36,7 @@ plt.ylabel('dec(mas)')
 plt.title("Density of RV in ra and dec")
 plt.savefig("Density of Gaia in ra and dec.png")
 
-
+# define number density as a function of ra and dec
 def number_density(ra, dec, histogram):
     ra_index = ((ra-ra_min)/ra_pixel).astype(int)-1
     dec_index = ((dec-dec_min)/dec_pixel).astype(int)-1
@@ -44,3 +44,14 @@ def number_density(ra, dec, histogram):
     for i in range(np.size(ra_index)):
         result.append(histogram[ra_index[i]][dec_index[i]])
     return np.array(result)
+
+# define the ratio of number density as a function of ra and dec
+def ratio(ra, dec):
+    return number_density(ra, dec, histogram_rv)/number_density(ra, dec, histogram_g)
+
+# compute an array of ratio
+ra_linspace = np.linspace(ra_min, ra_max, 100)
+dec_linspace = np.linspace(dec_min, dec_max, 100)
+ra_v, dec_v = np.meshgrid(ra_linspace, dec_linspace)
+z = ratio(ra_v, dec_v)
+plt.pcolor(ra_v, dec_v, z)
