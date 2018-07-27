@@ -2,15 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # get ra dec coordinate of both gaia and rv
-ra_g, dec_g =
-ra_rv, dec_rv =
+ra_g, dec_g = np.linspace(1.,100.,100), np.linspace(1.,100.,100)
+ra_rv, dec_rv = np.linspace(1.,100.,100), np.linspace(1.,100.,100)
 #set variables for histogra
-ra_pixel = 
-dec_pixel = 
-ra_min = np.min(np.min(ra_g), np.min(ra_rv))
-dec_min = np.min(np.min(dec_g), np.min(dec_rv))
-ra_max = np.max(np.max(ra_g), np.max(ra_rv))
-dec_max = np.max(np.max(dec_g), np.max(dec_rv))
+ra_pixel = 0.1
+dec_pixel = 0.1
+ra_min = min(np.min(ra_g), np.min(ra_rv))
+dec_min = min(np.min(dec_g), np.min(dec_rv))
+ra_max = max(np.max(ra_g), np.max(ra_rv))
+dec_max = max(np.max(dec_g), np.max(dec_rv))
 bin_ra = (ra_max - ra_min)/ra_pixel
 bin_dec = (dec_max - dec_min)/dec_pixel
 
