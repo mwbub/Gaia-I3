@@ -115,9 +115,10 @@ def evaluate_uniformity_projection(f, points, v1, v2):
         evaluate_uniformity_projection
 
     PURPOSE:
-        Calculate the ratio of length of the projection of grad(f)(points)
-        on to the space spanned by v1 and v2. A result close to 1 means
-        the function is uniform along v1 and v2.
+        Calculate the fractional length of the difference vector between
+        grad(f)(points) and the projection of grad(f)(points) onto the space
+        spanned by v1 and v2. A result close to 0 means the function is uniform
+        along v1 and v2.
 
     INPUT:
         f = a differentiable function that takes an array of points, each with
@@ -134,9 +135,14 @@ def evaluate_uniformity_projection(f, points, v1, v2):
 
     HISTORY:
         2018-07-22 - Written - Samuel Wong
+        2018-07-27 - Changed from cosine projection to sine projection 
+                    - Samuel Wong
     """
     p = grad_multi(f, points)
     e1, e2 = Gram_Schmidt_two(v1, v2)
     p_projection = orthogonal_projection(p, e1, e2)
-    return LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
+    # call this projection cosine because it is adjacent over hypotenuse
+    cos = LA.norm(p_projection, axis = 1)/LA.norm(p, axis = 1)
+    sin = np.sqrt(1- cos**2) # calculate sine from cosine
+    return sin
     
