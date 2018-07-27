@@ -31,7 +31,7 @@ from kmeans.kmeans import *
 from tools.tools import *
 
 # define parameters for the search and KDE as global variables
-epsilon = 1.0
+epsilon = 0.3
 v_scale = 0
 
 # create a subfolder to save results
@@ -288,7 +288,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
        
   
 if __name__ == "__main__":
-    main(uniformity_method = "projection", gradient_method = "analytic",
+    main(uniformity_method = "dot product", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
           custom_centres=None)
     
