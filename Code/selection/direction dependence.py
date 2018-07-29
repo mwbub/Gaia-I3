@@ -9,7 +9,7 @@ data_rv = Table.read("gaia_intersection_with_rv.fits")
 ra_g = data_g['ra']
 dec_g = data_g['dec']
 ra_rv = data_rv['ra']
- dec_rv = data_rv['dec']
+dec_rv = data_rv['dec']
 #set variables for histogram
 ra_pixel = 1 # degree
 dec_pixel = 1 # degree
@@ -29,8 +29,8 @@ histogram_g, xedges, yedges, graph = plt.hist2d(ra_g, dec_g,
 plt.colorbar()
 plt.xlabel('ra(deg)')
 plt.ylabel('dec(deg)')
-plt.title("Density of Gaia in ra and dec")
-plt.savefig("Density of Gaia in ra and dec.png")
+plt.title("Number of Stars in Gaia")
+plt.savefig("Number of Stars in Gaia.png")
 
 # get 2d histogram for rv
 plt.figure(2)
@@ -41,11 +41,11 @@ histogram_rv, xedges, yedges, graph = plt.hist2d(ra_rv, dec_rv,
 plt.colorbar()
 plt.xlabel('ra(deg)')
 plt.ylabel('dec(deg)')
-plt.title("Density of RV in ra and dec")
-plt.savefig("Density of Gaia in ra and dec.png")
+plt.title("Number of Stars in RV")
+plt.savefig("Number of Stars in RV.png")
 
-# define number density as a function of ra and dec
-def number_density(ra, dec, histogram):
+# define number of stars as a function of ra and dec
+def number(ra, dec, histogram):
     ra_index = ((ra-ra_min)/ra_pixel).astype(int)-1
     dec_index = ((dec-dec_min)/dec_pixel).astype(int)-1
     if np.ndim(ra) == 1:
@@ -64,13 +64,17 @@ def number_density(ra, dec, histogram):
 
 # define the ratio of number density as a function of ra and dec
 def ratio(ra, dec):
-    return number_density(ra, dec, histogram_rv)/number_density(ra, dec, histogram_g)
+    return number(ra, dec, histogram_rv)/number(ra, dec, histogram_g)
 
-# compute an array of ratio
-ra_linspace = np.linspace(ra_min, ra_max, 100)
-dec_linspace = np.linspace(dec_min, dec_max, 100)
+# compute an array of ratio and plot
+ra_linspace = np.linspace(ra_min, ra_max, bin_ra)
+dec_linspace = np.linspace(dec_min, dec_max, bin_dec)
 ra_v, dec_v = np.meshgrid(ra_linspace, dec_linspace)
 z = ratio(ra_v, dec_v)
 plt.figure(3)
 plt.pcolor(ra_v, dec_v, z)
 plt.colorbar()
+plt.xlabel('ra(deg)')
+plt.ylabel('dec(deg)')
+plt.title("Ratio of Number in RV/Gaia")
+plt.savefig("Ratio of Number in RV and Gaiac.png")
