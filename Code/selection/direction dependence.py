@@ -1,12 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from astropy.table import Table
 
+# get data from fits file
+data_g = Table.read("gaia_data_adjusted_for_rv.fits")
+data_rv = Table.read("gaia_intersection_with_rv.fits")
 # get ra dec coordinate of both gaia and rv
-ra_g, dec_g = np.random.normal(loc = 0, scale = 5, size = 1000), np.random.normal(loc = 0, scale = 5, size = 1000)
-ra_rv, dec_rv =np.random.normal(loc = 0, scale = 5, size = 1000), np.random.normal(loc = 0, scale = 5, size = 1000)
-#set variables for histogra
-ra_pixel = 2
-dec_pixel = 2
+ra_g = data_g['ra']
+dec_g = data_g['dec']
+ra_rv = data_rv['ra']
+ dec_rv = data_rv['dec']
+#set variables for histogram
+ra_pixel = 1 # degree
+dec_pixel = 1 # degree
 ra_min = min(np.min(ra_g), np.min(ra_rv))
 dec_min = min(np.min(dec_g), np.min(dec_rv))
 ra_max = max(np.max(ra_g), np.max(ra_rv))
@@ -21,8 +27,8 @@ histogram_g, xedges, yedges, graph = plt.hist2d(ra_g, dec_g,
                                                 range = [[ra_min, ra_max],
                                                          [dec_min, dec_max]])
 plt.colorbar()
-plt.xlabel('ra(mas)')
-plt.ylabel('dec(mas)')
+plt.xlabel('ra(deg)')
+plt.ylabel('dec(deg)')
 plt.title("Density of Gaia in ra and dec")
 plt.savefig("Density of Gaia in ra and dec.png")
 
@@ -33,8 +39,8 @@ histogram_rv, xedges, yedges, graph = plt.hist2d(ra_rv, dec_rv,
                                                 range = [[ra_min, ra_max],
                                                          [dec_min, dec_max]])
 plt.colorbar()
-plt.xlabel('ra(mas)')
-plt.ylabel('dec(mas)')
+plt.xlabel('ra(deg)')
+plt.ylabel('dec(deg)')
 plt.title("Density of RV in ra and dec")
 plt.savefig("Density of Gaia in ra and dec.png")
 
