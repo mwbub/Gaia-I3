@@ -58,36 +58,26 @@ bin_y = (y_max - y_min)/y_pixel
 bin_z = (z_max - z_min)/z_pixel
 
 # get 3d histogram for gaia
-gaia_coord = np.array([ra_g, dec_g, distance_g]).T #(N,3) array of coordinates
-histogram_g, edges_g = np.histogramdd(gaia_coord, bins = (bin_ra, bin_dec, bin_distance))
+histogram_g, edges_g = np.histogramdd(g_coord, bins = (bin_x, bin_y, bin_z))
+# get 3d histogram for rv
+histogram_rv, edges_rv = np.histogramdd(rv_coord, bins = (bin_x, bin_y, bin_z))
 
-# get 2d histogram for rv
-rv_coord = np.array([ra_rv, dec_rv, distance_rv]).T #(N,3) array of coordinates
-histogram_rv, edges_rv = np.histogramdd(rv_coord, bins = (bin_ra, bin_dec, bin_distance))
+# define number of stars as a function of position
+def number(x, y, z, histogram):
+    x_index = ((x-x_min)/x_pixel).astype(int)-1
+    y_index = ((y-y_min)/y_pixel).astype(int)-1
+    z_index = ((z-z_min)/z_pixel).astype(int)-1
+    if np.ndim(x) == 1:
+        result = []
+        for i in range(np.size(x_index)):
+            result.append(histogram[x_index[i]][y_index[i]][z_index[i]])
+        return np.array(result)
+
+# define the ratio of number density as a function of position
+def ratio(x, y, z):
+    return number(x, y, z, histogram_rv)/number(x, y, z, histogram_g)
 
 """
-# define number of stars as a function of ra and dec
-def number(ra, dec, histogram):
-    ra_index = ((ra-ra_min)/ra_pixel).astype(int)-1
-    dec_index = ((dec-dec_min)/dec_pixel).astype(int)-1
-    if np.ndim(ra) == 1:
-        result = []
-        for i in range(np.size(ra_index)):
-            result.append(histogram[ra_index[i]][dec_index[i]])
-        return np.array(result)
-    elif np.ndim(ra) == 2:
-        result = []
-        for i in range(np.shape(ra_index)[0]):
-            row = []
-            for j in range(np.shape(ra_index)[1]):
-                row.append(histogram[ra_index[i][j]][dec_index[i][j]])
-            result.append(row)
-        return np.array(result)
-
-# define the ratio of number density as a function of ra and dec
-def ratio(ra, dec):
-    return number(ra, dec, histogram_rv)/number(ra, dec, histogram_g)
-
 # compute an array of ratio and plot
 ra_linspace = np.linspace(ra_min, ra_max, bin_ra)
 dec_linspace = np.linspace(dec_min, dec_max, bin_dec)
