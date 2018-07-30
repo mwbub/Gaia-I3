@@ -291,7 +291,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
        
   
 if __name__ == "__main__":
-    main(uniformity_method = "dot product", gradient_method = "analytic",
+    main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
           custom_centres=None)
     
