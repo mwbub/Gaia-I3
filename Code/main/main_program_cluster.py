@@ -34,6 +34,9 @@ from tools.tools import *
 epsilon = 0.3
 v_scale = 0
 
+epsilon = float(epsilon)
+v_scale = float(v_scale)
+
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
