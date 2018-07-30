@@ -13,18 +13,18 @@ parallax_g = data_g['parallax']
 ra_rv = data_rv['ra']
 dec_rv = data_rv['dec']
 parallax_rv = data_rv['parallax']
-# get rid of stars with negative parallax
-mask_g = parallax_g > 0
-ra_g = ra_g[mask_g]
-dec_g = dec_g[mask_g]
-parallax_g = parallax_g[mask_g]
-mask_rv = parallax_rv > 0
-ra_rv = ra_rv[mask_rv]
-dec_rv = dec_rv[mask_rv]
-parallax_rv = parallax_rv[mask_rv]
 # get distance
 distance_g = 1/parallax_g # in kpc
 distance_rv = 1/parallax_rv # in kpc
+# get rid of stars with negative distance and distance further than 5kpc
+mask_g = np.all(np.array([distance_g>0,distance_g<5]), axis = 0)
+ra_g = ra_g[mask_g]
+dec_g = dec_g[mask_g]
+distance_g =distance_g[mask_g]
+mask_rv = np.all(np.array([distance_rv>0,distance_rv<5]), axis = 0)
+ra_rv = ra_rv[mask_rv]
+dec_rv = dec_rv[mask_rv]
+distance_rv = distance_rv[mask_rv]
 #set variables for histogram
 ra_pixel = 1 # degree
 dec_pixel = 1 # degree
