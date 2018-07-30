@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.table import Table
+from astropy import units
+from astropy.coordinates import SkyCoord
 from matplotlib.colors import LogNorm
 
 # get data from fits file
@@ -18,53 +20,52 @@ distance_g = 1/parallax_g # in kpc
 distance_rv = 1/parallax_rv # in kpc
 
 # get rid of stars with negative distance and distance further than 10kpc
-mask_g = np.all(np.array([distance_g>0,distance_g<10]), axis = 0)
+mask_g = np.all(np.array([distance_g>0,distance_g<1]), axis = 0)
 ra_g = ra_g[mask_g]
 dec_g = dec_g[mask_g]
-distance_g =distance_g[mask_g]
-mask_rv = np.all(np.array([distance_rv>0,distance_rv<10]), axis = 0)
+distance_g = distance_g[mask_g]
+mask_rv = np.all(np.array([distance_rv>0,distance_rv<1]), axis = 0)
 ra_rv = ra_rv[mask_rv]
 dec_rv = dec_rv[mask_rv]
 distance_rv = distance_rv[mask_rv]
 
-#set variables for histogram
-ra_pixel = 1 # degree
-dec_pixel = 1 # degree
-distance_pixel = 0.001 # kpc
-ra_min = min(np.min(ra_g), np.min(ra_rv))
-dec_min = min(np.min(dec_g), np.min(dec_rv))
-distance_min = min(np.min(distance_g), np.min(distance_rv))
-ra_max = max(np.max(ra_g), np.max(ra_rv))
-dec_max = max(np.max(dec_g), np.max(dec_rv))
-distance_max = max(np.max(distance_g), np.max(distance_rv))
-bin_ra = (ra_max - ra_min)/ra_pixel
-bin_dec = (dec_max - dec_min)/dec_pixel
-bin_distance = (distance_max - distance_min)/distance_pixel
+# put both gaia and rv into sky coord and convert to cartesian
+g_icrs = SkyCoord(ra = ra_g*units.deg,
+                   dec = dec_g*units.deg,
+                   distance = distance_g*units.kpc)
+g_galcen = g_icrs.transform_to('galactocentric')
+g_galcen.representation_type = 'cartesian'
+g_coord = np.array([g_galcen.x.value, g_galcen.y.value, g_galcen.z.value]).T
 
-# get 2d histogram for gaia
-plt.figure(1)
-histogram_g, xedges, yedges, graph = plt.hist2d(ra_g, dec_g, 
-                                                bins = (bin_ra, bin_dec),
-                                                range = [[ra_min, ra_max],
-                                                         [dec_min, dec_max]])
-plt.colorbar()
-plt.xlabel('ra(deg)')
-plt.ylabel('dec(deg)')
-plt.title("Number of Stars in Gaia")
-plt.savefig("Number of Stars in Gaia.png")
+rv_icrs = SkyCoord(ra = ra_rv*units.deg,
+                   dec = dec_rv*units.deg,
+                   distance = distance_rv*units.kpc)
+rv_galcen = rv_icrs.transform_to('galactocentric')
+rv_galcen.representation_type = 'cartesian'
+rv_coord = np.array([rv_galcen.x.value, rv_galcen.y.value, rv_galcen.z.value]).T
+
+
+#set variables for histogram
+pixel = 0.001 # kpc
+x_min = min(np.min(rv_coord[:,0]), np.min(g_coord[:,0]))
+y_min = min(np.min(rv_coord[:,1]), np.min(g_coord[:,1]))
+z_min = min(np.min(rv_coord[:,2]), np.min(g_coord[:,2]))
+x_max = max(np.max(rv_coord[:,0]), np.max(g_coord[:,0]))
+y_max = max(np.max(rv_coord[:,1]), np.max(g_coord[:,1]))
+z_max = max(np.max(rv_coord[:,2]), np.max(g_coord[:,2]))
+bin_x = (x_max - x_min)/x_pixel
+bin_y = (y_max - y_min)/y_pixel
+bin_z = (z_max - z_min)/z_pixel
+
+# get 3d histogram for gaia
+gaia_coord = np.array([ra_g, dec_g, distance_g]).T #(N,3) array of coordinates
+histogram_g, edges_g = np.histogramdd(gaia_coord, bins = (bin_ra, bin_dec, bin_distance))
 
 # get 2d histogram for rv
-plt.figure(2)
-histogram_rv, xedges, yedges, graph = plt.hist2d(ra_rv, dec_rv, 
-                                                bins = (bin_ra, bin_dec),
-                                                range = [[ra_min, ra_max],
-                                                         [dec_min, dec_max]])
-plt.colorbar()
-plt.xlabel('ra(deg)')
-plt.ylabel('dec(deg)')
-plt.title("Number of Stars in RV")
-plt.savefig("Number of Stars in RV.png")
+rv_coord = np.array([ra_rv, dec_rv, distance_rv]).T #(N,3) array of coordinates
+histogram_rv, edges_rv = np.histogramdd(rv_coord, bins = (bin_ra, bin_dec, bin_distance))
 
+"""
 # define number of stars as a function of ra and dec
 def number(ra, dec, histogram):
     ra_index = ((ra-ra_min)/ra_pixel).astype(int)-1
@@ -101,3 +102,4 @@ plt.xlabel('ra(deg)')
 plt.ylabel('dec(deg)')
 plt.title("Ratio of Number in RV/Gaia")
 plt.savefig("Ratio of Number in RV and Gaia.png")
+"""
