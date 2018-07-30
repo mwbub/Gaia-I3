@@ -53,9 +53,9 @@ z_min = min(np.min(rv_coord[:,2]), np.min(g_coord[:,2]))
 x_max = max(np.max(rv_coord[:,0]), np.max(g_coord[:,0]))
 y_max = max(np.max(rv_coord[:,1]), np.max(g_coord[:,1]))
 z_max = max(np.max(rv_coord[:,2]), np.max(g_coord[:,2]))
-bin_x = (x_max - x_min)/x_pixel
-bin_y = (y_max - y_min)/y_pixel
-bin_z = (z_max - z_min)/z_pixel
+bin_x = (x_max - x_min)/pixel
+bin_y = (y_max - y_min)/pixel
+bin_z = (z_max - z_min)/pixel
 
 # get 3d histogram for gaia
 histogram_g, edges_g = np.histogramdd(g_coord, bins = (bin_x, bin_y, bin_z))
@@ -64,9 +64,9 @@ histogram_rv, edges_rv = np.histogramdd(rv_coord, bins = (bin_x, bin_y, bin_z))
 
 # define number of stars as a function of position
 def number(x, y, z, histogram):
-    x_index = ((x-x_min)/x_pixel).astype(int)-1
-    y_index = ((y-y_min)/y_pixel).astype(int)-1
-    z_index = ((z-z_min)/z_pixel).astype(int)-1
+    x_index = ((x-x_min)/pixel).astype(int)-1
+    y_index = ((y-y_min)/pixel).astype(int)-1
+    z_index = ((z-z_min)/pixel).astype(int)-1
     if np.ndim(x) == 1:
         result = []
         for i in range(np.size(x_index)):
@@ -79,13 +79,13 @@ def ratio(x, y, z):
 
 """
 # compute an array of ratio and plot
-ra_linspace = np.linspace(ra_min, ra_max, bin_ra)
-dec_linspace = np.linspace(dec_min, dec_max, bin_dec)
-ra_v, dec_v = np.meshgrid(ra_linspace, dec_linspace)
-z = ratio(ra_v, dec_v)
+x_linspace = np.linspace(x_min, x_max, bin_x)
+y_linspace = np.linspace(y_min, y_max, bin_y)
+x_v, y_v = np.meshgrid(x_linspace, y_linspace)
+result = ratio(x_v, y_v)
 # change nan to zero
-z = np.nan_to_num(z)
-plt.figure(3)
+result = np.nan_to_num(result)
+plt.figure()
 plt.pcolor(ra_v, dec_v, z, norm = LogNorm())
 plt.colorbar()
 plt.xlabel('ra(deg)')
