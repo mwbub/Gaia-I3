@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.table import Table
+from matplotlib.colors import LogNorm
 
 # get data from fits file
 data_g = Table.read("gaia_data_adjusted_for_rv.fits")
@@ -71,10 +72,12 @@ ra_linspace = np.linspace(ra_min, ra_max, bin_ra)
 dec_linspace = np.linspace(dec_min, dec_max, bin_dec)
 ra_v, dec_v = np.meshgrid(ra_linspace, dec_linspace)
 z = ratio(ra_v, dec_v)
+# change nan to zero
+z = np.nan_to_num(z)
 plt.figure(3)
-plt.pcolor(ra_v, dec_v, z)
+plt.pcolor(ra_v, dec_v, z, norm = LogNorm())
 plt.colorbar()
 plt.xlabel('ra(deg)')
 plt.ylabel('dec(deg)')
 plt.title("Ratio of Number in RV/Gaia")
-plt.savefig("Ratio of Number in RV and Gaiac.png")
+plt.savefig("Ratio of Number in RV and Gaia.png")
