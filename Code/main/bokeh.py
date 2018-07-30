@@ -3,7 +3,7 @@ NAME:
     bokeh
 
 PURPOSE:
-    Used to help plot interactive dot product projections using Bokeh linked plots.
+    Used to help plot interactive dot product and fractional length projections using Bokeh linked plots.
 """
 
 import numpy as np
@@ -25,22 +25,20 @@ def color_plot_ij_bokeh(source, TOOLS, i, j, all_proj, counter, uniformity_metho
         color_plot_ij
 
     PURPOSE:
-        Given result of dot product and cluster, and the index of the two
-        projection axis, plot the scatter plot of the cluster, with the 
-        color of the point corresponding to maximum dot product value.
-        Save graph in appropriate folder.
+        Plots in either dot product or fractional length projections
 
     INPUT:
-        max_dot_product = a numpy array storing the maximum dot product at each
-                          cluster center
-        cluster = a numpy array storing cluster centers
-        file_name = a string
+        source = dictionary-like data struction in Bokeh to update selected values in real-time
+        TOOLS = list of tools used in bokeh plots
+        i, j = projection axes
+        counter = used to order plots in position/velocity space when outputted
+        uniformity method = dot product/projection, projection refers to fractional length
 
     OUTPUT:
         None
 
     HISTORY:
-        2018-07-03 - Written - Mathew Bub, Samuel Wong
+        2018-07-30 - Written - Michael Poon
     """
     
     # get axes 
@@ -101,18 +99,18 @@ def color_plot_bokeh(source, TOOLS, uniformity_method):
         product values. Save all the graph in the corresponding folder.
 
     INPUT:
-        max_dot_product = a numpy array storing the maximum dot product at each
-                          cluster center
-        cluster = a numpy array storing cluster centers
-        file_name = a string
+        source = dictionary-like data struction in Bokeh to update selected values in real-time
+        TOOLS = list of tools used in bokeh plots
+        uniformity method = dot product/projection, projection refers to fractional length
 
     OUTPUT:
         None
 
     HISTORY:
-        2018-07-03 - Written - Samuel Wong
+        2018-07-30 - Written - Michael Poon
     """
-    # go through all combinations of axis projection and plot them
+    
+    # Go through all combinations of axis projection and plot them
     counter=0
     all_proj = [None] * 15
     for i in range(6):
