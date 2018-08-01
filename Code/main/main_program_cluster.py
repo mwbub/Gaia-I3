@@ -189,7 +189,7 @@ def get_Energy_Lz_gradient(cluster, gradient_method, custom_potential):
         Energy_gradient = del_E(cluster, custom_potential)
         Lz_gradient = del_Lz(cluster)
     elif gradient_method == "numeric":
-        Energy_gradient = grad_multi(Energy, cluster)
+        Energy_gradient = grad_multi(Energy(custom_potential), cluster)
         Lz_gradient = grad_multi(L_z, cluster)
     return Energy_gradient, Lz_gradient
 
