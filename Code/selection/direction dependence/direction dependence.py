@@ -4,8 +4,8 @@ from astropy.table import Table
 from matplotlib.colors import LogNorm
 
 # get data from fits file
-data_g = Table.read("gaia_data_adjusted_for_rv.fits")
-data_rv = Table.read("gaia_intersection_with_rv.fits")
+data_g = Table.read("gaia_data_with_straight_cutoff.fits")
+data_rv = Table.read("gaia_rv_with_straight_cutoff.fits")
 # get coordinates of both gaia and rv
 ra_g = data_g['ra']
 dec_g = data_g['dec']
@@ -16,12 +16,12 @@ parallax_rv = data_rv['parallax']
 # get distance
 distance_g = 1/parallax_g # in kpc
 distance_rv = 1/parallax_rv # in kpc
-# get rid of stars with negative distance and distance further than 2kpc
-mask_g = np.all(np.array([distance_g>0,distance_g<2]), axis = 0)
+# get rid of stars with negative distance
+mask_g = distance_g>0
 ra_g = ra_g[mask_g]
 dec_g = dec_g[mask_g]
 distance_g =distance_g[mask_g]
-mask_rv = np.all(np.array([distance_rv>0,distance_rv<2]), axis = 0)
+mask_rv = distance_rv>0
 ra_rv = ra_rv[mask_rv]
 dec_rv = dec_rv[mask_rv]
 distance_rv = distance_rv[mask_rv]
@@ -89,7 +89,8 @@ z = ratio(ra_v, dec_v)
 # change nan to zero
 z = np.nan_to_num(z)
 plt.figure(3)
-plt.pcolor(ra_v, dec_v, z, norm = LogNorm())
+#plt.pcolor(ra_v, dec_v, z, norm = LogNorm())
+plt.pcolor(ra_v, dec_v, z)
 plt.colorbar()
 plt.xlabel('ra(deg)')
 plt.ylabel('dec(deg)')
