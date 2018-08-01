@@ -155,7 +155,7 @@ def L_z(coord):
     return R*vT
 
 
-def del_E(coord):
+def del_E(coord, custom_potential = None):
     """
     NAME:
         del_E
@@ -178,12 +178,16 @@ def del_E(coord):
         2018-07-10 - Written - Samuel Wong
         2018-07-24 - Changed to an array of points - Samuel Wong
     """
+    if custom_potential == None:
+        potential = MWPotential2014
+    else:
+        potential = custom_potential
     x, y, z, vx, vy, vz = coord.T
     R, vR, vT, z, vz, phi = rect_to_cyl(x, y, z, vx, vy, vz).T
     # get the force of the potential in cylindrical form
-    F_phi = evaluatephiforces(MWPotential2014, R, z, phi)/R
-    F_R = evaluateRforces(MWPotential2014, R, z, phi)
-    F_z= evaluatezforces(MWPotential2014, R, z, phi)
+    F_phi = evaluatephiforces(potential, R, z, phi)/R
+    F_R = evaluateRforces(potential, R, z, phi)
+    F_z= evaluatezforces(potential, R, z, phi)
     # return the gradient in Cartesian coordinate
     gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
                 -F_R*np.sin(phi)- F_phi*np.cos(phi), -F_z, vx, vy, vz]
