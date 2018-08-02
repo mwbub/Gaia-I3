@@ -1,10 +1,9 @@
-'''
+"""
 NOTE: There is a small random chance that these tests might fail if the assert
-statement with np.isclose fails. This is due to the random coordinates
-leading to a gradient that falls outside of the error tolerance for that 
-statement. As long as the tests pass the vast majority of the time, then 
-everything is fine.
-'''
+statement with np.isclose fails. This is due to the random coordinates leading 
+to a gradient that falls outside of the error tolerance for that statement. As 
+long as the tests pass the vast majority of the time, then everything is fine.
+"""
 import sys
 sys.path.append('..')
 
