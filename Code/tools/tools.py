@@ -10,12 +10,16 @@ HISTORY:
     2018-05-31 - Written - Samuel Wong
     2018-06-19 - Added Amount of Standard Deviation Cut function - Michael Poon
 """
+import sys
+sys.path.append('..')
+
 import numpy as np
 import astropy.units as unit
 from astropy.coordinates import SkyCoord, CartesianRepresentation, CartesianDifferential
 from galpy.util import bovy_coords
 import pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
+from check_uniformity_of_density.Integral_of_Motion import Energy, L_z
 
 def galactic_to_galactocentric(point):
     """
@@ -462,12 +466,6 @@ def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
         2018-07-03 - Written - Mathew Bubb, Samuel Wong
         2018-07-23 - Added uniformity method - Samuel Wong
     """
-    # only work with the largest dot product, if that it is the input
-    if uniformity_method == "dot product":
-        result = np.nanmax(np.absolute(result), axis = 1)
-    # filter out nan
-    cluster = cluster[~np.isnan(result)]
-    result = result[~np.isnan(result)]
     # create plot    
     plt.figure(figsize=(10,8), facecolor='black')
     plt.style.use("dark_background")
@@ -531,7 +529,8 @@ def get_axis_from_index(i):
             ['vy', 'v_0'], ['vz', 'v_0']]
     return axis[i]
 
-def color_plot(result, cluster, file_name, uniformity_method):
+def color_plot(result, cluster, file_name, uniformity_method, 
+               custom_potential = None):
     """
     NAME:
         color_plot
@@ -546,6 +545,8 @@ def color_plot(result, cluster, file_name, uniformity_method):
         cluster = a numpy array storing cluster centers
         file_name = a string
         uniformity_method = "projection" or "dot product"
+        custom_potential = potential used to evaluate energy; default = 
+                           MWPotential2014
 
     OUTPUT:
         None
@@ -554,7 +555,59 @@ def color_plot(result, cluster, file_name, uniformity_method):
         2018-07-03 - Written - Samuel Wong
         2018-07-23 - Added uniformity method - Samuel Wong
     """
+    # only work with the largest dot product, if that it is the input
+    if uniformity_method == "dot product":
+        result = np.nanmax(np.absolute(result), axis = 1)
+    
+    # filter out nan
+    cluster = cluster[~np.isnan(result)]
+    result = result[~np.isnan(result)]
+        
+    energy = Energy(cluster, custom_potential)
+    angular_momentum = L_z(cluster)
+            
+    if uniformity_method == 'projection':
+        with plt.style.context(('dark_background')):
+            plt.figure(figsize=(10,8), facecolor='black')
+            plt.scatter(angular_momentum, energy, c=result, marker='.', s=5,
+                        cmap='plasma', vmin=0, vmax=1)
+            plt.colorbar(label='Fractional Length of Projection')
+            plt.xlabel('$L_z$')
+            plt.ylabel('$E$')
+            plt.title('Fractional Length of Projection in $L_z-E$ Dimension')
+            plt.savefig('main_program_results/' + file_name + 
+                        '/color projection L_z-E figure.png')
+    
+        plt.figure(figsize=(10,8))
+        plt.hist(result, bins=30, density=True)
+        plt.xlabel('Fractional Length of Projection')
+        plt.ylabel('Frequency')
+        plt.title('Fractional Length of Projection')
+        plt.savefig('main_program_results/' + file_name + 
+                    '/fractional length histogram.png')
+    elif uniformity_method == 'dot product':
+        with plt.style.context(('dark_background')):
+            plt.figure(figsize=(10,8), facecolor='black')
+            plt.scatter(angular_momentum, energy, c=result, marker='.', s=5,
+                        cmap='plasma', vmin=0, vmax=1)
+            plt.colorbar(label='Maximum Absolute Dot Product')
+            plt.xlabel('$L_z$')
+            plt.ylabel('$E$')
+            plt.title('Maximum Absolute Value of Dot Product in $L_z-E$ Dimension')
+            plt.savefig('main_program_results/' + file_name + 
+                        '/color dot product L_z-E figure.png')
+        
+        plt.figure(figsize=(10,8))
+        plt.hist(result, bins=30, density=True)
+        plt.xlabel('Maximum Absolute Dot Product')
+        plt.ylabel('Frequency')
+        plt.title('Maximum Absolute Values of the Dot Products')
+        plt.savefig('main_program_results/' + file_name + 
+                    '/dot product histogram.png')
+            
     # go through al combinations of axis projection and plot them
     for i in range(6):
         for j in range(i + 1, 6):
             color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
+        
+        

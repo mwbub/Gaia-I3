@@ -276,7 +276,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     
     summary_save(result, cluster, file_name, uniformity_method)        
     kmeans_plot(samples, cluster, file_name)
-    color_plot(result, cluster, file_name, uniformity_method)
+    color_plot(result, cluster, file_name, uniformity_method, custom_potential)
        
   
 if __name__ == "__main__":
