@@ -25,19 +25,19 @@ def kmeans_plot(samples, cluster, file_name):
     HISTORY:
         2018-06-25 - Written - Samuel Wong
     """
-    # create graph of kmeans projection in 2 dimension
-    fig = plt.figure(figsize=(8, 8), facecolor='black')
-    plt.style.use("dark_background")
-    # only plot projection of samples in x and y dimension
-    plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
-    plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
-    plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
-    plt.xlabel('$x/R_0$', fontsize = 15)
-    plt.ylabel('$y/R_0$', fontsize = 15)
-    # save figure
-    kmeans_figure_name = 'kmeans xy figure.png'
-    plt.savefig('main_program_results/' + file_name +'/'+ kmeans_figure_name)
-    plt.show()
+    with plt.style.context(('dark_background')):
+        # create graph of kmeans projection in 2 dimension
+        fig = plt.figure(figsize=(8, 8), facecolor='black')
+        # only plot projection of samples in x and y dimension
+        plt.scatter(samples[:,0], samples[:,1], s=1, c='blue')
+        plt.scatter(cluster[:, 0], cluster[:, 1], s=1, c='red')
+        plt.title("K-Means Cluster Centers in xy Dimension", fontsize=20)
+        plt.xlabel('$x/R_0$', fontsize = 15)
+        plt.ylabel('$y/R_0$', fontsize = 15)
+        # save figure
+        kmeans_figure_name = 'kmeans xy figure.png'
+        plt.savefig('main_program_results/' + file_name +'/'+ kmeans_figure_name)
+        plt.show()
     
 
 def dot_product_plot(max_dot_product, cluster, file_name):
