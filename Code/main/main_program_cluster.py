@@ -184,12 +184,13 @@ def get_cluster(samples, custom_centres):
     return cluster
 
 
-def get_Energy_Lz_gradient(cluster, gradient_method):
+def get_Energy_Lz_gradient(cluster, gradient_method, custom_potential):
     if gradient_method == "analytic":
-        Energy_gradient = del_E(cluster)
+        Energy_gradient = del_E(cluster, custom_potential)
         Lz_gradient = del_Lz(cluster)
     elif gradient_method == "numeric":
-        Energy_gradient = grad_multi(Energy, cluster)
+        Energy_gradient = grad_multi(
+                lambda coord: Energy(coord, custom_potential), cluster)
         Lz_gradient = grad_multi(L_z, cluster)
     return Energy_gradient, Lz_gradient
 
@@ -216,7 +217,7 @@ def summary_save(result, cluster, file_name, uniformity_method):
 
 def main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
-          custom_centres=None):
+         custom_centres=None, custom_potential = None):
     """
     NAME:
         main
@@ -248,12 +249,15 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         custom_centres = a custom array of cluster centres at which to evaluate
                          uniformity; if None, will use kmeans clustering to get
                          the cluster centres
+        custom_potential = a galpy potential object; or None, which defaults
+                        MWPotential2014
     HISTORY:
         2018-06-20 - Written - Samuel Wong
         2018-06-21 - Added option of custom samples - Samuel Wong and Michael
                                                       Poon
         2018-06-22 - Added Figure - Samuel Wong
         2018-07-15 - Added choice of gradient method - Samuel Wong
+        2018-07-31 - Added choice of custom potential - Samuel Wong
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples, uniformity_method)
@@ -261,7 +265,8 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     cluster = get_cluster(samples, custom_centres)
     
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(cluster, 
-                                                          gradient_method)
+                                                          gradient_method,
+                                                          custom_potential)
         
     start = time_class.time()
     result = evaluate_uniformity(density, cluster, Energy_gradient,

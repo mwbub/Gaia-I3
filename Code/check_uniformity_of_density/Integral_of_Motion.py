@@ -99,12 +99,10 @@ def cylindrical_to_cartesian(R, phi, z, vR, vT, vz):
     return x, y, z, vx, vy, vz
 
 
-
-def Energy(coord):
+def Energy(coord, custom_potential = None):
     """
     NAME:
         Energy
-
     PURPOSE:
         Given an array of 6 coordinates for the position and velocity of stars 
         in Cartesian coordinate, return a list of energy per mass.
@@ -112,17 +110,20 @@ def Energy(coord):
         
     INPUT:
         coord= a numpy array of coordinate
-
     OUTPUT:
         energy = a list of total energy per mass
-
     HISTORY:
         2018-05-25 - Written - Samuel Wong
         2018-07-24 - Changed to an array of points - Samuel Wong
     """
+    if custom_potential == None:
+        potential_obj = MWPotential2014
+    else:
+        potential_obj = custom_potential
+    
     x, y, z, vx, vy, vz = coord.T
     R = np.sqrt(x**2 + y**2)
-    potential = evaluatePotentials(MWPotential2014, R, z)
+    potential = evaluatePotentials(potential_obj, R, z)
     kinetic = (vx**2 + vy**2 + vz**2)/2.
     energy = kinetic + potential
     return energy
@@ -155,7 +156,7 @@ def L_z(coord):
     return R*vT
 
 
-def del_E(coord):
+def del_E(coord, custom_potential = None):
     """
     NAME:
         del_E
@@ -178,12 +179,16 @@ def del_E(coord):
         2018-07-10 - Written - Samuel Wong
         2018-07-24 - Changed to an array of points - Samuel Wong
     """
+    if custom_potential == None:
+        potential = MWPotential2014
+    else:
+        potential = custom_potential
     x, y, z, vx, vy, vz = coord.T
     R, vR, vT, z, vz, phi = rect_to_cyl(x, y, z, vx, vy, vz).T
     # get the force of the potential in cylindrical form
-    F_phi = evaluatephiforces(MWPotential2014, R, z, phi)/R
-    F_R = evaluateRforces(MWPotential2014, R, z, phi)
-    F_z= evaluatezforces(MWPotential2014, R, z, phi)
+    F_phi = evaluatephiforces(potential, R, z, phi)/R
+    F_R = evaluateRforces(potential, R, z, phi)
+    F_z= evaluatezforces(potential, R, z, phi)
     # return the gradient in Cartesian coordinate
     gradient = [F_phi*np.sin(phi) - F_R*np.cos(phi),
                 -F_R*np.sin(phi)- F_phi*np.cos(phi), -F_z, vx, vy, vz]
