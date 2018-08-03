@@ -8,10 +8,12 @@ bins = 100
 data_g = Table.read("gaia_data_with_straight_cutoff.fits")
 data_rv = Table.read("gaia_rv_with_straight_cutoff.fits")
 
-# get rid of stars with negative parallax
-mask_g = data_g["parallax"]>0
+# get rid of stars with negative parallax and further than 30 kpc
+mask_g = np.all(np.array([data_g["parallax"]>0, 1/data_g["parallax"]<30]),
+                axis = 0)
 data_g = data_g[mask_g]
-mask_rv = data_rv["parallax"]>0
+mask_rv = np.all(np.array([data_rv["parallax"]>0, 1/data_rv["parallax"]<30]),
+                 axis =0)
 data_rv = data_rv[mask_rv]
 
 # get parallax
