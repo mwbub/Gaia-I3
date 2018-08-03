@@ -110,7 +110,6 @@ def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
     """
     # create plot    
     plt.figure(figsize=(10,8), facecolor='black')
-    plt.style.use("dark_background")
     # scatter plot the cluster, with the 2 given projection axis
     # we need to use the transpose to get all the components, instead of 
     # 6 components for each star.
@@ -247,7 +246,8 @@ def color_plot(result, cluster, file_name, uniformity_method,
         plt.savefig('main_program_results/' + file_name + 
                     '/dot product histogram.png')
             
-    # go through al combinations of axis projection and plot them
-    for i in range(6):
-        for j in range(i + 1, 6):
-            color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
+    with plt.style.context(('dark_background')):
+        # go through al combinations of axis projection and plot them
+        for i in range(6):
+            for j in range(i + 1, 6):
+                color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
