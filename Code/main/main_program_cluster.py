@@ -28,6 +28,7 @@ from search import search_local
 from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
+from tools.plots import *
 
 # define parameters for the search and KDE as global variables
 epsilon = 0.3
