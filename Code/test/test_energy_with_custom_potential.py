@@ -55,7 +55,7 @@ for pot in pots:
     # Test that the analytic and numeric gradients are close
     assert np.all(np.isclose(get_Energy_Lz_gradient(coords, 'analytic', pot)[0],
                              get_Energy_Lz_gradient(coords, 'numeric', pot)[0],
-                             atol = 1e-5, rtol=0))
+                             atol=1e-5, rtol=0))
     
 # Test that different potentials yield different results for the gradient
 for pot0 in pots:
