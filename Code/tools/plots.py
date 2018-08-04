@@ -220,7 +220,7 @@ def color_plot(result, cluster, file_name, uniformity_method,
                         '/color projection L_z-E figure.png')
     
         plt.figure(figsize=(10,8))
-        plt.hist(result, bins=30, density=True, range=(0,1))
+        plt.hist(result, bins='auto', density=True, range=(0,1))
         plt.xlabel('Fractional Length of Projection')
         plt.ylabel('Frequency')
         plt.title('Fractional Length of Projection')
@@ -239,7 +239,7 @@ def color_plot(result, cluster, file_name, uniformity_method,
                         '/color dot product L_z-E figure.png')
         
         plt.figure(figsize=(10,8))
-        plt.hist(result, bins=30, density=True, range=(0,1))
+        plt.hist(result, bins='auto', density=True, range=(0,1))
         plt.xlabel('Maximum Absolute Dot Product')
         plt.ylabel('Frequency')
         plt.title('Maximum Absolute Values of the Dot Products')
