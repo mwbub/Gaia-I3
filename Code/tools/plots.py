@@ -61,26 +61,26 @@ def dot_product_plot(max_dot_product, cluster, file_name):
     HISTORY:
         2018-06-25 - Written - Samuel Wong
     """
-    # create graph of dot product
-    fig = plt.figure(figsize=(8, 8), facecolor='black')
-    plt.style.use("dark_background")
-    ax = fig.add_subplot(111, projection='3d')
-    # get the maximum dot product at each cluster center
-    # filter out nan
-    cluster = cluster[~np.isnan(max_dot_product)]
-    max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
-    # scatter the cluster center x, y, and height is max dot product
-    ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product, s = 10)
-    ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
-    ax.set_xlabel('$x/R_0$')
-    ax.set_ylabel('$y/R_0$')
-    ax.set_zlabel('maximum dot product')
-    # force the z limit to 0 and 1
-    ax.set_zlim(0, 1)
-    # save figure
-    dot_product_figure_name = 'max dot product figure.png'
-    plt.savefig('main_program_results/' + file_name +'/'+ dot_product_figure_name)
-    plt.show()
+    with plt.style.context(('dark_background')):
+        # create graph of dot product
+        fig = plt.figure(figsize=(8, 8), facecolor='black')
+        ax = fig.add_subplot(111, projection='3d')
+        # get the maximum dot product at each cluster center
+        # filter out nan
+        cluster = cluster[~np.isnan(max_dot_product)]
+        max_dot_product = max_dot_product[~np.isnan(max_dot_product)]
+        # scatter the cluster center x, y, and height is max dot product
+        ax.scatter(cluster[:, 0], cluster[:, 1], max_dot_product, s = 10)
+        ax.set_title("Maximum Absolute Value of Dot Product in xy Dimension", fontsize=15)
+        ax.set_xlabel('$x/R_0$')
+        ax.set_ylabel('$y/R_0$')
+        ax.set_zlabel('maximum dot product')
+        # force the z limit to 0 and 1
+        ax.set_zlim(0, 1)
+        # save figure
+        dot_product_figure_name = 'max dot product figure.png'
+        plt.savefig('main_program_results/' + file_name +'/'+ dot_product_figure_name)
+        plt.show()
     
     
 def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
@@ -108,40 +108,41 @@ def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
         2018-07-03 - Written - Mathew Bubb, Samuel Wong
         2018-07-23 - Added uniformity method - Samuel Wong
     """
-    # create plot    
-    plt.figure(figsize=(10,8), facecolor='black')
-    # scatter plot the cluster, with the 2 given projection axis
-    # we need to use the transpose to get all the components, instead of 
-    # 6 components for each star.
-    # set the color to the result
-    plt.scatter(*cluster.T[[i,j]], c=result, marker='.', s=5, 
-                cmap='plasma', vmin=0, vmax=1)
-    if uniformity_method == "dot product":
-        plt.colorbar(label='Maximum Absolute Dot Product')
-    elif uniformity_method == "projection":
-        plt.colorbar(label='Fractional Length of Projection')
-    # get the axis name
-    x_axis, x_divisor = get_axis_from_index(i)
-    y_axis, y_divisor = get_axis_from_index(j)
-    plt.xlabel('${}/{}$'.format(x_axis, x_divisor))
-    plt.ylabel('${}/{}$'.format(y_axis, y_divisor))
-    if uniformity_method == "dot product":
-        plt.title("Maximum Absolute Value of Dot Product in {}-{} Dimension".format(
-        x_axis, y_axis))
-    elif uniformity_method == "projection":
-        plt.title("Fractional Length of Projection in {}-{} Dimension".format(
-        x_axis, y_axis))
-
-    # save figure
-    if uniformity_method == "dot product":
-        color_figure_name = 'color dot product {}-{} figure.png'.format(
-                x_axis, y_axis)
-    elif uniformity_method == "projection":
-        color_figure_name = 'color projection {}-{} figure.png'.format(
-                x_axis, y_axis)
-
-    plt.savefig('main_program_results/' + file_name +'/'+ color_figure_name)
-    plt.show()
+    with plt.style.context(('dark_background')):
+        # create plot    
+        plt.figure(figsize=(10,8), facecolor='black')
+        # scatter plot the cluster, with the 2 given projection axis
+        # we need to use the transpose to get all the components, instead of 
+        # 6 components for each star.
+        # set the color to the result
+        plt.scatter(*cluster.T[[i,j]], c=result, marker='.', s=5, 
+                    cmap='plasma', vmin=0, vmax=1)
+        if uniformity_method == "dot product":
+            plt.colorbar(label='Maximum Absolute Dot Product')
+        elif uniformity_method == "projection":
+            plt.colorbar(label='Fractional Length of Projection')
+        # get the axis name
+        x_axis, x_divisor = get_axis_from_index(i)
+        y_axis, y_divisor = get_axis_from_index(j)
+        plt.xlabel('${}/{}$'.format(x_axis, x_divisor))
+        plt.ylabel('${}/{}$'.format(y_axis, y_divisor))
+        if uniformity_method == "dot product":
+            plt.title("Maximum Absolute Value of Dot Product in {}-{} Dimension".format(
+            x_axis, y_axis))
+        elif uniformity_method == "projection":
+            plt.title("Fractional Length of Projection in {}-{} Dimension".format(
+            x_axis, y_axis))
+    
+        # save figure
+        if uniformity_method == "dot product":
+            color_figure_name = 'color dot product {}-{} figure.png'.format(
+                    x_axis, y_axis)
+        elif uniformity_method == "projection":
+            color_figure_name = 'color projection {}-{} figure.png'.format(
+                    x_axis, y_axis)
+    
+        plt.savefig('main_program_results/' + file_name +'/'+ color_figure_name)
+        plt.show()
     
 
 def get_axis_from_index(i):
@@ -246,8 +247,7 @@ def color_plot(result, cluster, file_name, uniformity_method,
             plt.savefig('main_program_results/' + file_name + 
                         '/color dot product L_z-E figure.png')
             
-    with plt.style.context(('dark_background')):
-        # go through al combinations of axis projection and plot them
-        for i in range(6):
-            for j in range(i + 1, 6):
-                color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
+    # go through al combinations of axis projection and plot them
+    for i in range(6):
+        for j in range(i + 1, 6):
+            color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
