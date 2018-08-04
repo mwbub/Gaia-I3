@@ -208,6 +208,14 @@ def color_plot(result, cluster, file_name, uniformity_method,
     angular_momentum = L_z(cluster)
             
     if uniformity_method == 'projection':
+        plt.figure(figsize=(10,8))
+        plt.hist(result, bins='auto', density=True, range=(0,1))
+        plt.xlabel('Fractional Length of Projection')
+        plt.ylabel('Frequency')
+        plt.title('Fractional Length of Projection')
+        plt.savefig('main_program_results/' + file_name + 
+                    '/fractional length histogram.png')
+        
         with plt.style.context(('dark_background')):
             plt.figure(figsize=(10,8), facecolor='black')
             plt.scatter(angular_momentum, energy, c=result, marker='.', s=5,
@@ -218,15 +226,15 @@ def color_plot(result, cluster, file_name, uniformity_method,
             plt.title('Fractional Length of Projection in $L_z-E$ Dimension')
             plt.savefig('main_program_results/' + file_name + 
                         '/color projection L_z-E figure.png')
-    
+    elif uniformity_method == 'dot product':
         plt.figure(figsize=(10,8))
         plt.hist(result, bins='auto', density=True, range=(0,1))
-        plt.xlabel('Fractional Length of Projection')
+        plt.xlabel('Maximum Absolute Dot Product')
         plt.ylabel('Frequency')
-        plt.title('Fractional Length of Projection')
+        plt.title('Maximum Absolute Values of the Dot Products')
         plt.savefig('main_program_results/' + file_name + 
-                    '/fractional length histogram.png')
-    elif uniformity_method == 'dot product':
+                    '/dot product histogram.png')
+        
         with plt.style.context(('dark_background')):
             plt.figure(figsize=(10,8), facecolor='black')
             plt.scatter(angular_momentum, energy, c=result, marker='.', s=5,
@@ -237,14 +245,6 @@ def color_plot(result, cluster, file_name, uniformity_method,
             plt.title('Maximum Absolute Value of Dot Product in $L_z-E$ Dimension')
             plt.savefig('main_program_results/' + file_name + 
                         '/color dot product L_z-E figure.png')
-        
-        plt.figure(figsize=(10,8))
-        plt.hist(result, bins='auto', density=True, range=(0,1))
-        plt.xlabel('Maximum Absolute Dot Product')
-        plt.ylabel('Frequency')
-        plt.title('Maximum Absolute Values of the Dot Products')
-        plt.savefig('main_program_results/' + file_name + 
-                    '/dot product histogram.png')
             
     with plt.style.context(('dark_background')):
         # go through al combinations of axis projection and plot them
