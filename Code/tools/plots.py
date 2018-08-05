@@ -324,6 +324,9 @@ def error_plot(errors, cluster, file_name, uniformity_method,
         
         custom_potential - galpy Potential or list of Potentials used to 
         evaluate energy; default = MWPotential2014
+        
+    OUTPUT:
+        None
     """
     cluster = cluster[~np.isnan(errors)]
     errors = errors[~np.isnan(errors)]
@@ -359,3 +362,4 @@ def error_plot(errors, cluster, file_name, uniformity_method,
     for i in range(6):
         for j in range(i + 1, 6):
             error_plot_ij(errors, cluster, file_name, uniformity_method, i, j)
+            
