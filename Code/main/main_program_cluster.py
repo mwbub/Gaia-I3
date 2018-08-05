@@ -58,9 +58,9 @@ def search_for_samples(search_method):
         2018-06-25 - Written - Samuel Wong
     """
     if search_method != "all of local":
-        point_galactocentric, point_galactic = get_star_coord_from_user()
         epsilon = float(input("epsilon = "))
         v_scale = float(input("epsilon = "))
+        point_galactocentric, point_galactic = get_star_coord_from_user()
     
     if search_method == "online":
         samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
