@@ -58,16 +58,13 @@ def search_for_samples(search_method):
         2018-06-25 - Written - Samuel Wong
     """
     if search_method != "all of local":
+        point_galactocentric, point_galactic = get_star_coord_from_user()
         epsilon = float(input("epsilon = "))
         v_scale = float(input("epsilon = "))
     
     if search_method == "online":
-        # get coordinate of the star to be searched from user
-        point_galactocentric, point_galactic = get_star_coord_from_user()
         samples = search_online.search_phase_space(*point_galactic, epsilon, v_scale)
     elif search_method == "local":
-        # get coordinate of the star to be searched from user
-        point_galactocentric, point_galactic = get_star_coord_from_user()
         samples = search_local.search_phase_space(*point_galactic, epsilon, v_scale)
     elif search_method == "all of local":
         samples = search_local.get_entire_catalogue()
