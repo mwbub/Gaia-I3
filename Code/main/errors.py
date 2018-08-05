@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+from sklearn.utils import resample
 from main_program_cluster import get_samples_density_filename, \
     get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE, error_plot
 
@@ -64,8 +65,8 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     for i in range(nsamples):
         sys.stdout.write(_ERASESTR)
         sys.stdout.write('Evaluating uniformity on sample {}...'.format(i+1))
-        resampled_indices = np.random.choice(samples.shape[0], samples.shape[0])
-        density = generate_KDE(samples[resampled_indices], 'epanechnikov')
+        resampled_data = resample(samples)
+        density = generate_KDE(resampled_data, 'epanechnikov')
         result = evaluate_uniformity(density, cluster_centres, Energy_gradient,
                                      Lz_gradient, uniformity_method)
         results.append(result)
