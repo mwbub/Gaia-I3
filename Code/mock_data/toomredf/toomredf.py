@@ -4,7 +4,7 @@ sys.path.append('..')
 import numpy as np
 from galpy.util.bovy_conversion import dens_in_msolpc3
 from sampling.sampling import sample_location, sample_velocity
-from galpy.potential_src.Potential import Potential
+from galpy.potential import Potential
 
 class toomredf:
     """
@@ -454,7 +454,7 @@ class ToomrePotential(Potential):
             None
         """
         super().__init__(ro=ro, vo=vo)
-        self.n = 1
+        self.n = n
         
     def _evaluate(self, R, z, phi=0., t=0.):
         """
