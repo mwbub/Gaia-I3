@@ -142,7 +142,6 @@ def color_plot_ij(result, cluster, file_name, uniformity_method, i, j):
                     x_axis, y_axis)
     
         plt.savefig('main_program_results/' + file_name +'/'+ color_figure_name)
-        plt.show()
     
 
 def get_axis_from_index(i):
@@ -279,8 +278,8 @@ def error_plot_ij(errors, cluster, file_name, uniformity_method, i, j):
     """
     with plt.style.context(('dark_background')):
         plt.figure(figsize=(10,8), facecolor='black')
-        plt.scatter(*cluster.T[i, j], c=errors, marker='.', s=5, cmap='viridis',
-                    vmin=0, vmax=0.5)
+        plt.scatter(*cluster.T[[i, j]], c=errors, marker='.', s=5, cmap='jet', 
+                    vmin=0)
         
         x_axis, x_divisor = get_axis_from_index(i)
         y_axis, y_divisor = get_axis_from_index(j)
@@ -289,19 +288,19 @@ def error_plot_ij(errors, cluster, file_name, uniformity_method, i, j):
         
         if uniformity_method == 'projection':
             plt.colorbar(label='Fractional Length Uncertainty')
-            plt.title('Maximum Dot Product Uncertainties in the {}-{} '
-                      'Dimension'.format(x_axis, y_axis))
-            figure_name = 'dot product uncertainties {}-{} figure.png'.format(
-                    x_axis, y_axis)
-        elif uniformity_method == 'dot product':
-            plt.colorbar(label='Maximum Dot Product Uncertainty')
             plt.title('Fractional Length Uncertainties in the {}-{} '
                       'Dimension'.format(x_axis, y_axis))
             figure_name = 'projection uncertainties {}-{} figure.png'.format(
                     x_axis, y_axis)
+        elif uniformity_method == 'dot product':
+            plt.colorbar(label='Maximum Dot Product Uncertainty')
+            plt.title('Maximum Dot Product Uncertainties in the {}-{} '
+                      'Dimension'.format(x_axis, y_axis))
+            figure_name = 'dot product uncertainties {}-{} figure.png'.format(
+                    x_axis, y_axis)
             
-    plt.savefig('main_program_results/' + file_name + 'uncertainties/' + 
-                figure_name)
+        plt.savefig('main_program_results/' + file_name + 'uncertainties/' + 
+                    figure_name)
     
 def error_plot(errors, cluster, file_name, uniformity_method, 
                custom_potential = None):
@@ -336,7 +335,7 @@ def error_plot(errors, cluster, file_name, uniformity_method,
         with plt.style.context(('dark_background')):
             plt.figure(figsize=(10,8), facecolor='black')
             plt.scatter(angular_momentum, energy, c=errors, marker='.', s=5,
-                        cmap='viridis', vmin=0, vmax=1)
+                        cmap='jet', vmin=0)
             plt.colorbar(label='Fractional Length Uncertainty')
             plt.xlabel('$L_z$')
             plt.ylabel('$E$')
@@ -348,7 +347,7 @@ def error_plot(errors, cluster, file_name, uniformity_method,
         with plt.style.context(('dark_background')):
             plt.figure(figsize=(10,8), facecolor='black')
             plt.scatter(angular_momentum, energy, c=errors, marker='.', s=5,
-                        cmap='viridis', vmin=0, vmax=1)
+                        cmap='jet', vmin=0)
             plt.colorbar(label='Maximum Dot Product Uncertainty')
             plt.xlabel('$L_z$')
             plt.ylabel('$E$')
