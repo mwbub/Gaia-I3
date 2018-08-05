@@ -59,7 +59,7 @@ def search_for_samples(search_method):
     """
     if search_method != "all of local":
         epsilon = float(input("epsilon = "))
-        v_scale = float(input("epsilon = "))
+        v_scale = float(input("v_scale = "))
         point_galactocentric, point_galactic = get_star_coord_from_user()
     
     if search_method == "online":
