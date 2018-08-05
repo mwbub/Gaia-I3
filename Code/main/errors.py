@@ -1,8 +1,8 @@
 import numpy as np
-from main_program_cluster import get_samples_density_filename, \ 
+from main_program_cluster import get_samples_density_filename, \
     get_Energy_Lz_gradient, evaluate_uniformity
 
-def bootstrap(file, nsamples=10, uniformity_method='projection', 
+def bootstrap(nsamples=10, uniformity_method='projection', 
               gradient_method='analytic', search_method='local', 
               custom_samples=None, custom_potential=None):
     """
@@ -14,8 +14,6 @@ def bootstrap(file, nsamples=10, uniformity_method='projection',
         program.
         
     INPUT:
-        file - the results file of a run of the main program.
-        
         nsamples - number of random samples to generate on which to re-run the
         main program; default = 10
         
@@ -38,13 +36,23 @@ def bootstrap(file, nsamples=10, uniformity_method='projection',
                             
     OUTPUT:
         None (results are saved to a file)
+        
+    WARNING:
+        In order to use this function, you must first run the main program with
+        the same parameters and in the same location as will be used to run this
+        function.
     """
-    data = np.load(file)
-    cluster_centres = data['cluster']
-    samples, density, file_name = get_samples_density_filename(
+    original_samples, density, path = get_samples_density_filename(
             None, search_method, custom_samples, uniformity_method)
+    path = 'main_program_results/' + path
     
-    for i in range(nsamples):
+    file = 'data.npz'
+    if uniformity_method == 'projection':
+        file = 'projection ' + file
         
-
-        
+    data = np.load(path + file)
+    cluster_centres = data['cluster']
+    
+    Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
+            cluster_centres, gradient_method, custom_potential)
+    
