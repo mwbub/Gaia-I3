@@ -251,3 +251,54 @@ def color_plot(result, cluster, file_name, uniformity_method,
     for i in range(6):
         for j in range(i + 1, 6):
             color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
+            
+def error_plot_ij(errors, cluster, file_name, uniformity_method, i, j):
+    """
+    NAME:
+        error_plot_ij
+        
+    PURPOSE:
+        Create a scatter plot of the uncertainties of the results of a run of
+        the main program along the ith and jth axes in cartesian coordinates.
+        
+    INPUT:
+        errors - the uncertainty in the result value at each cluster centre
+        
+        cluster - the cluster centres
+        
+        file_name - the name of the folder in which the plot is to be saved
+        
+        uniformity_method - the method used to compute the results; can be 
+        "projection" or "dot product"
+        
+        i, j - the indices of the two axes to plot; the order of the possible
+        axes is (x, y, z, vx, vy, vz)
+        
+    OUTPUT:
+        None
+    """
+    with plt.style.context(('dark_background')):
+        plt.figure(figsize=(10,8), facecolor='black')
+        plt.scatter(*cluster.T[i, j], c=errors, marker='.', s=5, cmap='viridis',
+                    vmin=0, vmax=0.5)
+        
+        x_axis, x_divisor = get_axis_from_index(i)
+        y_axis, y_divisor = get_axis_from_index(j)
+        plt.xlabel('${}/{}$'.format(x_axis, x_divisor))
+        plt.ylabel('${}/{}$'.format(y_axis, y_divisor))
+        
+        if uniformity_method == 'projection':
+            plt.colorbar(label='Fractional Length Uncertainty')
+            plt.title('Maximum Dot Product Uncertainties in the {}-{} '
+                      'Dimension'.format(x_axis, y_axis))
+            figure_name = 'dot product uncertainties {}-{}.png'.format(x_axis, 
+                                                                       y_axis)
+        elif uniformity_method == 'dot product':
+            plt.colorbar(label='Maximum Dot Product Uncertainty')
+            plt.title('Fractional Length Uncertainties in the {}-{} '
+                      'Dimension'.format(x_axis, y_axis))
+            figure_name = 'projection uncertainties {}-{}.png'.format(x_axis, 
+                                                                      y_axis)
+            
+    plt.savefig('main_program_results/' + file_name + 'uncertainties' + 
+                figure_name)
