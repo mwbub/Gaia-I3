@@ -259,9 +259,8 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     
     cluster = get_cluster(samples, custom_centres)
     
-    Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(cluster, 
-                                                          gradient_method,
-                                                          custom_potential)
+    Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
+            cluster, gradient_method, custom_potential)
         
     start = time_class.time()
     result = evaluate_uniformity(density, cluster, Energy_gradient,
