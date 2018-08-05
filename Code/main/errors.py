@@ -4,7 +4,7 @@ from main_program_cluster import get_samples_density_filename, \
 
 def bootstrap(file, nsamples=10, uniformity_method='projection', 
               gradient_method='analytic', search_method='local', 
-              custom_samples=None):
+              custom_samples=None, custom_potential=None):
     """
     NAME:
         bootstrap
@@ -32,6 +32,9 @@ def bootstrap(file, nsamples=10, uniformity_method='projection',
         custom_samples - an N by 6 array that represents the custom samples, 
         with each component representing (x,y,z,vx,vy,vz), respectively. They 
         are in physical units.
+        
+        custom_potential = galpy Potential or list of Potentials; default = 
+        MWPotential2014
                             
     OUTPUT:
         None (results are saved to a file)
