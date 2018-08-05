@@ -30,13 +30,6 @@ from kmeans.kmeans import *
 from tools.tools import *
 from tools.plots import *
 
-# define parameters for the search and KDE as global variables
-epsilon = 0.3
-v_scale = 0
-
-epsilon = float(epsilon)
-v_scale = float(v_scale)
-
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
@@ -64,6 +57,10 @@ def search_for_samples(search_method):
     HISTORY:
         2018-06-25 - Written - Samuel Wong
     """
+    if search_method != "all of local":
+        epsilon = float(input("epsilon = "))
+        v_scale = float(input("epsilon = "))
+    
     if search_method == "online":
         # get coordinate of the star to be searched from user
         point_galactocentric, point_galactic = get_star_coord_from_user()
@@ -218,7 +215,7 @@ def summary_save(result, cluster, file_name, uniformity_method):
 
 def main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
-         custom_centres=None, custom_potential = None):
+         custom_centres = None, custom_potential = None):
     """
     NAME:
         main
@@ -283,6 +280,6 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
 if __name__ == "__main__":
     main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
-          custom_centres=None)
+         custom_centres = None)
     
     
