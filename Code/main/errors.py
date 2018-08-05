@@ -74,11 +74,15 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     results = np.stack(results)
     errors = np.nanstd(results, axis=0)
     
-    if not os.path.exists('main_program_results/' + folder + 'uncertainties'):
-        os.mkdir('main_program_results/' + folder + 'uncertainties')
+    folder += 'uncertainties/'
+    if not os.path.exists('main_program_results/' + folder):
+        os.mkdir('main_program_results/' + folder)
+        
+    folder += 'bootstrap/'
+    if not os.path.exists('main_program_results/' + folder):
+        os.mkdir('main_program_results/' + folder)
     
-    np.save('main_program_results/' + folder + 'uncertainties/uncertainties',
-            errors)
+    np.save('main_program_results/' + folder + 'uncertainties', errors)
     
     # the max dot products of the original run of the main program are not
     # necessarily at the same index in the resampled runs, and thus their
@@ -87,8 +91,8 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     if uniformity_method == 'dot product':
         results = np.nanmax(np.abs(results), axis=2)
         errors = np.nanstd(results, axis=0)
-        np.save('main_program_results/' + folder + \
-                'uncertainties/max_dot_product_uncertainties', errors)
+        np.save('main_program_results/' + folder + 
+                'max_dot_product_uncertainties', errors)
         
     error_plot(errors, cluster_centres, folder, uniformity_method, 
                custom_potential)

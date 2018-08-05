@@ -299,8 +299,7 @@ def error_plot_ij(errors, cluster, file_name, uniformity_method, i, j):
             figure_name = 'dot product uncertainties {}-{} figure.png'.format(
                     x_axis, y_axis)
             
-        plt.savefig('main_program_results/' + file_name + 'uncertainties/' + 
-                    figure_name)
+        plt.savefig('main_program_results/' + file_name + figure_name)
     
 def error_plot(errors, cluster, file_name, uniformity_method, 
                custom_potential = None):
@@ -344,7 +343,7 @@ def error_plot(errors, cluster, file_name, uniformity_method,
             plt.ylabel('$E$')
             plt.title('Fractional Length Uncertainties in the $L_z-E$ '
                       'Dimension')
-            plt.savefig('main_program_results/' + file_name + 'uncertainties/' +
+            plt.savefig('main_program_results/' + file_name +
                         'projection uncertainties L_z-E figure.png')
     elif uniformity_method == 'dot product':
         with plt.style.context(('dark_background')):
@@ -356,7 +355,7 @@ def error_plot(errors, cluster, file_name, uniformity_method,
             plt.ylabel('$E$')
             plt.title('Maximum Dot Product Uncertainties in the $L_z-E$ '
                       'Dimension')
-            plt.savefig('main_program_results/' + file_name + 'uncertainties/' +
+            plt.savefig('main_program_results/' + file_name +
                         'dot product uncertainties L_z-E figure.png')
             
     for i in range(6):
