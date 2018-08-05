@@ -251,7 +251,7 @@ def color_plot(result, cluster, file_name, uniformity_method,
     for i in range(6):
         for j in range(i + 1, 6):
             color_plot_ij(result, cluster, file_name, uniformity_method, i, j)
-            
+
 def error_plot_ij(errors, cluster, file_name, uniformity_method, i, j):
     """
     NAME:
@@ -291,14 +291,72 @@ def error_plot_ij(errors, cluster, file_name, uniformity_method, i, j):
             plt.colorbar(label='Fractional Length Uncertainty')
             plt.title('Maximum Dot Product Uncertainties in the {}-{} '
                       'Dimension'.format(x_axis, y_axis))
-            figure_name = 'dot product uncertainties {}-{}.png'.format(x_axis, 
-                                                                       y_axis)
+            figure_name = 'dot product uncertainties {}-{} figure.png'.format(
+                    x_axis, y_axis)
         elif uniformity_method == 'dot product':
             plt.colorbar(label='Maximum Dot Product Uncertainty')
             plt.title('Fractional Length Uncertainties in the {}-{} '
                       'Dimension'.format(x_axis, y_axis))
-            figure_name = 'projection uncertainties {}-{}.png'.format(x_axis, 
-                                                                      y_axis)
+            figure_name = 'projection uncertainties {}-{} figure.png'.format(
+                    x_axis, y_axis)
             
-    plt.savefig('main_program_results/' + file_name + 'uncertainties' + 
+    plt.savefig('main_program_results/' + file_name + 'uncertainties/' + 
                 figure_name)
+    
+def error_plot(errors, cluster, file_name, uniformity_method, 
+               custom_potential = None):
+    """
+    NAME:
+        error_plot
+        
+    PURPOSE:
+        Plot the uncertainties of the results of a run of the main program in
+        all possible 2D projections of cartesian phase space.
+        
+    INPUT:
+        errors - the uncertainty in the result value at each cluster centre
+        
+        cluster - the cluster centres
+        
+        file_name - the name of the folder in which the plot is to be saved
+        
+        uniformity_method - the method used to compute the results; can be 
+        "projection" or "dot product"
+        
+        custom_potential - galpy Potential or list of Potentials used to 
+        evaluate energy; default = MWPotential2014
+    """
+    cluster = cluster[~np.isnan(errors)]
+    errors = errors[~np.isnan(errors)]
+        
+    energy = Energy(cluster, custom_potential)
+    angular_momentum = L_z(cluster)
+    
+    if uniformity_method == 'projection':
+        with plt.style.context(('dark_background')):
+            plt.figure(figsize=(10,8), facecolor='black')
+            plt.scatter(angular_momentum, energy, c=errors, marker='.', s=5,
+                        cmap='viridis', vmin=0, vmax=1)
+            plt.colorbar(label='Fractional Length Uncertainty')
+            plt.xlabel('$L_z$')
+            plt.ylabel('$E$')
+            plt.title('Fractional Length Uncertainties in the $L_z-E$ '
+                      'Dimension')
+            plt.savefig('main_program_results/' + file_name + 'uncertainties/' +
+                        'projection uncertainties L_z-E figure.png')
+    elif uniformity_method == 'dot product':
+        with plt.style.context(('dark_background')):
+            plt.figure(figsize=(10,8), facecolor='black')
+            plt.scatter(angular_momentum, energy, c=errors, marker='.', s=5,
+                        cmap='viridis', vmin=0, vmax=1)
+            plt.colorbar(label='Maximum Dot Product Uncertainty')
+            plt.xlabel('$L_z$')
+            plt.ylabel('$E$')
+            plt.title('Maximum Dot Product Uncertainties in the $L_z-E$ '
+                      'Dimension')
+            plt.savefig('main_program_results/' + file_name + 'uncertainties/' +
+                        'dot product uncertainties L_z-E figure.png')
+            
+    for i in range(6):
+        for j in range(i + 1, 6):
+            error_plot_ij(errors, cluster, file_name, uniformity_method, i, j)

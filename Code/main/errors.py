@@ -2,7 +2,7 @@ import os
 import sys
 import numpy as np
 from main_program_cluster import get_samples_density_filename, \
-    get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE
+    get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE, error_plot
 
 _ERASESTR = '\r                                                              \r'
 
@@ -35,8 +35,8 @@ def bootstrap(nsamples=10, uniformity_method='projection',
         with each component representing (x,y,z,vx,vy,vz), respectively. They 
         are in physical units.
         
-        custom_potential = galpy Potential or list of Potentials; default = 
-        MWPotential2014
+        custom_potential - galpy Potential or list of Potentials used to 
+        evaluate energy; default = MWPotential2014
                             
     OUTPUT:
         None (results are saved to a file)
@@ -89,4 +89,7 @@ def bootstrap(nsamples=10, uniformity_method='projection',
         errors = np.std(results, axis=0)
         np.save('main_program_results/' + folder + \
                 'uncertainties/max_dot_product_uncertainties', errors)
+        
+    error_plot(errors, cluster_centres, folder, uniformity_method, 
+               custom_potential)
         
