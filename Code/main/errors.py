@@ -1,6 +1,6 @@
 import numpy as np
 from main_program_cluster import get_samples_density_filename, \
-    get_Energy_Lz_gradient, evaluate_uniformity
+    get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE
 
 def bootstrap(nsamples=10, uniformity_method='projection', 
               gradient_method='analytic', search_method='local', 
@@ -42,7 +42,7 @@ def bootstrap(nsamples=10, uniformity_method='projection',
         the same parameters and in the same location as will be used to run this
         function.
     """
-    original_samples, density, path = get_samples_density_filename(
+    samples, density, path = get_samples_density_filename(
             None, search_method, custom_samples, uniformity_method)
     path = 'main_program_results/' + path
     
@@ -56,3 +56,13 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
             cluster_centres, gradient_method, custom_potential)
     
+    results = []
+    for i in range(nsamples):
+        resampled_indices = np.random.choice(samples.shape[0], samples.shape[0])
+        density = generate_KDE(samples[resampled_indices], 'epanechnikov')
+        result = evaluate_uniformity(density, cluster_centres, Energy_gradient,
+                                     Lz_gradient, uniformity_method)
+        results.append(result)
+
+    results = np.stack(results)
+    return results
