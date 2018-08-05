@@ -162,7 +162,7 @@ def jackknife(nsamples=10, uniformity_method='projection',
     
     results = []
     sys.stdout.write('\n')
-    for i in range(nsamples):
+    for i in range(len(split_indices)):
         sys.stdout.write(_ERASESTR)
         sys.stdout.write('Evaluating uniformity on sample {}...'.format(i+1))
         split = split_indices[i]
