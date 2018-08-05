@@ -72,7 +72,7 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     sys.stdout.write('\nDone')
     
     results = np.stack(results)
-    errors = np.std(results, axis=0)
+    errors = np.nanstd(results, axis=0)
     
     if not os.path.exists('main_program_results/' + folder + 'uncertainties'):
         os.mkdir('main_program_results/' + folder + 'uncertainties')
@@ -86,7 +86,7 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     # individual dot product
     if uniformity_method == 'dot product':
         results = np.nanmax(np.abs(results), axis=2)
-        errors = np.std(results, axis=0)
+        errors = np.nanstd(results, axis=0)
         np.save('main_program_results/' + folder + \
                 'uncertainties/max_dot_product_uncertainties', errors)
         
