@@ -72,7 +72,7 @@ def bootstrap(nsamples=10, uniformity_method='projection',
         result = evaluate_uniformity(density, cluster_centres, Energy_gradient,
                                      Lz_gradient, uniformity_method)
         results.append(result)
-    sys.stdout.write('\nDone')
+    sys.stdout.write('\nDone\n')
     
     results = np.stack(results)
     errors = np.nanstd(results, axis=0)
@@ -170,7 +170,7 @@ def jackknife(nsamples=10, uniformity_method='projection',
         result = evaluate_uniformity(density, cluster_centres, Energy_gradient,
                                      Lz_gradient, uniformity_method)
         results.append(result)
-    sys.stdout.write('\nDone')
+    sys.stdout.write('\nDone\n')
     
     results = np.stack(results)
     errors = np.nanstd(results, axis=0)
