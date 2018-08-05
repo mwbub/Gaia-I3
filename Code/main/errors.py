@@ -1,6 +1,9 @@
+import sys
 import numpy as np
 from main_program_cluster import get_samples_density_filename, \
     get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE
+
+_ERASESTR = '\r                                                              \r'
 
 def bootstrap(nsamples=10, uniformity_method='projection', 
               gradient_method='analytic', search_method='local', 
@@ -57,12 +60,17 @@ def bootstrap(nsamples=10, uniformity_method='projection',
             cluster_centres, gradient_method, custom_potential)
     
     results = []
+    sys.stdout.write('\n')
     for i in range(nsamples):
+        sys.stdout.write(_ERASESTR)
+        sys.stdout.write('Evaluating uniformity on sample {}...'.format(i+1))
         resampled_indices = np.random.choice(samples.shape[0], samples.shape[0])
         density = generate_KDE(samples[resampled_indices], 'epanechnikov')
         result = evaluate_uniformity(density, cluster_centres, Energy_gradient,
                                      Lz_gradient, uniformity_method)
         results.append(result)
-
+    sys.stdout.write('\nDone')
+    
     results = np.stack(results)
-    return results
+    errors = np.std(results, axis=0)
+    
