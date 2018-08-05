@@ -84,6 +84,10 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     folder += 'bootstrap/'
     if not os.path.exists('main_program_results/' + folder):
         os.mkdir('main_program_results/' + folder)
+        
+    folder += '{} samples/'.format(nsamples)
+    if not os.path.exists('main_program_results/' + folder):
+        os.mkdir('main_program_results/' + folder)
     
     np.save('main_program_results/' + folder + 'uncertainties', errors)
     
@@ -180,6 +184,10 @@ def jackknife(nsamples=10, uniformity_method='projection',
         os.mkdir('main_program_results/' + folder)
         
     folder += 'jackknife/'
+    if not os.path.exists('main_program_results/' + folder):
+        os.mkdir('main_program_results/' + folder)
+        
+    folder += '{} samples/'.format(nsamples)
     if not os.path.exists('main_program_results/' + folder):
         os.mkdir('main_program_results/' + folder)
     
