@@ -1,3 +1,4 @@
+import os
 import sys
 import numpy as np
 from main_program_cluster import get_samples_density_filename, \
@@ -73,3 +74,19 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     results = np.stack(results)
     errors = np.std(results, axis=0)
     
+    if not os.path.exists('main_program_results/' + folder + 'uncertainties'):
+        os.mkdir('main_program_results/' + folder + 'uncertainties')
+    
+    np.save('main_program_results/' + folder + 'uncertainties/uncertainties',
+            errors)
+    
+    # the max dot products of the original run of the main program are not
+    # necessarily at the same index in the resampled runs, and thus their
+    # uncertainties must be calculated separately from the uncertainties in each
+    # individual dot product
+    if uniformity_method == 'dot product':
+        results = np.nanmax(np.abs(results), axis=2)
+        errors = np.std(results, axis=0)
+        np.save('main_program_results/' + folder + \
+                'uncertainties/max_dot_product_uncertainties', errors)
+        
