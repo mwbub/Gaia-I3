@@ -45,15 +45,14 @@ def bootstrap(nsamples=10, uniformity_method='projection',
         the same parameters and in the same location as will be used to run this
         function.
     """
-    samples, density, path = get_samples_density_filename(
+    samples, density, folder = get_samples_density_filename(
             None, search_method, custom_samples, uniformity_method)
-    path = 'main_program_results/' + path
     
-    file = 'data.npz'
+    data_file = 'data.npz'
     if uniformity_method == 'projection':
-        file = 'projection ' + file
+        data_file = 'projection ' + data_file
         
-    data = np.load(path + file)
+    data = np.load('main_program_results/' + folder + data_file)
     cluster_centres = data['cluster']
     
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
