@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.table import Table
+from scipy.interpolate import UnivariateSpline
+import dill
 
 # get data from fits file
 data_g = Table.read("gaia_data_with_straight_cutoff.fits")
@@ -52,8 +54,40 @@ plt.figure()
 # points. Add this back to every points except the last to get centralized
 # points
 bins_centralized = bins[:-1] + (bins[1:] - bins[:-1])/2
-plt.plot(bins_centralized, hist_parallax_rv/hist_parallax_g)
+ratio = hist_parallax_rv/hist_parallax_g
+plt.plot(bins_centralized, ratio)
 plt.xlabel('Parallax')
 plt.ylabel('Ratio (RV/G)')
 plt.title("Ratio of Freqeuncy of Parallax")
 plt.savefig("Ratio of Freqeuncy of Parallax.png")
+
+# fit the selection ratio with univariate spline
+spl = UnivariateSpline(bins_centralized, ratio)
+
+# plot the fitted function
+xs = np.linspace(1,10, 1000)
+plt.figure()
+plt.plot(bins_centralized, ratio, color = 'b', label = "Data")
+plt.plot(xs, spl(xs), color = 'r', label = "Interpolation")
+plt.xlabel('Parallax')
+plt.ylabel('Ratio (RV/G)')
+plt.legend()
+plt.title("Ratio of Freqeuncy of Parallax (Fitted)")
+plt.savefig("Ratio of Freqeuncy of Parallax (Fitted).png")
+
+# define a wrapper function for selection
+def selection(parallax):
+    if parallax > 10:
+        return 0.75
+    elif parallax <1:
+        return 0
+    else:
+        return spl(parallax)
+
+# save the function object
+dill_file = open("selection_function", "wb")
+dill.dump(selection, dill_file)
+
+# code needed to retrieve the function
+#dill_file = open("selection_function", 'rb')
+#selection = dill.load(dill_file)
