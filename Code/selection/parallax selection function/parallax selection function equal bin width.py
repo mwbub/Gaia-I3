@@ -18,7 +18,7 @@ parallax_rv = data_rv["parallax"]
 
 #set up min and max
 parallax_min = min(np.min(parallax_g), np.min(parallax_rv))
-parallax_max = max(np.max(parallax_g), np.max(parallax_rv))
+parallax_max = min(max(np.max(parallax_g), np.max(parallax_rv)),10)
 
 bins = 1000
 
@@ -28,8 +28,8 @@ hist_parallax_rv, edges_rv, patches_rv = plt.hist(
         parallax_rv, range = (parallax_min, parallax_max), bins = bins)
 plt.xlabel('Parallax')
 plt.ylabel('Frequency')
-plt.title("Parallax Distribution in RV")
-plt.savefig("Parallax Distribution in RV.png")
+plt.title("Parallax Distribution in RV (equal bin width)")
+plt.savefig("Parallax Distribution in RV (equal bin width).png")
 
 #plot gaia paralax distribution
 plt.figure()
@@ -37,13 +37,13 @@ hist_parallax_g, edges_g, patches_g = plt.hist(
         parallax_g, range = (parallax_min, parallax_max), bins = bins)
 plt.xlabel('Parallax')
 plt.ylabel('Frequency')
-plt.title("Parallax Distribution in Gaia")
-plt.savefig("Parallax Distribution in Gaia.png")
+plt.title("Parallax Distribution in Gaia (equal bin width)")
+plt.savefig("Parallax Distribution in Gaia (equal bin width).png")
 
 #plot ratio
 plt.figure()
 plt.plot(np.linspace(parallax_min, parallax_max, bins), hist_parallax_rv/hist_parallax_g)
 plt.xlabel('Parallax')
 plt.ylabel('Ratio (RV/G)')
-plt.title("Ratio of Freqeuncy of Parallax")
-plt.savefig("Ratio of Freqeuncy of Parallax.png")
+plt.title("Ratio of Freqeuncy of Parallax (equal bin width)")
+plt.savefig("Ratio of Freqeuncy of Parallax (equal bin width).png")
