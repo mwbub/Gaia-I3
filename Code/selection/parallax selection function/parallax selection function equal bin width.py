@@ -7,9 +7,9 @@ data_g = Table.read("gaia_data_with_straight_cutoff.fits")
 data_rv = Table.read("gaia_rv_with_straight_cutoff.fits")
 
 # get rid of stars with negative parallax
-mask_g = np.all(np.array([data_g["parallax"]>0, 1/data_g["parallax"]<30]),axis = 0)
+mask_g = data_g["parallax"]>0
 data_g = data_g[mask_g]
-mask_rv = np.all(np.array([data_rv["parallax"]>0, 1/data_rv["parallax"]<30]),axis = 0)
+mask_rv = data_rv["parallax"]>0
 data_rv = data_rv[mask_rv]
 
 # get parallax
@@ -18,11 +18,9 @@ parallax_rv = data_rv["parallax"]
 
 #set up min and max
 parallax_min = min(np.min(parallax_g), np.min(parallax_rv))
-parallax_max = min(max(np.max(parallax_g), np.max(parallax_rv)),10)
-#set up a list of even bins of 0.01 kpc in distance space, convert to uneven
-#parralax bins
-distance_pixel = 0.01
-bins = np.flip(1/np.arange(1/parallax_max,1/parallax_min + distance_pixel, distance_pixel), axis =0)
+parallax_max = max(np.max(parallax_g), np.max(parallax_rv))
+
+bins = 1000
 
 #plot rv paralax distribution
 plt.figure()
@@ -44,8 +42,7 @@ plt.savefig("Parallax Distribution in Gaia.png")
 
 #plot ratio
 plt.figure()
-bins_adjusted = np.flip(1/np.arange(1/parallax_max,1/parallax_min, distance_pixel), axis =0)
-plt.plot(bins_adjusted, hist_parallax_rv/hist_parallax_g)
+plt.plot(np.linspace(parallax_min, parallax_max, bins), hist_parallax_rv/hist_parallax_g)
 plt.xlabel('Parallax')
 plt.ylabel('Ratio (RV/G)')
 plt.title("Ratio of Freqeuncy of Parallax")
