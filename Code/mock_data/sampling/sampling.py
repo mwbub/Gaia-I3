@@ -15,7 +15,8 @@ HISTORY:
 import numpy as np
 from scipy import interpolate
 
-def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max):
+def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max,
+                    df_max, selection = None, R_0 = 8.3, z_0 = 0.):
     """
     NAME:
         sample_location
@@ -39,6 +40,10 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max)
         phi_max, phi_min = maximum and minimum angle (in radian)
         
         df_max = maximum value of the dsitribution function
+        
+        selection = a selection function that takes parallax to Sun; takes array
+        
+        R_0, z_0 = Sun's location
 
     OUTPUT:
         A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
@@ -48,6 +53,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max)
     HISTORY:
         2018-07-08 - Written - Samuel Wong
         2018-07-13 - Modified so that df assumed to take arrays - Samuel Wong
+        2018-08-08 - Added optional selection function - Samuel Wong
     """
     # initialize list storing [[R,z], [R,z],..] result
     Rz_set = []
@@ -178,7 +184,7 @@ def sample_velocity(df, v_max, n, df_max):
     """
     # initialize list storing velocity result
     v_set = []
-    # generate an array of random point in the cube: [0, v_max]x[0,1]
+    # generate an array of random point in the cube: [0, v_max]x[0,df_max]
     low =  (0, 0)
     high = (v_max, df_max)
     # repeat while not enough points are generated yet
