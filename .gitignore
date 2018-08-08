@@ -6,3 +6,5 @@ __pycache__/
 *.log
 *.gz
 *.bak
+gaia_data_with_straight_cutoff.fits
+gaia_rv_with_straight_cutoff.fits
