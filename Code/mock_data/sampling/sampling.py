@@ -120,39 +120,39 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
     HISTORY:
         2018-08-08 - Written - Samuel Wong
     """
-    # initialize list storing [[R,z], [R,z],..] result
-    Rz_set = []
+    # initialize list storing [[R,z,phi], [R,z,phi],..] result
+    Rzphi_set = []
     # generate an array of random point in the cube:
-    #[R_min, R_max]x[z_min, z_max]x[0,df_max]
-    # this is effectively random points in Rz space and a random trial height
-    low =  (R_min, z_min, 0)
-    high = (R_max, z_max, df_max)
+    #[R_min, R_max]x[z_min, z_max]x[phi_min, phi_max]x[0,df_max]x[0,1]
+    # this is effectively random points in 5 dimensional space
+    low =  (R_min, z_min, phi_min, 0, 0)
+    high = (R_max, z_max, phi_max, df_max, 1)
     # repeat while not enough points are generated yet
-    while len(Rz_set) < n:
+    while len(Rzphi_set) < n:
         # number of points to generate is the number of points missing
-        nmore = n - len(Rz_set)
+        nmore = n - len(Rzphi_set)
         # generate randome points in cube
-        R_z_ptrial = np.random.uniform(low, high, size=(nmore, 3))
-        R, z, p_trial = [R_z_ptrial[:, i] for i in range(3)]
+        R_z_phi_ptrial_psel = np.random.uniform(low, high, size=(nmore, 5))
+        R, z, phi, p_trial, p_sel = [R_z_phi_ptrial_psel[:, i] for i in range(5)]
         # calculate the actual probability at these points
         p = df(R,z)
-        # accept point if trial is less than real probability; in other words,
+        # first mask: if trial is less than real probability; in other words,
         # accept if the point is below the curve
-        mask = p_trial < p
-        R_accept = R[mask]
-        z_accept = z[mask]
-        # if selection function is given, add another cut and mask
-        if selection is not None:
-            # calculate distance to Sun
-            distance = R
-        Rz_accept = np.stack((R_accept, z_accept), axis = 1)
+        mask1 = p_trial < p
+        # second mask: selection function
+        # calculate distance to Sun
+        distance = np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
+        parallax = 1/distance
+        mask2 = p_sel < selection(parallax)
+        #accept
+        R_accept = R[np.all(np.array(mask1, mask2), axis = 0)]
+        z_accept = z[np.all(np.array(mask1, mask2), axis = 0)]
+        phi_accept = phi[np.all(np.array(mask1, mask2), axis = 0)]
+        Rzphi_accept = np.stack((R_accept, z_accept, phi_accept), axis = 1)
         # add accepted points into stored list
-        Rz_set += Rz_accept.tolist()
-    # convert Rz set to array
-    Rz_set = np.array(Rz_set)
-    # get a unifrom distribution in phi
-    phi_set = np.reshape(np.random.uniform(phi_min, phi_max, n), (n, 1))
-    Rzphi_set = np.hstack((Rz_set, phi_set))
+        Rzphi_set += Rzphi_accept.tolist()
+    # convert Rzphi set to array
+    Rzphi_set = np.array(Rzphi_set)
     return Rzphi_set
 
 
