@@ -133,5 +133,5 @@ def test_sample_location_interpolate_selection(df, n, R_min, R_max, z_min,
 #test_sample_location_selection2(df2, 100000, 0, 1, -1, 1, 0, 2*np.pi, 3, no_selection, 0.236, 0.775)
 #test_sample_location_interpolate_selection(df3, 1000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
 #test_sample_location_interpolate_selection(df1, 1000, 0, 1, -1, 1, 0, 2*np.pi, 3, no_selection)
-test_sample_location_interpolate_selection(df1, 10000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
-test_sample_location_interpolate_selection(df3, 10000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
+#test_sample_location_interpolate_selection(df1, 10000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
+#test_sample_location_interpolate_selection(df3, 10000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
