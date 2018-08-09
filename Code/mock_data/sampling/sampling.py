@@ -131,7 +131,7 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
     while len(Rzphi_set) < n:
         # number of points to generate is the number of points missing
         nmore = n - len(Rzphi_set)
-        # generate randome points in cube
+        # generate random points in cube
         R_z_phi_ptrial_psel = np.random.uniform(low, high, size=(nmore, 5))
         R, z, phi, p_trial, p_sel = [R_z_phi_ptrial_psel[:, i] for i in range(5)]
         # calculate the actual probability at these points
