@@ -394,6 +394,10 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
     axis = [['x', 'R_0'], ['y', 'R_0'], ['z', 'R_0'], ['vx', 'v_0'],
             ['vy', 'v_0'], ['vz', 'v_0']]
     
+    # convert dot products to max dot products if not done already
+    if uniformity_method == 'dot product' and result.ndim != 1:
+        result = np.nanmax(np.abs(result), axis = 1)
+    
     # filter out nans in errors
     if errors is not None:
         cluster = cluster[~np.isnan(errors)]
