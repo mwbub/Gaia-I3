@@ -160,7 +160,7 @@ def jackknife(nsamples=10, uniformity_method='projection',
     
     # split the data into nsamples non-overlapping splits, each of which contain
     # (len(samples) - len(samples) / nsamples) points
-    kf = KFold(n_splits=nsamples)
+    kf = KFold(n_splits=nsamples, shuffle=True)
     splits = kf.split(samples)
     split_indices = [indices for indices, _ in splits]
     
