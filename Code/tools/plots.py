@@ -402,7 +402,8 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
     if errors is not None:
         cluster = cluster[~np.isnan(errors)]
         result = result[~np.isnan(errors)]
-        errors = errors[~np.isnan(errors) & ~np.isnan(result)]
+        errors = errors[~np.isnan(errors)]
+        errors = errors[~np.isnan(result)]
     
     # filter out nans in result
     cluster = cluster[~np.isnan(result)]
@@ -413,7 +414,7 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
     
     for i in range(len(axis)):
         plt.figure(figsize=(10,8))
-        plt.errorbar(cluster[:,i], result, yerr=errors)
+        plt.errorbar(cluster[:,i], result, yerr=errors, fmt='.')
         plt.xlabel('${}/{}$'.format(*axis[i]))
         
         if uniformity_method == 'projection':
@@ -430,7 +431,7 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
                         'dot product {} figure.png'.format(axis[i][0]))
             
     plt.figure(figsize=(10,8))
-    plt.errorbar(energy, result, yerr=errors)
+    plt.errorbar(energy, result, yerr=errors, fmt='.')
     plt.xlabel('$E$')
     
     if uniformity_method == 'projection':
@@ -445,7 +446,7 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
                     'dot product E figure.png')
         
     plt.figure(figsize=(10,8))
-    plt.errorbar(angular_momentum, result, yerr=errors)
+    plt.errorbar(angular_momentum, result, yerr=errors, fmt='.')
     plt.xlabel('$L_z$')
     
     if uniformity_method == 'projection':
