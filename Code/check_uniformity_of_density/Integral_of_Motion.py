@@ -18,14 +18,15 @@ HISTORY:
     2018-07-10 - Added explicit gradient function - Samuel Wong
 """
 import sys
-sys.path.append("../")
+sys.path.append("..")
+sys.path.append("../tools")
 from galpy.potential import MWPotential2014
 from galpy.potential import evaluatePotentials
 from galpy.potential import evaluatephiforces
 from galpy.potential import evaluateRforces
 from galpy.potential import evaluatezforces
 import numpy as np
-from tools.tools import rect_to_cyl, cyl_to_rect
+from tools import rect_to_cyl, cyl_to_rect
 
 
 def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
