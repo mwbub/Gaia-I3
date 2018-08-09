@@ -154,6 +154,7 @@ def jackknife(nsamples=10, uniformity_method='projection',
         
     with np.load('main_program_results/' + folder + data_file) as data:
         cluster_centres = data['cluster']
+        original_result = data['result']
     
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
             cluster_centres, gradient_method, custom_potential)
@@ -177,7 +178,8 @@ def jackknife(nsamples=10, uniformity_method='projection',
     sys.stdout.write('\nDone\n')
     
     results = np.stack(results)
-    errors = np.nanstd(results, axis=0)
+    var = np.sum((results-original_result)**2, axis=0)*(nsamples-1)/nsamples
+    errors = np.sqrt(var)
     
     folder += 'uncertainties/'
     if not os.path.exists('main_program_results/' + folder):
@@ -199,7 +201,9 @@ def jackknife(nsamples=10, uniformity_method='projection',
     # individual dot product
     if uniformity_method == 'dot product':
         results = np.nanmax(np.abs(results), axis=2)
-        errors = np.nanstd(results, axis=0)
+        original_result = np.nanmax(np.abs(original_result), axis=1)
+        var = np.sum((results-original_result)**2, axis=0)*(nsamples-1)/nsamples
+        errors = np.sqrt(var)
         np.save('main_program_results/' + folder + 
                 'max_dot_product_uncertainties', errors)
         
