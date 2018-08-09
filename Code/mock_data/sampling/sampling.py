@@ -108,7 +108,8 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         
         df_max = maximum value of the dsitribution function
         
-        selection = a selection function that takes parallax to Sun; takes array
+        selection = a selection function that takes parallax to Sun;
+                    takes array;
                     take parallax in physical units
         
         R_0, z_0 = Sun's location in natural units
@@ -142,7 +143,7 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         mask1 = p_trial < p
         # second mask: selection function
         # calculate distance to Sun; times 8 due to selection takes physical unit
-        distance = 8*np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
+        distance = 8.*np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
         parallax = 1/distance
         mask2 = p_sel < selection(parallax)
         #accept
