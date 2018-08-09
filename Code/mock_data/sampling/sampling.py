@@ -81,6 +81,83 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max)
     return Rzphi_set
 
 
+def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
+                              phi_max, df_max, selection, R_0 = 1.0, z_0 = 0.,
+                              phi_0 = 0.):
+    """
+    NAME:
+        sample_location_selection
+
+    PURPOSE:
+        Given a density function and the maximum and minimum in cylindrical 
+        coordinate, as well as number of samples desired, sample location.
+        
+    INPUT:
+        df = a density function that takes input in galactocentric Cylindrical
+             coordinate and return the normalized density at that point;
+             Assume it takes array in the form 
+             df(array([R,R,..]),array([z,z,...]))
+             
+        n = number of samples desired
+        
+        R_max, R_min = maximum and minimum radius (in natural units)
+        
+        z_max, z_min = maximum and minimum height (in natural units)
+        
+        phi_max, phi_min = maximum and minimum angle (in radian)
+        
+        df_max = maximum value of the dsitribution function
+        
+        selection = a selection function that takes parallax to Sun;
+                    takes array;
+                    take parallax in physical units
+        
+        R_0, z_0, phi_0 = Sun's location in natural units
+
+    OUTPUT:
+        A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
+        components.
+
+
+    HISTORY:
+        2018-08-08 - Written - Samuel Wong
+    """
+    # initialize list storing [[R,z,phi], [R,z,phi],..] result
+    Rzphi_set = []
+    # generate an array of random point in the cube:
+    #[R_min, R_max]x[z_min, z_max]x[phi_min, phi_max]x[0,df_max]x[0,1]
+    # this is effectively random points in 5 dimensional space
+    low =  (R_min, z_min, phi_min, 0, 0)
+    high = (R_max, z_max, phi_max, df_max, 1)
+    # repeat while not enough points are generated yet
+    while len(Rzphi_set) < n:
+        # number of points to generate is the number of points missing
+        nmore = n - len(Rzphi_set)
+        # generate random points in cube
+        R_z_phi_ptrial_psel = np.random.uniform(low, high, size=(nmore, 5))
+        R, z, phi, p_trial, p_sel = [R_z_phi_ptrial_psel[:, i] for i in range(5)]
+        # calculate the actual probability at these points
+        p = df(R,z)
+        # first mask: if trial is less than real probability; in other words,
+        # accept if the point is below the curve
+        mask1 = p_trial < p
+        # second mask: selection function
+        # calculate distance to Sun; times 8 due to selection takes physical unit
+        distance = 8.*np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
+        parallax = 1/distance
+        mask2 = p_sel < selection(parallax)
+        #accept
+        R_accept = R[np.all(np.array([mask1, mask2]), axis = 0)]
+        z_accept = z[np.all(np.array([mask1, mask2]), axis = 0)]
+        phi_accept = phi[np.all(np.array([mask1, mask2]), axis = 0)]
+        Rzphi_accept = np.stack((R_accept, z_accept, phi_accept), axis = 1)
+        # add accepted points into stored list
+        Rzphi_set += Rzphi_accept.tolist()
+    # convert Rzphi set to array
+    Rzphi_set = np.array(Rzphi_set)
+    return Rzphi_set
+
+
 def sample_location_interpolate(df, n, R_min, R_max, z_min, z_max, phi_min,
                                 phi_max, df_max, pixel_R, pixel_z):
     """
@@ -150,7 +227,88 @@ def sample_location_interpolate(df, n, R_min, R_max, z_min, z_max, phi_min,
     # evaluation as df
     return sample_location(evaluate_ip, n, R_min, R_max, z_min, z_max, phi_min,
                                 phi_max, df_max)
-    
+
+
+def sample_location_interpolate_selection(df, n, R_min, R_max, z_min, z_max,
+                                          phi_min, phi_max, df_max, pixel_R,
+                                          pixel_z, selection, R_0 = 1.0,
+                                          z_0 = 0., phi_0 = 0.):
+    """
+    NAME:
+        sample_location_interpolate_selection
+
+    PURPOSE:
+        Given a density function and the maximum and minimum in cylindrical 
+        coordinate, as well as number of samples desired, sample location using
+        interpolation. Add parallax selection.
+        
+    INPUT:
+        df = a density function that takes input in galactocentric Cylindrical
+             coordinate and return the normalized density at that point;
+             Assume it takes array in the form 
+             df(array([R,R,..]),array([z,z,...]))
+             
+        n = number of samples desired
+        
+        R_max, R_min = maximum and minimum radius (in natural units)
+        
+        z_max, z_min = maximum and minimum height (in natural units)
+        
+        phi_max, phi_min = maximum and minimum angle (in radian)
+        
+        df_max = maximum value of the dsitribution function
+        
+        pixel_R, pixel_z = the distance in R and z when making grid for
+                           interpolation
+                
+        selection = a selection function that takes parallax to Sun;
+                    takes array;
+                    take parallax in physical units
+        
+        R_0, z_0, phi_0 = Sun's location in natural units
+
+    OUTPUT:
+        A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
+        components.
+
+
+    HISTORY:
+        2018-08-09 - Written - Samuel Wong
+    """
+    # calculate the number of spacing in each direction
+    R_number = int((R_max - R_min)/pixel_R)
+    z_number = int((z_max - z_min)/pixel_z)
+    #create the linspace in each direction according to the specified number
+    #of points in each axis
+    R_linspace = np.linspace(R_min, R_max, R_number)
+    z_linspace = np.linspace(z_min, z_max, z_number)
+    # mesh and create the grid
+    Rv, zv = np.meshgrid(R_linspace, z_linspace)
+    #get grid
+    grid = np.dstack((Rv, zv))
+    #initialize grid values.
+    #grid is a 3 dimensional array since it stores pairs of values, but 
+    #grid values are 2 dimensinal array
+    grid_df = np.empty((grid.shape[0], grid.shape[1]))
+    #find df value on the grid
+    for i in range(z_number):
+        for j in range(R_number):
+            R, z = grid[i][j]
+            grid_df[i][j] = df(R,z)
+    # generate interpolation object
+    ip_df = interpolate.RectBivariateSpline(z_linspace, R_linspace,
+                                                grid_df)
+    # since the interpolation object takes (z,R) coordinate, define a 
+    #wrapper around the interpoaltion evaluation function
+    def evaluate_ip(R, z):
+        return ip_df.ev(z, R)
+    # call the normal sampling location function and pass the interpolation
+    # evaluation as df
+    return sample_location_selection(evaluate_ip, n, R_min, R_max, z_min,
+                                     z_max, phi_min, phi_max, df_max,
+                                     selection, R_0, z_0, phi_0)
+
+
 def sample_velocity(df, v_max, n, df_max):
     """
     NAME:
@@ -178,7 +336,7 @@ def sample_velocity(df, v_max, n, df_max):
     """
     # initialize list storing velocity result
     v_set = []
-    # generate an array of random point in the cube: [0, v_max]x[0,1]
+    # generate an array of random point in the cube: [0, v_max]x[0,df_max]
     low =  (0, 0)
     high = (v_max, df_max)
     # repeat while not enough points are generated yet
