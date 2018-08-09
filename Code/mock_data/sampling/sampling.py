@@ -82,7 +82,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max)
 
 
 def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
-                              phi_max, df_max, selection, R_0 = 8.3, z_0 = 0.,
+                              phi_max, df_max, selection, R_0 = 1.0, z_0 = 0.,
                               phi_0 = 0.):
     """
     NAME:
@@ -109,8 +109,9 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         df_max = maximum value of the dsitribution function
         
         selection = a selection function that takes parallax to Sun; takes array
+                    take parallax in physical units
         
-        R_0, z_0 = Sun's location
+        R_0, z_0 = Sun's location in natural units
 
     OUTPUT:
         A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
@@ -140,8 +141,8 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         # accept if the point is below the curve
         mask1 = p_trial < p
         # second mask: selection function
-        # calculate distance to Sun
-        distance = np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
+        # calculate distance to Sun; times 8 due to selection takes physical unit
+        distance = 8*np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
         parallax = 1/distance
         mask2 = p_sel < selection(parallax)
         #accept
