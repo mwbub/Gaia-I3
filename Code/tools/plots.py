@@ -414,7 +414,8 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
     
     for i in range(len(axis)):
         plt.figure(figsize=(10,8))
-        plt.errorbar(cluster[:,i], result, yerr=errors, fmt='.')
+        plt.errorbar(cluster[:,i], result, yerr=errors, fmt='.', 
+                     ecolor='lightgrey')
         plt.ylim((0,1))
         plt.xlabel('${}/{}$'.format(*axis[i]))
         
@@ -432,7 +433,7 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
                         'dot product {} figure.png'.format(axis[i][0]))
             
     plt.figure(figsize=(10,8))
-    plt.errorbar(energy, result, yerr=errors, fmt='.')
+    plt.errorbar(energy, result, yerr=errors, fmt='.', ecolor='lightgrey')
     plt.ylim((0,1))
     plt.xlabel('$E$')
     
@@ -448,7 +449,8 @@ def errorbar_plot(result, cluster, file_name, uniformity_method,
                     'dot product E figure.png')
         
     plt.figure(figsize=(10,8))
-    plt.errorbar(angular_momentum, result, yerr=errors, fmt='.')
+    plt.errorbar(angular_momentum, result, yerr=errors, fmt='.', 
+                 ecolor='lightgrey')
     plt.ylim((0,1))
     plt.xlabel('$L_z$')
     
