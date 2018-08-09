@@ -56,8 +56,8 @@ def bootstrap(nsamples=10, uniformity_method='projection',
     if uniformity_method == 'projection':
         data_file = 'projection ' + data_file
         
-    data = np.load('main_program_results/' + folder + data_file)
-    cluster_centres = data['cluster']
+    with np.load('main_program_results/' + folder + data_file) as data:
+        cluster_centres = data['cluster']
     
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
             cluster_centres, gradient_method, custom_potential)
@@ -152,8 +152,8 @@ def jackknife(nsamples=10, uniformity_method='projection',
     if uniformity_method == 'projection':
         data_file = 'projection ' + data_file
         
-    data = np.load('main_program_results/' + folder + data_file)
-    cluster_centres = data['cluster']
+    with np.load('main_program_results/' + folder + data_file) as data:
+        cluster_centres = data['cluster']
     
     Energy_gradient, Lz_gradient = get_Energy_Lz_gradient(
             cluster_centres, gradient_method, custom_potential)
