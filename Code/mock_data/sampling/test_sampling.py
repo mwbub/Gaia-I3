@@ -106,6 +106,24 @@ def test_sample_location_selection2(df, n, R_min, R_max, z_min, z_max, phi_min,
     print('theoretical std of z =', std_z)
     print('std of z = ', np.std(z))
     
+def test_sample_location_interpolate_selection(df, n, R_min, R_max, z_min,
+                                               z_max, phi_min, phi_max, df_max,
+                                               selection):
+    location = sample_location_interpolate_selection(df, n, R_min, R_max, 
+                                                     z_min, z_max, phi_min,
+                                                     phi_max, df_max,
+                                                     0.1, 0.01,
+                                                     selection)
+    R = location[:, 0]
+    z = location[:, 1]
+    phi = location[:, 2]
+    
+    fig = plt.figure(figsize=(8, 8), facecolor='black')
+    plt.style.use("dark_background")
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(R*np.cos(phi), R*np.sin(phi), z, s = 10)
+    plt.show()
+    
 #test_sample_location(df1,1000000, 0, 1, -1, 1, 0, 2*np.pi, 2, 0.163, 0.577)
 #test_sample_location(df2, 1000000, 0, 1, -1, 1, 0, 2*np.pi, 3, 0.236, 0.775)
 #test_sample_velocity(vdf = vdf1, v_max = 80, n= 100000, vdf_max= 1.99, std =0.2)
@@ -113,3 +131,7 @@ def test_sample_location_selection2(df, n, R_min, R_max, z_min, z_max, phi_min,
 #test_sample_location_interpolate(df1,1000000, 0, 1, -1, 1, 0, 2*np.pi, 2, 0.163, 0.577)
 #test_sample_location_selection(df3,3000, 0, 1, -1, 1, 0, 2*np.pi, 1, selection)
 #test_sample_location_selection2(df2, 100000, 0, 1, -1, 1, 0, 2*np.pi, 3, no_selection, 0.236, 0.775)
+#test_sample_location_interpolate_selection(df3, 1000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
+#test_sample_location_interpolate_selection(df1, 1000, 0, 1, -1, 1, 0, 2*np.pi, 3, no_selection)
+test_sample_location_interpolate_selection(df1, 10000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
+test_sample_location_interpolate_selection(df3, 10000, 0, 1, -1, 1, 0, 2*np.pi, 3, selection)
