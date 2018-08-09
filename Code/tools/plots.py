@@ -362,3 +362,97 @@ def error_plot(errors, cluster, file_name, uniformity_method,
         for j in range(i + 1, 6):
             error_plot_ij(errors, cluster, file_name, uniformity_method, i, j)
             
+def 1d_plot(result, cluster, file_name, uniformity_method, 
+            custom_potential = None, errors = None):
+    """
+    NAME:
+        1d_plot
+        
+    PURPOSE:
+        Plot 1d scatter plots of the results of a run of the main program in 
+        each dimension.
+        
+    INPUT:
+        result - a numpy array storing the result at each cluster center
+        
+        cluster - the cluster centres
+        
+        file_name - the name of the folder in which the plot is to be saved
+        
+        uniformity_method - the method used to compute the results; can be 
+        "projection" or "dot product"
+        
+        custom_potential - galpy Potential or list of Potentials used to 
+        evaluate energy; default = MWPotential2014
+        
+        errors - a numpy array of errors in the same shape as result; if
+        provided, error bars will be plotted for each point
+        
+    OUTPUT:
+        None
+    """
+    axis = [['x', 'R_0'], ['y', 'R_0'], ['z', 'R_0'], ['vx', 'v_0'],
+            ['vy', 'v_0'], ['vz', 'v_0']]
+    
+    # filter out nans in errors
+    if errors is not None:
+        cluster = cluster[~np.isnan(errors)]
+        result = result[~np.isnan(errors)]
+        errors = errors[~np.isnan(errors) & ~np.isnan(result)]
+    
+    # filter out nans in result
+    cluster = cluster[~np.isnan(result)]
+    result = result[~np.isnan(result)]
+        
+    energy = Energy(cluster, custom_potential)
+    angular_momentum = L_z(cluster)
+    
+    for i in range(len(axis)):
+        plt.figure(figsize=(10,8))
+        plt.errorbar(cluster[:,i], result, yerr=errors)
+        plt.xlabel('${}/{}$'.format(*axis[i]))
+        
+        if uniformity_method == 'projection':
+            plt.ylabel('Fractional Length of Projection')
+            plt.title('Fractional Length of Projection in the ${}$ '
+                      'Dimension'.format(axis[i][0]))
+            plt.savefig('main_program_results/' + file_name +
+                        'projection {} figure.png'.format(axis[i][0]))
+        elif uniformity_method == 'dot product':
+            plt.ylabel('Maximum Absolute Dot Product')
+            plt.title('Maximum Absolute Dot Product in the ${}$ '
+                      'Dimension'.format(axis[i][0]))
+            plt.savefig('main_program_results/' + file_name +
+                        'dot product {} figure.png'.format(axis[i][0]))
+            
+    plt.figure(figsize=(10,8))
+    plt.errorbar(energy, result, yerr=errors)
+    plt.xlabel('$E$')
+    
+    if uniformity_method == 'projection':
+        plt.ylabel('Fractional Length of Projection')
+        plt.title('Fractional Length of Projection in the $E$ Dimension')
+        plt.savefig('main_program_results/' + file_name + 
+                    'projection E figure.png')
+    elif uniformity_method == 'dot product':
+        plt.ylabel('Maximum Absolute Dot Product')
+        plt.title('Maximum Absolute Dot Product in the $E$ Dimension')
+        plt.savefig('main_program_results/' + file_name +
+                    'dot product E figure.png')
+        
+    plt.figure(figsize=(10,8))
+    plt.errorbar(angular_momentum, result, yerr=errors)
+    plt.xlabel('$L_z$')
+    
+    if uniformity_method == 'projection':
+        plt.ylabel('Fractional Length of Projection')
+        plt.title('Fractional Length of Projection in the $L_z$ Dimension')
+        plt.savefig('main_program_results/' + file_name +
+                    'projection L_z figure.png')
+    elif uniformity_method == 'dot product':
+        plt.ylabel('Maximum Absolute Dot Product')
+        plt.title('Maximum Absolute Dot Product in the $L_z$ '
+                  'Dimension')
+        plt.savefig('main_program_results/' + file_name +
+                    'dot product L_z figure.png')
+        
