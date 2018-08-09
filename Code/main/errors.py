@@ -4,7 +4,8 @@ import numpy as np
 from sklearn.utils import resample
 from sklearn.model_selection import KFold
 from main_program_cluster import get_samples_density_filename, \
-    get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE, error_plot
+    get_Energy_Lz_gradient, evaluate_uniformity, generate_KDE, error_plot, \
+    errorbar_plot
 
 _ERASESTR = '\r                                                              \r'
 
@@ -214,3 +215,4 @@ def jackknife(nsamples=10, uniformity_method='projection',
                custom_potential)
     errorbar_plot(original_result, cluster_centres, folder, uniformity_method,
                   custom_potential, errors)
+    
