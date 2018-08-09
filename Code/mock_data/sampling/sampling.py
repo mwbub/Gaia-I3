@@ -145,9 +145,9 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         parallax = 1/distance
         mask2 = p_sel < selection(parallax)
         #accept
-        R_accept = R[np.all(np.array(mask1, mask2), axis = 0)]
-        z_accept = z[np.all(np.array(mask1, mask2), axis = 0)]
-        phi_accept = phi[np.all(np.array(mask1, mask2), axis = 0)]
+        R_accept = R[np.all(np.array([mask1, mask2]), axis = 0)]
+        z_accept = z[np.all(np.array([mask1, mask2]), axis = 0)]
+        phi_accept = phi[np.all(np.array([mask1, mask2]), axis = 0)]
         Rzphi_accept = np.stack((R_accept, z_accept, phi_accept), axis = 1)
         # add accepted points into stored list
         Rzphi_set += Rzphi_accept.tolist()
