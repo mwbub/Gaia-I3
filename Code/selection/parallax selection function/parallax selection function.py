@@ -77,12 +77,23 @@ plt.savefig("Ratio of Freqeuncy of Parallax (Fitted).png")
 
 # define a wrapper function for selection
 def selection(parallax):
-    if parallax > 10:
-        return 0.75
-    elif parallax <1:
-        return 0
-    else:
-        return spl(parallax)
+    mask_high = parallax >= 10
+    mask_low = parallax <= 1
+    result = spl(parallax)
+    result[mask_high] = 0.77
+    result[mask_low] = 0.
+    return result
+
+# plot the extrapolated selection function
+xs = np.linspace(0,15, 1000)
+plt.figure()
+plt.plot(bins_centralized, ratio, color = 'b', label = "Data")
+plt.plot(xs, selection(xs), color = 'r', label = "Interpolation")
+plt.xlabel('Parallax')
+plt.ylabel('Ratio (RV/G)')
+plt.legend()
+plt.title("Ratio of Freqeuncy of Parallax (Extrapolated)")
+plt.savefig("Ratio of Freqeuncy of Parallax (Extrapolated).png")
 
 # save the function object
 dill_file = open("selection_function", "wb")
