@@ -362,7 +362,7 @@ def error_plot(errors, cluster, file_name, uniformity_method,
         for j in range(i + 1, 6):
             error_plot_ij(errors, cluster, file_name, uniformity_method, i, j)
             
-def 1d_plot(result, cluster, file_name, uniformity_method, 
+def errorbar_plot(result, cluster, file_name, uniformity_method, 
             custom_potential = None, errors = None):
     """
     NAME:

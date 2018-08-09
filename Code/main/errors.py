@@ -104,8 +104,8 @@ def bootstrap(nsamples=10, uniformity_method='projection',
         
     error_plot(errors, cluster_centres, folder, uniformity_method, 
                custom_potential)
-    1d_plot(original_result, cluster_centres, folder, uniformity_method,
-            custom_potential, errors)
+    errorbar_plot(original_result, cluster_centres, folder, uniformity_method,
+                  custom_potential, errors)
     
     
 def jackknife(nsamples=10, uniformity_method='projection', 
@@ -212,5 +212,5 @@ def jackknife(nsamples=10, uniformity_method='projection',
         
     error_plot(errors, cluster_centres, folder, uniformity_method, 
                custom_potential)
-    1d_plot(original_result, cluster_centres, folder, uniformity_method,
-            custom_potential, errors)
+    errorbar_plot(original_result, cluster_centres, folder, uniformity_method,
+                  custom_potential, errors)
