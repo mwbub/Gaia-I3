@@ -1,4 +1,5 @@
 import sys
+sys.path.append('..')
 sys.path.append('../check_uniformity_of_density')
 
 import numpy as np
