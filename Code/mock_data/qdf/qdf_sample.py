@@ -33,7 +33,7 @@ qdf= quasiisothermaldf(1./3.,0.2,0.1,1.,1.,pot=MWPotential2014,aA=aA,cutcounter=
 start = time_class.time()
 #sample location
 # get the maximum of qdf
-qdf_max = qdf.density(0.9375, 0)
+qdf_max = 1.2*qdf.density(0.9375, 0)
 # sample R from 7.5 kpc to 8.5 kpc; sample z from -0.5 kpc to 0.5 kpc
 # let phi range from -arctan(0.5/8) to arctan(0.5/8)
 location = sample_location_interpolate(qdf.density, 1700000, 0.9375, 1.0625,
