@@ -40,7 +40,6 @@ location = sample_location_interpolate(qdf.density, 1700000, 0.9375, 1.0625,
                                        -0.0625, 0.0625, -0.0624, 0.0624, 
                                        df_max = qdf_max, pixel_R = 0.01,
                                        pixel_z = 0.01)
-np.save('qdf sample location', location)
 # sample velocity
 # get the R, z and phi colum
 R,z,phi = location.T
