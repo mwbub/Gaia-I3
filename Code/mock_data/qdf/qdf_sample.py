@@ -53,11 +53,12 @@ R, z, vR, vT, vz = Rz_v.T
 coord_rect = cyl_to_rect(R, vR, vT, z, vz, phi)
 # convert from natural to physics 
 physical_rect = to_physical_units(coord_rect)
+
+#get current date
+date = time_class.localtime(time_class.time())[0:3]
 #save data
-np.save("qdf sample cartesian physical.npy", physical_rect)
+np.save("qdf sample cartesian physical, date={}.npy".format(str(date)), physical_rect)
 
 end = time_class.time()
 print('time =', end - start)
 
-    
-    
