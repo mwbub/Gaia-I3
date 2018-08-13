@@ -30,7 +30,6 @@ from kmeans.kmeans import *
 from tools.tools import *
 from tools.plots import *
 
-
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
