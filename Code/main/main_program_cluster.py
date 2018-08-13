@@ -29,6 +29,12 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 from tools.plots import *
+import warnings
+warnings.filterwarnings('ignore')
+sys.path.append('../test')
+from mcmillan2017_potential.mcmillan import *
+import galpy
+galpy.potential.turn_physical_off(McMillan2017)
 
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
@@ -271,6 +277,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
     summary_save(result, cluster, file_name, uniformity_method)        
     kmeans_plot(samples, cluster, file_name)
     color_plot(result, cluster, file_name, uniformity_method, custom_potential)
+    color_plot_bokeh(result, cluster, file_name, uniformity_method)
     errorbar_plot(result, cluster, file_name, uniformity_method, 
                   custom_potential)
        
@@ -278,6 +285,6 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
 if __name__ == "__main__":
     main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
-         custom_centres = None)
+         custom_centres = None, custom_potential = None)
     
     
