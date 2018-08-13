@@ -217,7 +217,7 @@ if __name__ == "__main__":
                                         vx=cluster.T[3], vy=cluster.T[4], vz=cluster.T[5], result=result, colours=colours))
     
     #denote interactive tools for linked plots
-    TOOLS = "lasso_select,undo,save"
+    TOOLS = "lasso_select,box_select"
     
     # create and save graph of dot product in color scatter plot in all 
     # 2 dimensional projections.

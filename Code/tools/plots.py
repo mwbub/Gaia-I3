@@ -558,7 +558,7 @@ def color_plot_bokeh(result, cluster, file_name, uniformity_method):
                                         vx=cluster.T[3], vy=cluster.T[4], vz=cluster.T[5], result=result, colours=colours))
     
     #denote interactive tools for linked plots
-    TOOLS = "lasso_select,undo,save"
+    TOOLS = "lasso_select,box_select"
         
     
     # Go through all combinations of axis projection and plot them
