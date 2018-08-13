@@ -1,6 +1,6 @@
 """
 NAME:
-    bokeh
+    bokeh_plots
 
 PURPOSE:
     Used to help plot interactive dot product and fractional length projections using Bokeh linked plots.
@@ -17,6 +17,7 @@ from bokeh.plotting import figure
 from bokeh.models.annotations import Title
 import matplotlib as mpl
 import pylab as plt
+plt.ioff() # turn off plots
 
 
 def color_plot_ij_bokeh(source, TOOLS, i, j, all_proj, counter, uniformity_method):
@@ -180,8 +181,8 @@ if __name__ == "__main__":
     
     # User Input
     uniformity_method = "projection" #projection or dot product
-    MIN_VAL=0
-    MAX_VAL=1
+    MIN_VAL=0.
+    MAX_VAL=1.
     output_file("{}.html".format(uniformity_method))
     data = np.load('projection data.npz')
             
@@ -192,13 +193,25 @@ if __name__ == "__main__":
     if uniformity_method == "dot product":
         result = np.nanmax(np.absolute(result), axis = 1)
     
+    # Full range
     cluster = cluster[~np.isnan(result)]
     result = result[~np.isnan(result)]
-    
-    # Filter by a specified range of dot product
-    cluster = cluster[(MIN_VAL < result) & (result < MAX_VAL)]
     colours = ["#%02x%02x%02x" % (int(r), int(g), int(b)) for r, g, b, _ in 255*mpl.cm.plasma(mpl.colors.Normalize()(result))]
     
+    # Filter by a specified range of dot product
+    
+    if MIN_VAL != 0. or MIN_VAL != 1.:
+        cluster = cluster[(MIN_VAL < result) & (result < MAX_VAL)]
+        result_temp = result[(MIN_VAL < result) & (result < MAX_VAL)]
+        
+        # Covert list to array
+        colours = np.array([[colours]])
+        colours = colours.flatten()
+        
+        colours = colours[(MIN_VAL < result) & (result < MAX_VAL)]
+        result = result_temp
+
+          
     # create a column data source for the plots to share
     source = ColumnDataSource(data=dict(x=cluster.T[0], y=cluster.T[1], z=cluster.T[2],
                                         vx=cluster.T[3], vy=cluster.T[4], vz=cluster.T[5], result=result, colours=colours))
