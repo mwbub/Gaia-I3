@@ -43,10 +43,8 @@ location = sample_location_interpolate(qdf.density, 1700000, 0.9375, 1.0625,
 # sample velocity
 # get the R, z and phi colum
 R,z,phi = location.T
-# combine R and z into one array
-Rz_set = np.stack((R, z), axis = 1)
-#sample v on set
-Rz_v = qdf.sampleV_interpolate(Rz_set, R_pixel = 0.01, z_pixel = 0.01)
+#sample v interpolate
+Rz_v = qdf.sampleV_interpolate(R, z, R_pixel = 0.01, z_pixel = 0.01)
 R, z, vR, vT, vz = Rz_v.T
 # convert to cartesian
 coord_rect = cyl_to_rect(R, vR, vT, z, vz, phi)
