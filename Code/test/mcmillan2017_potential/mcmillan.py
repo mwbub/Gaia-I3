@@ -2,9 +2,7 @@ import numpy as np
 from galpy.potential import DiskSCFPotential, NFWPotential, \
     SCFPotential, scf_compute_coeffs_axi
 from galpy.util import bovy_conversion
-import sys
-sys.path.append('../test')
-from mcmillan2017_potential.SCF_derivs import mySCFPotential, myDiskSCFPotential
+from SCF_derivs import mySCFPotential, myDiskSCFPotential
 
 ro = 8.21
 vo = 233.1

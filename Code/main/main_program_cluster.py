@@ -29,12 +29,7 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 from tools.plots import *
-import warnings
-warnings.filterwarnings('ignore')
-sys.path.append('../test')
-from mcmillan2017_potential.mcmillan import *
-import galpy
-galpy.potential.turn_physical_off(McMillan2017)
+
 
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
