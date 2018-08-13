@@ -1,9 +1,13 @@
 """
 NAME:
-    bokeh_plots
+    bokeh_select_range
 
 PURPOSE:
     Used to help plot interactive dot product and fractional length projections using Bokeh linked plots.
+    This is different from bokeh in main program because we CAN CHOOSE A RANGE
+    
+HOW TO USE:
+    
 """
 
 import numpy as np
