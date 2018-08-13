@@ -96,9 +96,9 @@ plt.title("Ratio of Freqeuncy of Parallax (Extrapolated)")
 plt.savefig("Ratio of Freqeuncy of Parallax (Extrapolated).png")
 
 # save the function object
-dill_file = open("selection_function", "wb")
-dill.dump(selection, dill_file)
+with open("selection_function", "wb") as dill_file:
+    dill.dump(selection, dill_file)
 
 # code needed to retrieve the function
-#dill_file = open("selection_function", 'rb')
-#selection = dill.load(dill_file)
+#with open("filename.pkl", "rb") as dill_file:
+#    selection = dill.load(dill_file)
