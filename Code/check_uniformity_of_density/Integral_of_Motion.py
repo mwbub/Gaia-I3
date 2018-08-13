@@ -26,7 +26,7 @@ from galpy.potential import evaluatephiforces
 from galpy.potential import evaluateRforces
 from galpy.potential import evaluatezforces
 import numpy as np
-from tools import rect_to_cyl, cyl_to_rect
+from tools.tools import rect_to_cyl, cyl_to_rect
 
 
 def cartesian_to_cylindrical(x, y, z, vx, vy, vz):
