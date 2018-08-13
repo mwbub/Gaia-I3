@@ -19,7 +19,6 @@ HISTORY:
 """
 import sys
 sys.path.append("..")
-sys.path.append("../tools")
 from galpy.potential import MWPotential2014
 from galpy.potential import evaluatePotentials
 from galpy.potential import evaluatephiforces
