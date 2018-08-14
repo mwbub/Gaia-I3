@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.neighbors import KernelDensity
 
 #Defining a KDE function to quickly compute probabilities for the data set
-def generate_KDE(inputs, ker):
+def generate_KDE(inputs, ker, selection = None):
     """
     NAME:
         generate_KDE
@@ -18,6 +18,9 @@ def generate_KDE(inputs, ker):
                            points and M is the number of parameters.
         ker (string) = One of the 6 avaliable kernel types (gaussian, 
                        tophat, epanechnikov, exponential, linear, cosine).
+        selection = a selection function that takes parallax to Sun and returns
+                    fraction of stars that are left after selection;
+                    takes array; takes parallax in physical units
     
     OUTPUT:
         input_KDE (function) = A blackbox function for the density estimate
@@ -33,10 +36,7 @@ def generate_KDE(inputs, ker):
     inputs = (inputs - inputs_mean)/inputs_std
     
     #Optimizing bandwidth in terms of Scott's Multivariate Rule of Thumb
-    shape_string = str(inputs.shape)
-    objects, parameters = shape_string.split(', ')
-    N_string = objects[1:]
-    N = int(N_string)
+    N = inputs.shape[0]
     bw = 5 * np.nanstd(inputs) * N ** (-1/10.)
     
     #Fit data points to selected kernel and bandwidth
@@ -63,6 +63,12 @@ def generate_KDE(inputs, ker):
         HISTORY:
             2018-07-15 - Updated - Ayush Pandhi
         """
+        if selection is not None:
+            #compute parallax in physical units. Inputs are in natural units.
+            x, y, z, vx, vy, vz = samples.T
+            distance = 8.* np.sqrt(x**2 + y**2 + z**2)
+            parallax = 1/distance
+        
         #Scaling samples with standard deviation
         samples = (samples - inputs_mean)/inputs_std
         
@@ -71,7 +77,11 @@ def generate_KDE(inputs, ker):
         dens = np.exp(log_dens)
         
         #Return a 1xQ array of normal probabilities for the selected sample
-        return dens
+        if selection is None:
+            return dens
+        else:
+            # divide by selection fraction only when selection function is given
+            return dens/selection(parallax)
     
     #Return a black box function for sampling
     return input_KDE
