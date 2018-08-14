@@ -117,11 +117,33 @@ def color_plot_bokeh(source, TOOLS, uniformity_method):
     
     # Go through all combinations of axis projection and plot them
     counter=0
-    all_proj = [None] * 15
+    all_proj = [None] * 16
     for i in range(6):
         for j in range(i + 1, 6):
             color_plot_ij_bokeh(source, TOOLS, i, j, all_proj, counter, uniformity_method)
             counter+=1
+            
+    # Create frequency histogram
+    
+    if uniformity_method == 'projection':
+        all_proj[15] = figure(tools=TOOLS, plot_width=350, plot_height=300)
+        hist, edges = np.histogram(result, bins='auto', density=True, range=(0,1))
+        all_proj[15].quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:])
+        all_proj[15].xaxis.axis_label = 'Fractional Length of Projection'
+        all_proj[15].yaxis.axis_label = 'Frequency'
+        t = Title()
+        t.text = 'Fractional Length Frequency Histogram'
+        all_proj[15].title = t
+    
+    elif uniformity_method == 'dot product':
+        all_proj[15] = figure(tools=TOOLS, plot_width=350, plot_height=300)
+        hist, edges = np.histogram(result, bins='auto', density=True, range=(0,1))
+        all_proj[15].quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:])
+        all_proj[15].xaxis.axis_label = 'Maximum Absolute Dot Product'
+        all_proj[15].yaxis.axis_label = 'Frequency'
+        t = Title()
+        t.text = 'Dot Product Frequency Histogram'
+        all_proj[15].title = t
     
     # Adding titles and adjusting graph spacing
     t1 = Title()
@@ -170,16 +192,16 @@ def color_plot_bokeh(source, TOOLS, uniformity_method):
                           
                                """)
     
-    show(gridplot([[all_proj[0],  button,       all_proj[2], all_proj[6], all_proj[9]], 
-                   [all_proj[1],  all_proj[5],  all_proj[3], all_proj[7], all_proj[10]],
-                   [all_proj[12], None,         all_proj[4], all_proj[8], all_proj[11]],
-                   [all_proj[13], all_proj[14], None,        None,        None]]))
+    show(gridplot([[all_proj[0],  button,       all_proj[2],  all_proj[6], all_proj[9]], 
+                   [all_proj[1],  all_proj[5],  all_proj[3],  all_proj[7], all_proj[10]],
+                   [all_proj[12], None,         all_proj[4],  all_proj[8], all_proj[11]],
+                   [all_proj[13], all_proj[14], all_proj[15], None,        None]]))
         
     # Show twice to compare when selecting regions    
-    show(gridplot([[all_proj[0],  button,       all_proj[2], all_proj[6], all_proj[9]], 
-                   [all_proj[1],  all_proj[5],  all_proj[3], all_proj[7], all_proj[10]],
-                   [all_proj[12], None,         all_proj[4], all_proj[8], all_proj[11]],
-                   [all_proj[13], all_proj[14], None,        None,        None]]))
+    show(gridplot([[all_proj[0],  button,       all_proj[2],  all_proj[6], all_proj[9]], 
+                   [all_proj[1],  all_proj[5],  all_proj[3],  all_proj[7], all_proj[10]],
+                   [all_proj[12], None,         all_proj[4],  all_proj[8], all_proj[11]],
+                   [all_proj[13], all_proj[14], all_proj[15], None,        None]]))
     
 if __name__ == "__main__":
     
@@ -217,11 +239,12 @@ if __name__ == "__main__":
 
           
     # create a column data source for the plots to share
+    result_fixed = result
     source = ColumnDataSource(data=dict(x=cluster.T[0], y=cluster.T[1], z=cluster.T[2],
                                         vx=cluster.T[3], vy=cluster.T[4], vz=cluster.T[5], result=result, colours=colours))
-    
+
     #denote interactive tools for linked plots
-    TOOLS = "lasso_select,box_select"
+    TOOLS = "box_select,lasso_select"
     
     # create and save graph of dot product in color scatter plot in all 
     # 2 dimensional projections.
