@@ -68,6 +68,6 @@ def sample_like_gaia_selection(n, epsilon):
     phi_range = [np.round(np.min(phi),2), np.round(np.max(phi),2)]
     R_range = [np.round(np.min(R),2), np.round(np.max(R),2)]
     
-    return sample_selection(n, R_range, [-24,24], phi_range, selection, 
+    return sample_selection(n, R_range, [-1.5,1.5], phi_range, selection, 
                             size=size, use_physical=True)
     
