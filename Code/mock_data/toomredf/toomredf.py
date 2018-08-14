@@ -3,8 +3,9 @@ sys.path.append('..')
 
 import numpy as np
 from galpy.util.bovy_conversion import dens_in_msolpc3
-from sampling.sampling import sample_location, sample_velocity
 from galpy.potential import Potential
+from sampling.sampling import sample_location, sample_velocity, \
+    sample_location_selection
 
 class toomredf:
     """
@@ -368,6 +369,57 @@ class toomredf:
             
         return samples
     
+    def samplePos_cyl_selection(self, R_range, z_range, phi_range, selection,
+                                size=1, use_physical=None, phi_0=np.pi, 
+                                R_sun=8.3):
+        """
+        NAME:
+            samplePos_cyl_selection
+            
+        PURPOSE:
+            sample positions in cylindrical coordinates with an additional
+            selection function
+            
+        INPUT:
+            R_range - cylindrical radial range in which to sample stars; natural
+            units or kpc
+            
+            z_range - vertical range in which to sample; natural units or kpc
+            
+            phi_range - phi range over which to distribute the samples; radians
+            
+            seleciton - the selection function
+            
+            size - number of samples
+            
+            use_physical - boolean override of the physical input/output setting
+            
+            phi_0 - phi of the Sun
+            
+            R_sun - R position of the Sun in kpc
+        
+        OUTPUT:
+            R, z, phi
+        """
+        if use_physical is None:
+            use_physical = self.use_physical
+            
+        if use_physical:
+            R_range = [val/self.ro for val in R_range]
+            z_range = [val/self.ro for val in z_range]
+            
+        density = lambda R, z: self.density_cyl(R, z, use_physical=False)
+        max_density = density(R_range[0], 0)
+        
+        samples = sample_location_selection(density, size, *R_range, *z_range, 
+                                            *phi_range, max_density, selection,
+                                            phi_0=phi_0, R_0=R_sun/8.)
+        
+        if use_physical:
+            samples[:,:2] *= self.ro
+            
+        return samples
+    
     def sample(self, r_range, theta_range, phi_range, size=1, 
                use_physical=None):
         """
@@ -424,6 +476,39 @@ class toomredf:
         vR, vz, vT = self.sampleV_cyl(size=size, use_physical=use_physical).T
         R, z, phi = self.samplePos_cyl(R_range, z_range, phi_range, size=size,
                                        use_physical=use_physical).T
+        return np.stack((R, vR, vT, z, vz, phi), axis=1)
+    
+    def sample_cyl_selection(self, R_range, z_range, phi_range, selection, 
+                             size=1, use_physical=None):
+        """
+        NAME:
+            sample_cyl
+            
+        PURPOSE:
+            sample positions and velocities in cylindrical coordinates with an
+            additional selection function
+            
+        INPUT:
+            R_range - cylindrical radial range in which to sample stars; natural
+            units or kpc
+            
+            z_range - vertical range in which to sample; natural units or kpc
+            
+            phi_range - phi range over which to distribute the samples; radians
+            
+            selection - the selection function
+            
+            size - number of samples
+            
+            use_physical - boolean override of the physical input/output setting
+        
+        OUTPUT:
+            R, vR, vT, z, vz, phi
+        """
+        vR, vz, vT = self.sampleV_cyl(size=size, use_physical=use_physical).T
+        R, z, phi = self.samplePos_cyl_selection(R_range, z_range, phi_range,
+                                                 selection, size=size, 
+                                                 use_physical=use_physical).T
         return np.stack((R, vR, vT, z, vz, phi), axis=1)
         
     def _p(self, theta):
