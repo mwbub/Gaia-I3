@@ -268,6 +268,7 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         2018-06-22 - Added Figure - Samuel Wong
         2018-07-15 - Added choice of gradient method - Samuel Wong
         2018-07-31 - Added choice of custom potential - Samuel Wong
+        018-08-14 - Added option to divide by selection in density - Samuel Wong
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples, uniformity_method,

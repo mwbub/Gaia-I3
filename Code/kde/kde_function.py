@@ -66,7 +66,9 @@ def generate_KDE(inputs, ker, selection = None):
         if selection is not None:
             #compute parallax in physical units. Inputs are in natural units.
             x, y, z, vx, vy, vz = samples.T
-            distance = 8.* np.sqrt(x**2 + y**2 + z**2)
+            #distannce to sun; compute sqrt in natural unit; times 8 to turn to
+            #physical
+            distance = 8.*np.sqrt((x-(-1.03749451))**2 + y**2 + (z-0.000875)**2)
             parallax = 1/distance
         
         #Scaling samples with standard deviation
