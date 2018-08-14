@@ -316,7 +316,7 @@ def sample_velocity(df, v_max, n, df_max):
 
     PURPOSE:
         Given a density function and the maximum and minimum in cylindrical 
-        coordinate, as well as number of samples desired, sample location.
+        coordinate, as well as number of samples desired, sample velocity.
         
     INPUT:
         df = a distribution function that takes an array of velocity and
