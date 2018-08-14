@@ -370,7 +370,8 @@ class toomredf:
         return samples
     
     def samplePos_cyl_selection(self, R_range, z_range, phi_range, selection,
-                                size=1, use_physical=None):
+                                size=1, use_physical=None, phi_0=np.pi, 
+                                R_sun=8.3):
         """
         NAME:
             samplePos_cyl_selection
@@ -392,6 +393,10 @@ class toomredf:
             size - number of samples
             
             use_physical - boolean override of the physical input/output setting
+            
+            phi_0 - phi of the Sun
+            
+            R_sun - R position of the Sun in kpc
         
         OUTPUT:
             R, z, phi
@@ -407,7 +412,8 @@ class toomredf:
         max_density = density(R_range[0], 0)
         
         samples = sample_location_selection(density, size, *R_range, *z_range, 
-                                            *phi_range, max_density, selection)
+                                            *phi_range, max_density, selection,
+                                            phi_0=phi_0, R_0=R_sun/8.)
         
         if use_physical:
             samples[:,:2] *= self.ro
