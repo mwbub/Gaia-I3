@@ -108,9 +108,9 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         
         df_max = maximum value of the dsitribution function
         
-        selection = a selection function that takes parallax to Sun;
-                    takes array;
-                    take parallax in physical units
+        selection = a selection function that takes parallax to Sun and returns
+                    fraction of stars that are left after selection;
+                    takes array; takes parallax in physical units
         
         R_0, z_0, phi_0 = Sun's location in natural units
 
