@@ -108,9 +108,9 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         
         df_max = maximum value of the dsitribution function
         
-        selection = a selection function that takes parallax to Sun;
-                    takes array;
-                    take parallax in physical units
+        selection = a selection function that takes parallax to Sun and returns
+                    fraction of stars that are left after selection;
+                    takes array; takes parallax in physical units
         
         R_0, z_0, phi_0 = Sun's location in natural units
 
@@ -316,7 +316,7 @@ def sample_velocity(df, v_max, n, df_max):
 
     PURPOSE:
         Given a density function and the maximum and minimum in cylindrical 
-        coordinate, as well as number of samples desired, sample location.
+        coordinate, as well as number of samples desired, sample velocity.
         
     INPUT:
         df = a distribution function that takes an array of velocity and
