@@ -31,9 +31,6 @@ from kde.kde_function import *
 from kmeans.kmeans import *
 from tools.tools import *
 from tools.plots import *
-#get standard selection function
-with open("../selection/parallax selection function/selection_function", "rb") as dill_file:
-    standard_selection = dill.load(dill_file)
 
 # create a subfolder to save results
 if not os.path.exists('main_program_results'):
@@ -224,7 +221,7 @@ def summary_save(result, cluster, file_name, uniformity_method):
 def main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
          custom_centres = None, custom_potential = None,
-         selection = standard_selection):
+         selection = None):
     """
     NAME:
         main
@@ -297,5 +294,5 @@ if __name__ == "__main__":
     main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
          custom_centres = None, custom_potential = None,
-         selection = standard_selection)
+         selection = None)
     
