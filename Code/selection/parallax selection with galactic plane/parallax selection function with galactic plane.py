@@ -186,3 +186,11 @@ with open("selection_function", "wb") as dill_file:
 # code needed to retrieve the function
 #with open("selection_function", "rb") as dill_file:
 #    selection = dill.load(dill_file)
+    
+#plot overall selection on both galactic plane and elsewhere as test
+plt.figure()
+plt.plot(xs, selection(xs, np.zeros(1000), np.linspace(-10.,10.,1000)), color = "blue", label="galactic")
+plt.plot(xs, selection(xs, np.zeros(1000), np.linspace(10.,30.,1000)), color = "green", label="elsewhere")
+plt.legend()
+plt.xlabel('Parallax')
+plt.ylabel('selection')
