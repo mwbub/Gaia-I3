@@ -24,4 +24,4 @@ data = sample_like_gaia(n, epsilon)
 pot = ToomrePotential(n)
 main(uniformity_method='projection', gradient_method='numeric', 
      custom_samples=data, custom_potential=pot, custom_centres=cluster,
-     selection=None)
+     selection=None, band_width=5)
