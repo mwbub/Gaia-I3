@@ -246,7 +246,8 @@ def sample_location_interpolate(df, n, R_min, R_max, z_min, z_max, phi_min,
 def sample_location_interpolate_selection(df, n, R_min, R_max, z_min, z_max,
                                           phi_min, phi_max, df_max, pixel_R,
                                           pixel_z, selection, R_0 = 1.0,
-                                          z_0 = 0., phi_0 = 0.):
+                                          z_0 = 0., phi_0 = 0.,
+                                          directional_dependence = False):
     """
     NAME:
         sample_location_interpolate_selection
@@ -320,7 +321,8 @@ def sample_location_interpolate_selection(df, n, R_min, R_max, z_min, z_max,
     # evaluation as df
     return sample_location_selection(evaluate_ip, n, R_min, R_max, z_min,
                                      z_max, phi_min, phi_max, df_max,
-                                     selection, R_0, z_0, phi_0)
+                                     selection, R_0, z_0, phi_0,
+                                     directional_dependence)
 
 
 def sample_velocity(df, v_max, n, df_max):
