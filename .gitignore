@@ -10,3 +10,4 @@ gaia_data_with_straight_cutoff.fits
 gaia_rv_with_straight_cutoff.fits
 (4)(7.3-9.3)(-24-24)(3.02-3.26)(31420700)(True).npy
 (selection)(4)(7.3-9.3)(-1.5-1.5)(3.02-3.26)(31420700)(True).npy
+(selection)(4)(7.3-9.3)(-1.5-1.5)(3.02-3.26)(3142070)(True)(dd).npy
