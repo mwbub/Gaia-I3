@@ -140,7 +140,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
     
     # add presence of selection in filename
     if selection is not None:
-        file_name = file_name + ' with selection'
+        file_name = '(with selection) ' + file_name
     # create a sub-folder to save results wihout further specification of 
     # uniformity method
     if not os.path.exists('main_program_results/'+file_name):
@@ -292,8 +292,12 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
   
 if __name__ == "__main__": 
     
+    with open("../selection/parallax selection with galactic plane/selection_function",
+              "rb") as dill_file:
+        selection = dill.load(dill_file)
+    
     main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
          custom_centres = None, custom_potential = None,
-         selection = None)
+         selection = selection)
     
