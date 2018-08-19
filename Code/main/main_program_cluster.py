@@ -37,7 +37,7 @@ if not os.path.exists('main_program_results'):
     os.mkdir('main_program_results')
 
 
-def search_for_samples(search_method):
+def search_for_samples(search_method, band_width):
     """
     NAME:
         search_for_samples
@@ -79,16 +79,16 @@ def search_for_samples(search_method):
         file_name = 'full sample'
     # if actual search was done, record search star as well
     else:
-        file_name = ('epsilon = {}, v_scale = {}, star galactocentric = '
+        file_name = ('epsilon = {}, v_scale = {}, bw = {}, star galactocentric = '
                      '[{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}]'
-                     ).format(epsilon, v_scale, *point_galactocentric)
+                     ).format(epsilon, v_scale, band_width, *point_galactocentric)
     # remove any line with \n in the title
     file_name = file_name.replace('\n','')
     return samples, file_name
 
 
 def get_samples_density_filename(custom_density, search_method, custom_samples,
-                                 uniformity_method, selection):
+                                 uniformity_method, selection, band_width):
     """
     NAME:
         get_samples_density_filename
@@ -123,7 +123,7 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
         file_name = input('Name of file to be saved: ')
         samples = custom_samples
     else:
-        samples, file_name = search_for_samples(search_method) 
+        samples, file_name = search_for_samples(search_method, band_width) 
         
     # at this point, everything should have physical units
     # turn all data to natrual units; working with natural unit, galactocentric,
@@ -136,11 +136,11 @@ def get_samples_density_filename(custom_density, search_method, custom_samples,
         name_of_density = input('Name of custom density function: ')
         file_name = name_of_density + ' ' + file_name
     else:
-        density = generate_KDE(samples, 'epanechnikov', selection)
+        density = generate_KDE(samples, 'epanechnikov', selection, band_width)
     
     # add presence of selection in filename
     if selection is not None:
-        file_name = file_name + ' with selection'
+        file_name = '(with selection) ' + file_name
     # create a sub-folder to save results wihout further specification of 
     # uniformity method
     if not os.path.exists('main_program_results/'+file_name):
@@ -221,7 +221,7 @@ def summary_save(result, cluster, file_name, uniformity_method):
 def main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
          custom_centres = None, custom_potential = None,
-         selection = None):
+         selection = None, band_width = 10):
     """
     NAME:
         main
@@ -265,11 +265,12 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
         2018-06-22 - Added Figure - Samuel Wong
         2018-07-15 - Added choice of gradient method - Samuel Wong
         2018-07-31 - Added choice of custom potential - Samuel Wong
-        018-08-14 - Added option to divide by selection in density - Samuel Wong
+        2018-08-14 - Added option to divide by selection in density - Samuel Wong
+        2018-08-19 - Added option to adjust bandwidth - Samuel Wong
     """        
     samples, density, file_name = get_samples_density_filename(
             custom_density, search_method, custom_samples, uniformity_method,
-            selection)
+            selection, band_width)
     
     cluster = get_cluster(samples, custom_centres)
     
@@ -290,9 +291,14 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
                   custom_potential)
        
   
-if __name__ == "__main__":
+if __name__ == "__main__": 
+    
+    with open("../selection/parallax selection with galactic plane/selection_function",
+              "rb") as dill_file:
+        selection = dill.load(dill_file)
+    
     main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
          custom_centres = None, custom_potential = None,
-         selection = None)
+         selection = selection)
     

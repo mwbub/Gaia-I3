@@ -1,9 +1,10 @@
 #Importing the required modules
 import numpy as np
 from sklearn.neighbors import KernelDensity
+from astropy.coordinates import SkyCoord
 
 #Defining a KDE function to quickly compute probabilities for the data set
-def generate_KDE(inputs, ker, selection = None):
+def generate_KDE(inputs, ker, selection = None, bw_multiplier=10):
     """
     NAME:
         generate_KDE
@@ -37,7 +38,7 @@ def generate_KDE(inputs, ker, selection = None):
     
     #Optimizing bandwidth in terms of Scott's Multivariate Rule of Thumb
     N = inputs.shape[0]
-    bw = 5 * np.nanstd(inputs) * N ** (-1/10.)
+    bw = bw_multiplier * np.nanstd(inputs) * N ** (-1/10.)
     
     #Fit data points to selected kernel and bandwidth
     kde = KernelDensity(kernel=ker, bandwidth=bw).fit(inputs)  
@@ -70,6 +71,10 @@ def generate_KDE(inputs, ker, selection = None):
             #physical
             distance = 8.*np.sqrt((x-(-1.03749451))**2 + y**2 + (z-0.000875)**2)
             parallax = 1/distance
+            # convert cartesian galactocentric to galactic
+            gal = SkyCoord(x=8.*x, y=8.*y, z=8.*z, unit="kpc",
+                                frame="galactocentric").galactic
+            b = gal.b.degree
         
         #Scaling samples with standard deviation
         samples = (samples - inputs_mean)/inputs_std
@@ -83,7 +88,7 @@ def generate_KDE(inputs, ker, selection = None):
             return dens
         else:
             # divide by selection fraction only when selection function is given
-            return dens/selection(parallax)
+            return dens/selection(parallax, b)
     
     #Return a black box function for sampling
     return input_KDE
