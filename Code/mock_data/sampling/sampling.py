@@ -15,8 +15,7 @@ HISTORY:
 import numpy as np
 from scipy import interpolate
 from astropy.coordinates import SkyCoord
-from astropy import units as unit
-from astropy.coordinates.representation import CylindricalRepresentation
+from astropy import units as u
 
 def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max):
     """
@@ -152,10 +151,10 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         distance = 8.*np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
         parallax = 1/distance
         if directional_dependence:
-            cyl = CylindricalRepresentation(rho=8.*R*unit.kpc,
-                                            phi=phi*unit.rad,
-                                            z=8.*z*unit.kpc)
-            gal = SkyCoord(COORD=cyl, frame="galactocentric").galactic
+            galcen = SkyCoord(rho=R*8*u.kpc, phi=phi*u.rad, z=z*8*u.kpc,
+                              representation_type='cylindrical',
+                              frame='galactocentric')
+            gal = galcen.transform_to('galactic')
             b = gal.b.degree
             mask2 = p_sel < selection(parallax,b)
         else:
