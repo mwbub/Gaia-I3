@@ -14,6 +14,9 @@ HISTORY:
 """
 import numpy as np
 from scipy import interpolate
+from astropy.coordinates import SkyCoord
+from astropy import units as unit
+from astropy.coordinates.representation import CylindricalRepresentation
 
 def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max):
     """
@@ -83,7 +86,7 @@ def sample_location(df, n, R_min, R_max, z_min, z_max, phi_min, phi_max, df_max)
 
 def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
                               phi_max, df_max, selection, R_0 = 1.0, z_0 = 0.,
-                              phi_0 = 0.):
+                              phi_0 = 0., directional_dependence = False):
     """
     NAME:
         sample_location_selection
@@ -113,6 +116,9 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
                     takes array; takes parallax in physical units
         
         R_0, z_0, phi_0 = Sun's location in natural units
+        
+        directional_dependence = boolean representing whether the selection is 
+                                to depend on direction on the sky
 
     OUTPUT:
         A numpy array in the form [(R, z, phi), (R, z, phi), ...] with n
@@ -145,7 +151,15 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
         # calculate distance to Sun; times 8 due to selection takes physical unit
         distance = 8.*np.sqrt(R**2 + R_0**2 - 2*R*R_0*np.cos(phi-phi_0) + (z - z_0)**2)
         parallax = 1/distance
-        mask2 = p_sel < selection(parallax)
+        if directional_dependence:
+            cyl = CylindricalRepresentation(rho=8.*R*unit.kpc,
+                                            phi=phi*unit.rad,
+                                            z=8.*z*unit.kpc)
+            gal = SkyCoord(COORD=cyl, frame="galactocentric").galactic
+            b = gal.b.degree
+            mask2 = p_sel < selection(parallax,b)
+        else
+            mask2 = p_sel < selection(parallax)
         #accept
         R_accept = R[np.all(np.array([mask1, mask2]), axis = 0)]
         z_accept = z[np.all(np.array([mask1, mask2]), axis = 0)]
