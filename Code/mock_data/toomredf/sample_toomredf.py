@@ -9,7 +9,7 @@ from toomredf import toomredf
 from search import search_local
 from tools.tools import cyl_to_rect, rect_to_cyl
 
-file = '../../selection/parallax selection function/selection_function'
+file = '../../selection/parallax selection with galactic plane/selection_function'
 dill_file = open(file, 'rb')
 selection = dill.load(dill_file)
 
