@@ -171,7 +171,7 @@ plt.savefig("Ratio of Freqeuncy of Parallax elsewhere (Extrapolated).png")
 
 
 #define the overall selection function
-def selection(parallax, l, b):
+def selection(parallax, b):
     mask = np.abs(b) < plane_width
     out = np.empty(np.shape(b)[0])
     out[mask] = selection_galactic_plane(parallax[mask])
@@ -189,8 +189,8 @@ with open("selection_function", "wb") as dill_file:
     
 #plot overall selection on both galactic plane and elsewhere as test
 plt.figure()
-plt.plot(xs, selection(xs, np.zeros(1000), np.linspace(-10.,10.,1000)), color = "blue", label="galactic")
-plt.plot(xs, selection(xs, np.zeros(1000), np.linspace(10.,30.,1000)), color = "green", label="elsewhere")
+plt.plot(xs, selection(xs, np.linspace(-10.,10.,1000)), color = "blue", label="galactic")
+plt.plot(xs, selection(xs, np.linspace(10.,30.,1000)), color = "green", label="elsewhere")
 plt.legend()
 plt.xlabel('Parallax')
 plt.ylabel('selection')
