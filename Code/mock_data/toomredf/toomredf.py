@@ -482,7 +482,7 @@ class toomredf:
         return np.stack((R, vR, vT, z, vz, phi), axis=1)
     
     def sample_cyl_selection(self, R_range, z_range, phi_range, selection, 
-                             size=1, use_physical=None):
+                             size=1, use_physical=None, dd=True):
         """
         NAME:
             sample_cyl
@@ -504,13 +504,15 @@ class toomredf:
             size - number of samples
             
             use_physical - boolean override of the physical input/output setting
+            
+            dd - directional dependence
         
         OUTPUT:
             R, vR, vT, z, vz, phi
         """
         vR, vz, vT = self.sampleV_cyl(size=size, use_physical=use_physical).T
         R, z, phi = self.samplePos_cyl_selection(R_range, z_range, phi_range,
-                                                 selection, size=size, 
+                                                 selection, size=size, dd=dd,
                                                  use_physical=use_physical).T
         return np.stack((R, vR, vT, z, vz, phi), axis=1)
         
