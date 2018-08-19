@@ -31,9 +31,13 @@ def sample(n, R_range, z_range, phi_range, size=1, use_physical=True):
     return samples
 
 def sample_selection(n, R_range, z_range, phi_range, selection, size=1, 
-                     use_physical=True):
-    filename = 'data/(selection)({})({}-{})({}-{})({}-{})({})({}).npy'.format(n, 
+                     use_physical=True dd=True):
+    filename = 'data/(selection)({})({}-{})({}-{})({}-{})({})({})'.format(n, 
                      *R_range, *z_range, *phi_range, size, use_physical)
+    if dd:
+        filename += '(dd)'
+    filename += '.npy'
+    
     if os.path.exists(filename):
         return np.load(filename)
     
