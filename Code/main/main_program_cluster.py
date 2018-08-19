@@ -292,8 +292,12 @@ def main(uniformity_method = "projection", gradient_method = "analytic",
   
 if __name__ == "__main__": 
     
+    with open("../selection/parallax selection with galactic plane/selection_function",
+              "rb") as dill_file:
+        selection = dill.load(dill_file)
+    
     main(uniformity_method = "projection", gradient_method = "analytic",
          search_method = "local", custom_density = None, custom_samples = None,
          custom_centres = None, custom_potential = None,
-         selection = None)
+         selection = selection)
     
