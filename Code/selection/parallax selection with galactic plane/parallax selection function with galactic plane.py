@@ -169,14 +169,20 @@ plt.legend()
 plt.title("Ratio of Freqeuncy of Parallax elsewhere (Extrapolated)")
 plt.savefig("Ratio of Freqeuncy of Parallax elsewhere (Extrapolated).png")
 
+#get old selection function as part of new selection function
+with open("old_selection_function", "rb") as dill_file:
+    old_selection = dill.load(dill_file)
 
 #define the overall selection function
-def selection(parallax, b):
-    mask = np.abs(b) < plane_width
-    out = np.empty(np.shape(b)[0])
-    out[mask] = selection_galactic_plane(parallax[mask])
-    out[~mask] = selection_elsewhere(parallax[~mask])
-    return out
+def selection(parallax, b=None):
+    if b is None: # if no direction is given, use old selection
+        return old_selection(parallax)
+    else:
+        mask = np.abs(b) < plane_width
+        out = np.empty(np.shape(b)[0])
+        out[mask] = selection_galactic_plane(parallax[mask])
+        out[~mask] = selection_elsewhere(parallax[~mask])
+        return out
 
 
 # save the function object
@@ -191,6 +197,13 @@ with open("selection_function", "wb") as dill_file:
 plt.figure()
 plt.plot(xs, selection(xs, np.linspace(-10.,10.,1000)), color = "blue", label="galactic")
 plt.plot(xs, selection(xs, np.linspace(10.,30.,1000)), color = "green", label="elsewhere")
+plt.legend()
+plt.xlabel('Parallax')
+plt.ylabel('selection')
+
+#test using old selection
+plt.figure()
+plt.plot(xs, selection(xs), color = "blue", label="old selection")
 plt.legend()
 plt.xlabel('Parallax')
 plt.ylabel('selection')
