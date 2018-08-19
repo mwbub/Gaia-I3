@@ -74,7 +74,7 @@ def generate_KDE(inputs, ker, selection = None):
             # convert cartesian galactocentric to galactic
             gal = SkyCoord(x=8.*x, y=8.*y, z=8.*z, unit="kpc",
                                 frame="galactocentric").galactic
-            l = gal.l.deg
+            b = gal.b.degree
         
         #Scaling samples with standard deviation
         samples = (samples - inputs_mean)/inputs_std
@@ -88,7 +88,7 @@ def generate_KDE(inputs, ker, selection = None):
             return dens
         else:
             # divide by selection fraction only when selection function is given
-            return dens/selection(parallax, l)
+            return dens/selection(parallax, b)
     
     #Return a black box function for sampling
     return input_KDE
