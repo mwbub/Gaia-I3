@@ -371,7 +371,7 @@ class toomredf:
     
     def samplePos_cyl_selection(self, R_range, z_range, phi_range, selection,
                                 size=1, use_physical=None, phi_0=np.pi, 
-                                R_sun=8.3):
+                                R_sun=8.3, dd=True):
         """
         NAME:
             samplePos_cyl_selection
@@ -397,6 +397,8 @@ class toomredf:
             phi_0 - phi of the Sun
             
             R_sun - R position of the Sun in kpc
+            
+            dd - directional dependence
         
         OUTPUT:
             R, z, phi
@@ -413,7 +415,8 @@ class toomredf:
         
         samples = sample_location_selection(density, size, *R_range, *z_range, 
                                             *phi_range, max_density, selection,
-                                            phi_0=phi_0, R_0=R_sun/8.)
+                                            phi_0=phi_0, R_0=R_sun/8.,
+                                            directional_dependence=dd)
         
         if use_physical:
             samples[:,:2] *= self.ro
