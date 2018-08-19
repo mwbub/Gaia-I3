@@ -4,7 +4,7 @@ from sklearn.neighbors import KernelDensity
 from astropy.coordinates import SkyCoord
 
 #Defining a KDE function to quickly compute probabilities for the data set
-def generate_KDE(inputs, ker, selection = None):
+def generate_KDE(inputs, ker, selection = None, bw_multiplier=10):
     """
     NAME:
         generate_KDE
@@ -38,7 +38,7 @@ def generate_KDE(inputs, ker, selection = None):
     
     #Optimizing bandwidth in terms of Scott's Multivariate Rule of Thumb
     N = inputs.shape[0]
-    bw = 5 * np.nanstd(inputs) * N ** (-1/10.)
+    bw = bw_multiplier * np.nanstd(inputs) * N ** (-1/10.)
     
     #Fit data points to selected kernel and bandwidth
     kde = KernelDensity(kernel=ker, bandwidth=bw).fit(inputs)  
