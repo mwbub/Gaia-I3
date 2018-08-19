@@ -158,7 +158,7 @@ def sample_location_selection(df, n, R_min, R_max, z_min, z_max, phi_min,
             gal = SkyCoord(COORD=cyl, frame="galactocentric").galactic
             b = gal.b.degree
             mask2 = p_sel < selection(parallax,b)
-        else
+        else:
             mask2 = p_sel < selection(parallax)
         #accept
         R_accept = R[np.all(np.array([mask1, mask2]), axis = 0)]
