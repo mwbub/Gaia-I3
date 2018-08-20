@@ -43,7 +43,8 @@ def sample_selection(n, R_range, z_range, phi_range, selection, size=1,
     
     df = toomredf(n)
     samples = df.sample_cyl_selection(R_range, z_range, phi_range, selection, 
-                                      size=size, use_physical=use_physical)
+                                      size=size, use_physical=use_physical,
+                                      dd=dd)
     samples = cyl_to_rect(*samples.T)
     
     if not os.path.exists('data'):
