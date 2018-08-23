@@ -15,3 +15,4 @@ gaia_rv_with_straight_cutoff.fits
 (4)(4.3-12.3)(-24-24)(2.64-3.64)(6163679)(True).npy
 (4)(7.3-9.3)(-24-24)(3.02-3.26)(3142070)(True).npy
 (selection)(4)(7.3-9.3)(-1.5-1.5)(3.02-3.26)(3142070)(True).npy
+qdf sample cartesian physical with new selection, e=1, date=(2018, 8, 20).npy
